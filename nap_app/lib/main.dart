@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './sleep_detection/tap_method.dart';
 
 //Entry point for the program
 main(List<String> args) => runApp(NapApp());
@@ -16,8 +17,12 @@ class NapApp extends StatefulWidget {
 class _NapAppState extends State<NapApp> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return MaterialApp(
+      theme: ThemeData.dark(),
+      home: Scaffold(
+        appBar: AppBar(),
+        body: TapMethod(),
+      ),
     );
   }
 }
