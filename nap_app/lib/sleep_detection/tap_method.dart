@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'dart:async'; //Required for Timer
+import 'package:vibrate/vibrate.dart'; //Required for vibrate
 
 class TapMethod extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class _TapMethodState extends State<TapMethod> {
     super.initState();
       Timer.periodic(Duration(seconds: 1), (timer) {
         setState(() {
+          _tapState == true ? Vibrate.feedback(FeedbackType.warning) : print("no vibrate");
           _tapState = false;
         });
       });
@@ -30,20 +32,24 @@ class _TapMethodState extends State<TapMethod> {
 //Column returned to the main dart file to build a UI for the tap-testing.
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        GestureDetector(
-          onTap: () => _checkTap(),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 2.0)
-            ),
-            padding: EdgeInsets.all(200),
-            child: Text(_tapState.toString()),
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () => _checkTap(),
+            //Container Child is WIP - to detect taps (currently can only tap on the word)
+            child: Container(
+              decoration: BoxDecoration(
+                //border: Border.all(color: Colors.white, width: 2.0)
+              ),
+              //padding: EdgeInsets.all(200),
+              alignment: Alignment.center,
+              child: _tapState == true ? Text("") : Text("Tap", style: TextStyle(fontSize: 40),),
+            )
           )
-        )
-      ],
+        ],
+      ),
     );
   }
 }
