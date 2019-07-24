@@ -25,8 +25,7 @@ class _NapAppState extends State<NapApp> {
 
           //Text Themes
 
-
-          
+         
 
         ),
         home:  HomePage.HomeScreen());
