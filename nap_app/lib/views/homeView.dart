@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NapPage.NapTracker()),
+                                builder: (context) => NapPage.NapSettings()),
                           );
                         },
                       ),

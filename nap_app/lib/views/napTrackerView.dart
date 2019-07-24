@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-class NapTracker extends StatefulWidget
+import 'napTrackerPage.dart' as NapPage;
+
+class NapSettings extends StatefulWidget
 {
   @override 
-  _NapTrackerState createState() => _NapTrackerState();
+  _NapSettingsState createState() => _NapSettingsState();
 }
 
-class _NapTrackerState extends State<NapTracker> {
+class _NapSettingsState extends State<NapSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nap Tracker'),
+        title: Text('Nap Settings'),
       ),
 
       body: Card(
@@ -49,11 +51,16 @@ class _NapTrackerState extends State<NapTracker> {
 
                   child: MaterialButton(
                     child: Text('Start Nap', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,)),
-                    onPressed: (){},                 
+                    onPressed: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NapPage.NapTracker()),
+                            );
+                    }                 
 
                   ),
                 ),
-
               ],
             )
           ],
