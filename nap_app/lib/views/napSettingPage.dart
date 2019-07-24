@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../sleep_detection/splash.dart' as SleepDetection;
 
-import 'napTrackerPage.dart' as NapPage;
+//import 'napTrackerPage.dart' as NapPage;
 
 class NapSettings extends StatefulWidget
 {
@@ -240,7 +241,7 @@ class _NapSettingsState extends State<NapSettings> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NapPage.NapTracker()),
+                                builder: (context) => SleepDetection.SplashScreen()),
                             );
                     }                 
 

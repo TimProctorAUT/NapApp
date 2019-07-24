@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
-import 'package:nap_app/sleep_detection/sleep_state.dart';
+import '../sleep_detection/sleep_state.dart';
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
 
@@ -26,7 +26,7 @@ class _TapMethodState extends State<TapMethod> {
     super.initState();
       Timer.periodic(Duration(seconds: _variableTime), (timer) {
         setState(() {
-          _tapState == true ? Vibrate.feedback(FeedbackType.warning) : _tapState = false;
+          _tapState == true ? Vibrate.feedback(FeedbackType.heavy) : _tapState = false;
           _tapState = false;
         });
       });
@@ -45,7 +45,6 @@ class _TapMethodState extends State<TapMethod> {
 
   void _checkSleepState(){
     if(_detectState == DetectionState.started){
-      SleepStateAlgorithm();
       _detectState = DetectionState.running;
     }
   }

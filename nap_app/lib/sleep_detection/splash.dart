@@ -12,7 +12,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
        child: RaisedButton(
          color: Colors.black,
-          child: Text("Tap when you're ready to start tracking your nap!"),
+          child: Text("Tap when you're ready to start tracking your nap!", style: TextStyle(color: Colors.white),),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TapMethod())),
         ),
     );

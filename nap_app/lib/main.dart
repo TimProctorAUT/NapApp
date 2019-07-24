@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nap_app/sleep_detection/splash.dart';
 
 import 'views/homePage.dart' as HomePage;
 
@@ -22,6 +21,7 @@ class _NapAppState extends State<NapApp> {
           primaryColor: Color.fromRGBO(18, 18, 18, 1),
           scaffoldBackgroundColor: Color.fromRGBO(18, 18, 18, 1),
           cardColor: Color.fromRGBO(18, 18, 18, 0.8),
+          brightness: Brightness.dark,
 
 
           //Text Themes
