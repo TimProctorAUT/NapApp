@@ -54,7 +54,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown1? 100 : 50),
+                  height: (_isDroppedDown1? 200 : 50),
                   width: 300,
 
                   child: Row(                    
@@ -73,6 +73,8 @@ class _NapSettingsState extends State<NapSettings> {
                            else
                            {
                              _isDroppedDown1 = true;
+                             _isDroppedDown2 = false;
+                             _isDroppedDown3 = false;
                            }
 
                           });
@@ -106,7 +108,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown2? 100 : 50),
+                  height: (_isDroppedDown2? 200 : 50),
                   width: 300,
 
                   child: Row(
@@ -124,7 +126,9 @@ class _NapSettingsState extends State<NapSettings> {
                            } 
                            else
                            {
+                             _isDroppedDown1 = false;
                              _isDroppedDown2 = true;
+                             _isDroppedDown3 = false;
                            }
 
                           });
@@ -158,7 +162,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown3? 100 : 50),
+                  height: (_isDroppedDown3? 200 : 50),
                   width: 300,
 
                   child: Row(
@@ -176,6 +180,8 @@ class _NapSettingsState extends State<NapSettings> {
                            } 
                            else
                            {
+                             _isDroppedDown1 = false;
+                             _isDroppedDown2 = false;
                              _isDroppedDown3 = true;
                            }
 
