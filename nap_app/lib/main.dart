@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
 
-//Entry point for the program
-main(List<String> args) => runApp(NapApp());
+import 'views/homeView.dart' as HomePage;
 
-//Stateful Widget builder, creates the initial state of the application.
-//Might need to change this to stateless later on.
-class NapApp extends StatefulWidget {
+void main(List<String> args) => runApp(NapApp());
+
+class NapApp extends StatefulWidget
+{
   @override
   _NapAppState createState() => _NapAppState();
 }
 
-//This is the state of the widget
-//Changes here will result in visible changes on the application.
-//Dynamic changes must be made through the setState() method.
+
 class _NapAppState extends State<NapApp> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
-    );
+    return MaterialApp(
+        title: 'NapApp Menu Tests',
+        theme: ThemeData(
+          //Colors
+          primaryColor: Color.fromRGBO(18, 18, 18, 1),
+          scaffoldBackgroundColor: Color.fromRGBO(18, 18, 18, 1),
+          cardColor: Color.fromRGBO(18, 18, 18, 0.8),
+
+
+          //Text Themes
+
+
+          
+
+        ),
+        home:  HomePage.HomeScreen());
   }
 }
