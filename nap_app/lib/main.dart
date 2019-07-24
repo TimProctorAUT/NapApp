@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nap_app/sleep_detection/splash.dart';
 
 import 'views/homeView.dart' as HomePage;
 
