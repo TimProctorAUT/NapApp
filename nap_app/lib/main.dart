@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './sleep_detection/tap_method.dart';
+import 'package:nap_app/sleep_detection/splash.dart';
 
 //Entry point for the program
 main(List<String> args) => runApp(NapApp());
@@ -19,9 +19,13 @@ class _NapAppState extends State<NapApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: Scaffold(
-        appBar: AppBar(),
-        body: TapMethod(),
+      home: Builder(
+        builder: (context) => Center(
+          child: RaisedButton(
+            child: Text("Sleep Detection"),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => SplashScreen())),
+          ),
+        ),
       ),
     );
   }
