@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'views/homeView.dart' as HomePage;
+import 'views/homePage.dart' as HomePage;
 
 void main(List<String> args) => runApp(NapApp());
 
