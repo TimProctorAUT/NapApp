@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nap_app/sleep_detection/splash.dart';
 
-import 'views/homeView.dart' as HomePage;
+import 'views/homePage.dart' as HomePage;
 
 void main(List<String> args) => runApp(NapApp());
 
@@ -26,8 +26,7 @@ class _NapAppState extends State<NapApp> {
 
           //Text Themes
 
-
-          
+         
 
         ),
         home:  HomePage.HomeScreen());

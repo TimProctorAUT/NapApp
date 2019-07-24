@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'aboutView.dart' as AboutPage;
-import 'napTrackerView.dart' as NapPage;
-import 'sleepView.dart' as SleepPage;
-import 'graphView.dart' as GraphPage;
+import 'aboutPage.dart' as AboutPage;
+import 'napSettingPage.dart' as NapPage;
+import 'sleepPage.dart' as SleepPage;
+import 'graphPage.dart' as GraphPage;
 
 class HomeScreen extends StatefulWidget
 {
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NapPage.NapTracker()),
+                                builder: (context) => NapPage.NapSettings()),
                           );
                         },
                       ),
