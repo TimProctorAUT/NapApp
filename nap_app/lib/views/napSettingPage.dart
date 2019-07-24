@@ -57,30 +57,35 @@ class _NapSettingsState extends State<NapSettings> {
                   height: (_isDroppedDown1? 200 : 50),
                   width: 300,
 
-                  child: Row(                    
+                  child: Column(
                     children: <Widget>[
 
-                      Text('Time Settings', style: TextStyle(color: Colors.white)),
-                      
-                      IconButton(
-                        onPressed: (){
-                          
-                          setState(() {
-                           if(_isDroppedDown1)
-                           {
-                             _isDroppedDown1 = false;
-                           } 
-                           else
-                           {
-                             _isDroppedDown1 = true;
-                             _isDroppedDown2 = false;
-                             _isDroppedDown3 = false;
-                           }
+                      Row(
+                        children: <Widget>[
 
+                          Text('Time Settings', style: TextStyle(color: Colors.white)),
+                      
+                          IconButton(
+                            onPressed: (){
+                          
+                            setState(() {
+                            if(_isDroppedDown1)
+                            {
+                               _isDroppedDown1 = false;
+                            } 
+                            else
+                            {
+                              _isDroppedDown1 = true;
+                              _isDroppedDown2 = false;
+                              _isDroppedDown3 = false;
+                            }
                           });
                         },
                         icon: (_isDroppedDown1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
                       )
+
+                        ],
+                      ),                     
                     ],  
                   ),
                 ),
@@ -111,30 +116,36 @@ class _NapSettingsState extends State<NapSettings> {
                   height: (_isDroppedDown2? 200 : 50),
                   width: 300,
 
-                  child: Row(
+                  child: Column(
                     children: <Widget>[
 
-                      Text('Alarm Settings', style: TextStyle(color: Colors.white)),
-                      
-                      IconButton(
-                        onPressed: (){
-                          
-                          setState(() {
-                           if(_isDroppedDown2)
-                           {
-                             _isDroppedDown2 = false;
-                           } 
-                           else
-                           {
-                             _isDroppedDown1 = false;
-                             _isDroppedDown2 = true;
-                             _isDroppedDown3 = false;
-                           }
+                      Row(
+                        children: <Widget>[
 
+                          Text('Alarm Settings', style: TextStyle(color: Colors.white)),
+                      
+                          IconButton(
+                            onPressed: (){
+                          
+                            setState(() {
+                            if(_isDroppedDown2)
+                            {
+                               _isDroppedDown2 = false;
+                            } 
+                            else
+                            {
+                              _isDroppedDown1 = false;
+                              _isDroppedDown2 = true;
+                              _isDroppedDown3 = false;
+                            }
                           });
                         },
                         icon: (_isDroppedDown2? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
                       )
+
+
+                        ],
+                      ),                     
                     ],  
                   ),
                 ),
@@ -165,32 +176,39 @@ class _NapSettingsState extends State<NapSettings> {
                   height: (_isDroppedDown3? 200 : 50),
                   width: 300,
 
-                  child: Row(
+                                    child: Column(
                     children: <Widget>[
 
-                      Text('Sleep Detection', style: TextStyle(color: Colors.white)),
-                      
-                      IconButton(
-                        onPressed: (){
-                          
-                          setState(() {
-                           if(_isDroppedDown3)
-                           {
-                             _isDroppedDown3 = false;
-                           } 
-                           else
-                           {
-                             _isDroppedDown1 = false;
-                             _isDroppedDown2 = false;
-                             _isDroppedDown3 = true;
-                           }
+                      Row(
+                        children: <Widget>[
 
+                          Text('Alarm Settings', style: TextStyle(color: Colors.white)),
+                      
+                          IconButton(
+                            onPressed: (){
+                          
+                            setState(() {
+                            if(_isDroppedDown3)
+                            {
+                               _isDroppedDown3 = false;
+                            } 
+                            else
+                            {
+                              _isDroppedDown1 = false;
+                              _isDroppedDown2 = false;
+                              _isDroppedDown3 = true;
+                            }
                           });
                         },
-                        icon: (_isDroppedDown3? Icon(Icons.arrow_drop_down, color: Colors.white,) : Icon(Icons.arrow_left, color: Colors.white)),
+                        icon: (_isDroppedDown3? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
                       )
+
+
+                        ],
+                      ),                     
                     ],  
                   ),
+
                 ),
 
                 //===========================================================================================================================================//
