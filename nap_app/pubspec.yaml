@@ -20,6 +20,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Add all 3rd party dependencies required for R&D project below
+  vibrate: ^0.0.4
+  # End of R&D project dependencies
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

@@ -21,6 +21,7 @@ class _NapAppState extends State<NapApp> {
           primaryColor: Color.fromRGBO(18, 18, 18, 1),
           scaffoldBackgroundColor: Color.fromRGBO(18, 18, 18, 1),
           cardColor: Color.fromRGBO(18, 18, 18, 0.8),
+          brightness: Brightness.dark,
 
 
           //Text Themes
