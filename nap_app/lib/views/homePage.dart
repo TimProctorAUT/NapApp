@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: <Widget>[
               Container(
-                height: 140,
+                height: 75,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
