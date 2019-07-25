@@ -120,12 +120,12 @@ class _NapSettingsState extends State<NapSettings> {
                   child: Column(
                     children: <Widget>[
 
-                      Row(
+                      Row(                        
                         children: <Widget>[
-
+                                                   
                           Text('Alarm Settings', style: TextStyle(color: Colors.white)),
                       
-                          IconButton(
+                          IconButton(                            
                             onPressed: (){
                           
                             setState(() {
