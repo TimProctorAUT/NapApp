@@ -21,6 +21,7 @@ class _NapTrackerState extends State<NapTracker> {
         title: Text('Setting Parse Test'),
       ),
       body: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Column(
             children: <Widget>[
@@ -28,6 +29,9 @@ class _NapTrackerState extends State<NapTracker> {
               Text("Nap Length: ${widget.napLength}"),
 
               Text('Nap Limit: ${widget.napLimit}'),
+
+              //Buffer
+              Container(height:20),
 
               Container(
                 height: 50,
