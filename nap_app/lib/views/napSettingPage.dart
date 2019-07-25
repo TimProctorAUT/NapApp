@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../sleep_detection/splash.dart' as SleepDetection;
-
-//import 'napTrackerPage.dart' as NapPage;
+import '../views/SettingOutputTest.dart' as TestOutput;
 
 class NapSettings extends StatefulWidget
 {
@@ -61,54 +60,122 @@ class _NapSettingsState extends State<NapSettings> {
                   child: Column(
                     children: <Widget>[
 
-                      Row(
+                      Row(          
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,              
                         children: <Widget>[
+                          Container(                            
+                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: MaterialButton(
+                              onPressed: (){
+                                    setState(() {
+                                    if(_isDroppedDown1)
+                                    {
+                                      _isDroppedDown1 = false;
+                                    } 
+                                    else
+                                    {
+                                      _isDroppedDown1 = true;
+                                      _isDroppedDown2 = false;
+                                      _isDroppedDown3 = false;
+                                    }
+                                  });
+                              },
 
-                          Text('Time Settings', style: TextStyle(color: Colors.white)),
-                      
-                          IconButton(
-                            onPressed: (){
+                              child: Row(
+                                children: <Widget>[
+
+                                  Text('Time Settings', style: TextStyle(color: Colors.white)),
                           
-                            setState(() {
-                            if(_isDroppedDown1)
-                            {
-                               _isDroppedDown1 = false;
-                            } 
-                            else
-                            {
-                              _isDroppedDown1 = true;
-                              _isDroppedDown2 = false;
-                              _isDroppedDown3 = false;
-                            }
-                          });
-                        },
-                        icon: (_isDroppedDown1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                      )
-
+                                  (_isDroppedDown1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
+                              ],
+                            )
+                            ),
+                            
+                          ),                   
                         ],
-                      ),                     
+                      ),     
+
+                      Visibility(
+                        visible: _isDroppedDown1,
+                        child: Container(
+                          child: Column(
+                            children: <Widget>[
+                              //Line Divider
+                              Container(
+                                color: Colors.white,
+                                height: 2,
+                                width: 250,
+                              ),
+
+                              //Spacer
+                              Container(
+                                height: 20,
+                              ),                                     
+
+                              Container(
+                                color: Colors.red,
+                                width: 150,
+                                height: 20,
+                                child: Row(
+                                  children: <Widget>[
+                                    Text('TIME TO NAP'),                                    
+                                  ],
+                                ),
+                              ),
+
+                              //Spacer
+                              Container(
+                                height: 25,
+                              ),
+
+                              Container(
+                                color: Colors.blue,
+                                width: 150,
+                                height: 20,
+                                child: Row(
+                                  children: <Widget>[
+                                    Text('LENGTH OF NAP'),                                    
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),                     
+                      ),
+
+                      
+                      
                     ],  
                   ),
                 ),
 
                 //===========================================================================================================================================//
 
-                //Spacer
                 Container(
-                  height: 20,
+                  child: Column(
+                    children: <Widget>[
+                      //Spacer
+                      Container(
+                        height: 20,
+                      ),
+
+                      //Line Divider
+                      Container(
+                        color: Colors.white,
+                        height: 2,
+                        width: 280,
+                      ),
+                      
+                      //Spacer
+                      Container(
+                        height: 20,
+                      ),
+                    ],
+                  )
                 ),
 
-                //Line Divider
-                Container(
-                  color: Colors.white,
-                  height: 2,
-                  width: 280,
-                ),
                 
-                //Spacer
-                Container(
-                  height: 20,
-                ),
 
                 //===========================================================Alarm Settings===================================================================//
 
@@ -120,33 +187,80 @@ class _NapSettingsState extends State<NapSettings> {
                   child: Column(
                     children: <Widget>[
 
-                      Row(                        
+                      Row(          
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,              
                         children: <Widget>[
-                                                   
-                          Text('Alarm Settings', style: TextStyle(color: Colors.white)),
-                      
-                          IconButton(                            
-                            onPressed: (){
+                          Container(                            
+                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: MaterialButton(
+                              onPressed: (){
+                                    setState(() {
+                                    if(_isDroppedDown2)
+                                    {
+                                      _isDroppedDown2 = false;
+                                    } 
+                                    else
+                                    {
+                                      _isDroppedDown1 = false;
+                                      _isDroppedDown2 = true;
+                                      _isDroppedDown3 = false;
+                                    }
+                                  });
+                              },
+
+                              child: Row(
+                                children: <Widget>[
+
+                                  Text('Alarm Settings', style: TextStyle(color: Colors.white)),
                           
-                            setState(() {
-                            if(_isDroppedDown2)
-                            {
-                               _isDroppedDown2 = false;
-                            } 
-                            else
-                            {
-                              _isDroppedDown1 = false;
-                              _isDroppedDown2 = true;
-                              _isDroppedDown3 = false;
-                            }
-                          });
-                        },
-                        icon: (_isDroppedDown2? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                      )
-
-
+                                  (_isDroppedDown2? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
+                              ],
+                            )
+                            ),
+                            
+                          ),                   
                         ],
-                      ),                     
+                      ),     
+
+                      Visibility(
+                        visible: _isDroppedDown2,
+                        child: Container(
+                          child: Column(
+                            children: <Widget>[
+                              //Line Divider
+                              Container(
+                                color: Colors.white,
+                                height: 2,
+                                width: 250,
+                              ),
+
+                              //Spacer
+                              Container(
+                                height: 20,
+                              ),                                     
+
+                              Container(
+                                color: Colors.green,
+                                width: 150,
+                                height: 20,
+                              ),
+
+                              //Spacer
+                              Container(
+                                height: 25,
+                              ),
+
+                              Container(
+                                color: Colors.yellow,
+                                width: 150,
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ),                     
+                      ),
+
                     ],  
                   ),
                 ),
@@ -177,36 +291,82 @@ class _NapSettingsState extends State<NapSettings> {
                   height: (_isDroppedDown3? 200 : 50),
                   width: 300,
 
-                                    child: Column(
+                  child: Column(
                     children: <Widget>[
 
-                      Row(
+                      Row(          
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,              
                         children: <Widget>[
+                          Container(                            
+                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: MaterialButton(
+                              onPressed: (){
+                                    setState(() {
+                                    if(_isDroppedDown3)
+                                    {
+                                      _isDroppedDown3 = false;
+                                    } 
+                                    else
+                                    {
+                                      _isDroppedDown1 = false;
+                                      _isDroppedDown2 = false;
+                                      _isDroppedDown3 = true;
+                                    }
+                                  });
+                              },
 
-                          Text('Alarm Settings', style: TextStyle(color: Colors.white)),
-                      
-                          IconButton(
-                            onPressed: (){
+                              child: Row(
+                                children: <Widget>[
+
+                                  Text('Nap Detection', style: TextStyle(color: Colors.white)),
                           
-                            setState(() {
-                            if(_isDroppedDown3)
-                            {
-                               _isDroppedDown3 = false;
-                            } 
-                            else
-                            {
-                              _isDroppedDown1 = false;
-                              _isDroppedDown2 = false;
-                              _isDroppedDown3 = true;
-                            }
-                          });
-                        },
-                        icon: (_isDroppedDown3? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                      )
-
-
+                                  (_isDroppedDown1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
+                              ],
+                            )
+                            ),                            
+                          ),                   
                         ],
-                      ),                     
+                      ),     
+
+
+                      Visibility(
+                        visible: _isDroppedDown3,
+                        child: Container(
+                          child: Column(
+                            children: <Widget>[
+                              //Line Divider
+                              Container(
+                                color: Colors.white,
+                                height: 2,
+                                width: 250,
+                              ),
+
+                              //Spacer
+                              Container(
+                                height: 20,
+                              ),                                     
+
+                              Container(
+                                color: Colors.orange,
+                                width: 150,
+                                height: 20,
+                              ),
+
+                              //Spacer
+                              Container(
+                                height: 25,
+                              ),
+
+                              Container(
+                                color: Colors.pink,
+                                width: 150,
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ),                     
+                      ),
                     ],  
                   ),
 
@@ -241,7 +401,9 @@ class _NapSettingsState extends State<NapSettings> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SleepDetection.SplashScreen()),
+                                //builder: (context) => SleepDetection.SplashScreen()                                
+                                builder: (context) => TestOutput.NapTracker()
+                                ),
                             );
                     }                 
 
