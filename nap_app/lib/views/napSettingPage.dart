@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../sleep_detection/splash.dart' as SleepDetection;
 
-//import 'napTrackerPage.dart' as NapPage;
-
 class NapSettings extends StatefulWidget
 {
   @override 
