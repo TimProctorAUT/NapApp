@@ -9,9 +9,12 @@ class NapSettings extends StatefulWidget
 }
 
 class _NapSettingsState extends State<NapSettings> {
-  bool _isDroppedDown1 = false;
+  bool _isDroppedDown1 = true;
   bool _isDroppedDown2 = false;
   bool _isDroppedDown3 = false;
+
+  int napLengthValue = 10;
+  int napLimitValue = 20;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +57,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown1? 200 : 50),
+                  height: (_isDroppedDown1? 240 : 50),
                   width: 300,
 
                   child: Column(
@@ -110,32 +113,71 @@ class _NapSettingsState extends State<NapSettings> {
 
                               //Spacer
                               Container(
-                                height: 20,
+                                height: 15,
                               ),                                     
 
                               Container(
-                                color: Colors.red,
-                                width: 150,
-                                height: 20,
-                                child: Row(
+                                //color: Colors.red,
+                                width: 250,
+                                height: 75,
+                                child: Column(
                                   children: <Widget>[
-                                    Text('TIME TO NAP'),                                    
+                                    Text('How Long Would you Like to Nap? '), 
+
+                                    DropdownButton <int>(
+                                      value: napLengthValue,
+                                      onChanged: (int newValue) {
+                                        setState(() {
+                                          napLengthValue = newValue;
+                                          napLimitValue = newValue + 10;
+                                        });
+ 
+                                      },
+                                      
+                                        items: <int>[5, 10, 15, 20]
+                                          .map<DropdownMenuItem<int>>((int value) {
+                                            return DropdownMenuItem<int>(
+                                              value: value,
+                                              child: Text('$value minutes'),
+                                            );
+                                          })
+                                          .toList(),
+                                    )                                
                                   ],
                                 ),
                               ),
 
                               //Spacer
                               Container(
-                                height: 25,
+                                height: 15,
                               ),
 
                               Container(
-                                color: Colors.blue,
-                                width: 150,
-                                height: 20,
-                                child: Row(
+                                //color: Colors.blue,
+                                width: 250,
+                                height: 75,
+                                child: Column(
                                   children: <Widget>[
-                                    Text('LENGTH OF NAP'),                                    
+                                    Text('How Long do you have to try and nap?'),    
+
+                                    DropdownButton <int>(
+                                      value: napLimitValue,
+                                      onChanged: (int newValue) {
+                                        setState(() {
+                                          napLimitValue = newValue;
+                                        });
+ 
+                                      },
+                                      
+                                        items: <int>[(napLengthValue + 5), (napLengthValue + 10), (napLengthValue + 15), (napLengthValue + 20)]
+                                          .map<DropdownMenuItem<int>>((int value) {
+                                            return DropdownMenuItem<int>(
+                                              value: value,
+                                              child: Text('$value minutes'),
+                                            );
+                                          })
+                                          .toList(),
+                                    )                                
                                   ],
                                 ),
                               ),
@@ -402,7 +444,7 @@ class _NapSettingsState extends State<NapSettings> {
                             context,
                             MaterialPageRoute(
                                 //builder: (context) => SleepDetection.SplashScreen()                                
-                                builder: (context) => TestOutput.NapTracker()
+                                builder: (context) => TestOutput.NapTracker(napLength: napLengthValue, napLimit: napLimitValue,)
                                 ),
                             );
                     }                 
