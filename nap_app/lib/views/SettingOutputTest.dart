@@ -6,7 +6,9 @@ class NapTracker extends StatefulWidget
   final int napLength;
   final int napLimit;
 
-  NapTracker({Key key, this.napLength, this.napLimit});
+  final int detectionMethod;
+
+  NapTracker({Key key, this.napLength, this.napLimit, this.detectionMethod});
 
   @override 
   _NapTrackerState createState() => _NapTrackerState();
@@ -28,6 +30,8 @@ class _NapTrackerState extends State<NapTracker> {
               Text("Nap Length: ${widget.napLength}"),
 
               Text('Nap Limit: ${widget.napLimit}'),
+              
+              Text('Detection Method: ${widget.detectionMethod}'),
 
               Container(
                 height: 50,

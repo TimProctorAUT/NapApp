@@ -16,6 +16,8 @@ class _NapSettingsState extends State<NapSettings> {
   int napLengthValue = 10;
   int napLimitValue = 20;
 
+  int detectionMethod = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +119,6 @@ class _NapSettingsState extends State<NapSettings> {
                               ),                                     
 
                               Container(
-                                //color: Colors.red,
                                 width: 250,
                                 height: 75,
                                 child: Column(
@@ -153,7 +154,6 @@ class _NapSettingsState extends State<NapSettings> {
                               ),
 
                               Container(
-                                //color: Colors.blue,
                                 width: 250,
                                 height: 75,
                                 child: Column(
@@ -184,9 +184,7 @@ class _NapSettingsState extends State<NapSettings> {
                             ],
                           ),
                         ),                     
-                      ),
-
-                      
+                      ),                     
                       
                     ],  
                   ),
@@ -223,7 +221,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown2? 200 : 50),
+                  height: (_isDroppedDown2? 240 : 50),
                   width: 300,
 
                   child: Column(
@@ -330,7 +328,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown3? 200 : 50),
+                  height: (_isDroppedDown3? 240 : 50),
                   width: 300,
 
                   child: Column(
@@ -363,14 +361,13 @@ class _NapSettingsState extends State<NapSettings> {
 
                                   Text('Nap Detection', style: TextStyle(color: Colors.white)),
                           
-                                  (_isDroppedDown1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
+                                  (_isDroppedDown3? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
                               ],
                             )
                             ),                            
                           ),                   
                         ],
                       ),     
-
 
                       Visibility(
                         visible: _isDroppedDown3,
@@ -387,12 +384,45 @@ class _NapSettingsState extends State<NapSettings> {
                               //Spacer
                               Container(
                                 height: 20,
-                              ),                                     
+                              ),                        
 
                               Container(
-                                color: Colors.orange,
-                                width: 150,
-                                height: 20,
+                                //color: Colors.orange,
+                                width: 250,
+                                height: 112,
+                                child: Column(
+                                  children: <Widget>[                                    
+                                    Text('Select a Sleep Detection Method:'),
+
+                                    Row(
+                                      children: <Widget>[
+                                        Radio(
+                                          onChanged: (int e) => setDetectionMethod(e),
+                                          activeColor: Colors.green,
+                                          value: 1,
+                                          groupValue: detectionMethod,                                          
+                                        ),
+
+                                        Text('Tap Screen'),
+                                      ],
+                                    ),
+
+                                    Row(
+                                      children: <Widget>[
+                                        Radio(
+                                          onChanged: (int e) => setDetectionMethod(e),
+                                          activeColor: Colors.red,
+                                          value: null,
+                                          groupValue: detectionMethod,                                          
+                                        ),
+
+                                        Text('Drop Phone', style: TextStyle(decoration: TextDecoration.lineThrough),),
+                                      ],
+                                    ),
+
+                                  ],
+                                ),
+
                               ),
 
                               //Spacer
@@ -401,9 +431,31 @@ class _NapSettingsState extends State<NapSettings> {
                               ),
 
                               Container(
-                                color: Colors.pink,
-                                width: 150,
-                                height: 20,
+                                width: 250,
+                                height: 25,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    //Button One
+                                    Container(
+                                      color: Colors.white,
+                                      height: 30,
+                                      width: 150,
+                                      child: MaterialButton(
+                                        child: Text('Test Detection', style: TextStyle(color: Colors.black),),
+                                        onPressed: (){
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => SleepDetection.SplashScreen()                                
+                                                
+                                                ),
+                                            );
+                                        }                 
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -430,7 +482,7 @@ class _NapSettingsState extends State<NapSettings> {
                 
                 //Spacer
                 Container(
-                  height: 60,
+                  height: 15,
                 ),
 
                 Container(
@@ -444,7 +496,7 @@ class _NapSettingsState extends State<NapSettings> {
                             context,
                             MaterialPageRoute(
                                 //builder: (context) => SleepDetection.SplashScreen()                                
-                                builder: (context) => TestOutput.NapTracker(napLength: napLengthValue, napLimit: napLimitValue,)
+                                builder: (context) => TestOutput.NapTracker(napLength: napLengthValue, napLimit: napLimitValue, detectionMethod: detectionMethod,)
                                 ),
                             );
                     }                 
@@ -457,5 +509,16 @@ class _NapSettingsState extends State<NapSettings> {
         ),
       ),
     );
+  }
+
+  //METHODS 
+
+  void setDetectionMethod(int e)
+  {
+    setState((){
+      if (e == 1){detectionMethod = 1;}
+      else if (e == 2){detectionMethod = 2;}
+      else if (e == 3){detectionMethod = 3;}
+    });
   }
 }
