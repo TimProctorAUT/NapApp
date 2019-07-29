@@ -4,6 +4,13 @@ import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
 
 class TapMethod extends StatefulWidget {
+
+  final int napLength;
+  final int napLimit;
+  final int vibrationInterval;
+
+  const TapMethod({Key key, this.napLength, this.napLimit, this.vibrationInterval}):super(key: key);
+
   @override
   _TapMethodState createState() => _TapMethodState();
 }
@@ -22,25 +29,36 @@ enum TapState{
 
 class _TapMethodState extends State<TapMethod> {
 
-  SleepStateAlgorithm _ssa = SleepStateAlgorithm(5); 
+  SleepStateAlgorithm _ssa = SleepStateAlgorithm(); 
   TapState _tapState = TapState.canTap;
   DetectionState _detectState = DetectionState.waiting;
+  int tapCount = 0;
+  int missedTaps = 0;
 
   
-//initstate required to create a timer to set the state of the _tapState bool to false.
+//initstate required to create a periodic timer.
   @override
   void initState() { 
     super.initState();
-      Timer.periodic(Duration(seconds: 5), (timer) {
+    _ssa.printSleepStateDebugOnly();
+      Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 5), (timer) {
         setState(() {
+          //This block of code will run every vibrationInterval (5) seconds.
+          
           if(_tapState == TapState.canTap){
-            _ssa.incrementMissedTapsCount();
+            incrementMissedTapsCount();
           }
           else{
-            _ssa.incrementTapCount();
+            incrementTapCount();
           }
+
+          _ssa.updateAlgorithm(missedTaps);
+
           _tapState = TapState.canTap;
           Vibrate.feedback(FeedbackType.warning);
+          printCount();
+
+          /////////////////////////////////////////////////////////////////////
         });
       }
     );
@@ -56,19 +74,13 @@ class _TapMethodState extends State<TapMethod> {
           case 1: //WAITING
             _detectState = DetectionState.started;
             _ssa.startTimer();
-            print("started");
           break;
 
           case 2: //STARTED
             _detectState = DetectionState.running;
-            print("running");
           break;
 
           case 3: //RUNNING
-            _ssa.incrementTapCount();
-            if(_ssa.missedTaps == 5){
-              _ssa.stopTimer();
-            }
           break;
 
           case 4: //STOPPED
@@ -102,6 +114,18 @@ class _TapMethodState extends State<TapMethod> {
     return -1;
   }
 
+  incrementTapCount(){
+    tapCount++;
+  }
+
+  incrementMissedTapsCount(){
+    missedTaps++;
+  }
+
+  printCount(){
+    print("Missed count: $missedTaps");
+    print("Tap count: $tapCount");
+  }
 
 //WillPopScope requires Future<bool> to handle back button press to terminate nap session.
   Future<bool> _confirmEnd(){
@@ -132,6 +156,7 @@ class _TapMethodState extends State<TapMethod> {
         appBar: AppBar(),
         body: GestureDetector(
           onTap: () => _onSleepDetectionTap(),
+          onDoubleTap: _ssa.forceSleepStateDebugOnly(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,

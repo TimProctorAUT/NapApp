@@ -7,35 +7,54 @@ enum SleepState{
 }
 
 class SleepStateAlgorithm{
-  SleepState sleepState = SleepState.awake;
+  SleepState _sleepState = SleepState.awake;
   int variableTime;
   Stopwatch timeToSleep = Stopwatch();
-  int tapCount = 0;
-  int missedTaps = 0;
+  int missedDetectionEvents;
+
   
-  SleepStateAlgorithm(this.variableTime);
+  SleepStateAlgorithm();
 
   startTimer(){
     timeToSleep.start();
-
-    print("recordTime");
+    print("Timer Started");
   }
 
   stopTimer(){
     timeToSleep.stop();
-
-    print("checkTime");
+    print("Timer Stopped");
     print(timeToSleep.elapsed);
-    sleepState = SleepState.sleeping;
   }
 
-  incrementTapCount(){
-    tapCount++;
-    print("Tap count: $tapCount");
+  updateAlgorithm(int missedDetectionEvents){
+    this.missedDetectionEvents = missedDetectionEvents;
+    print("AlgorithmUpdated");
+    checkStateChangeRequired();
   }
 
-  incrementMissedTapsCount(){
-    missedTaps++;
-    print("Missed count: $missedTaps");
+  checkStateChangeRequired(){
+    print("Chck state");
+    print(this.missedDetectionEvents);
+    print(this._sleepState);
+    if(this.missedDetectionEvents > 5 && _sleepState == SleepState.awake){
+      _sleepState = SleepState.dozing;
+      print("State changed to 'Dozing'");
+    }
+
+    if(this.missedDetectionEvents > 15 && _sleepState == SleepState.dozing){
+      _sleepState = SleepState.sleeping;
+      print("State changed to 'Sleeping'");
+    }
+
+    print("State checked, no update required");
+  }
+
+  //THIS IS FOR DEBUGGING ONLY
+  forceSleepStateDebugOnly(){
+    print("this was called");
+    _sleepState = SleepState.sleeping;
+  }
+  printSleepStateDebugOnly(){
+    print(_sleepState);
   }
 }
