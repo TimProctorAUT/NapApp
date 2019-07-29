@@ -18,6 +18,8 @@ class _NapSettingsState extends State<NapSettings> {
 
   int detectionMethod = 1;
 
+  bool soundSwitch = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +61,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown1? 240 : 50),
+                  height: (_isDroppedDown1? 255 : 50),
                   width: 300,
 
                   child: Column(
@@ -221,7 +223,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown2? 240 : 50),
+                  height: (_isDroppedDown2? 255 : 50),
                   width: 300,
 
                   child: Column(
@@ -277,24 +279,32 @@ class _NapSettingsState extends State<NapSettings> {
 
                               //Spacer
                               Container(
-                                height: 20,
+                                height: 15,
                               ),                                     
 
                               Container(
                                 color: Colors.green,
-                                width: 150,
-                                height: 20,
+                                width: 200,
+                                height: 80,
+                                child: Column(
+                                  children: <Widget>[
+                                    Row(),                                  
+
+                                    Row(),
+                                    
+                                  ],
+                                )
                               ),
 
                               //Spacer
                               Container(
-                                height: 25,
+                                height: 15,
                               ),
 
                               Container(
                                 color: Colors.yellow,
-                                width: 150,
-                                height: 20,
+                                width: 200,
+                                height: 80,
                               ),
                             ],
                           ),
@@ -328,7 +338,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                 Container(
                   color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown3? 240 : 50),
+                  height: (_isDroppedDown3? 255 : 50),
                   width: 300,
 
                   child: Column(
@@ -387,7 +397,6 @@ class _NapSettingsState extends State<NapSettings> {
                               ),                        
 
                               Container(
-                                //color: Colors.orange,
                                 width: 250,
                                 height: 112,
                                 child: Column(
