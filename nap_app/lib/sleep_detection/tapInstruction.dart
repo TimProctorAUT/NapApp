@@ -9,9 +9,11 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-       child: RaisedButton(
-         color: Theme.of(context).primaryColor,
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
+        child: RaisedButton(
+          color: Theme.of(context).primaryColor,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -35,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TapMethod())),
         ),
+      ),
     );
   }
 }

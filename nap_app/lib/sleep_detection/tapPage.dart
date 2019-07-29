@@ -11,12 +11,19 @@ class TapMethod extends StatefulWidget {
 enum DetectionState{
   waiting,
   started,
-  running
+  running,
+  stopped
+}
+
+enum TapState{
+  canTap,
+  waitForTimer
 }
 
 class _TapMethodState extends State<TapMethod> {
-  bool _tapState = false;
-  int _variableTime = 5;
+
+  SleepStateAlgorithm _ssa = SleepStateAlgorithm(5); 
+  TapState _tapState = TapState.canTap;
   DetectionState _detectState = DetectionState.waiting;
 
   
@@ -24,31 +31,77 @@ class _TapMethodState extends State<TapMethod> {
   @override
   void initState() { 
     super.initState();
-      Timer.periodic(Duration(seconds: _variableTime), (timer) {
+      Timer.periodic(Duration(seconds: 5), (timer) {
         setState(() {
-          _tapState == true ? Vibrate.feedback(FeedbackType.warning) : _tapState = false;
-          _tapState = false;
+          if(_tapState == TapState.canTap){
+            _ssa.incrementMissedTapsCount();
+          }
+          else{
+            _ssa.incrementTapCount();
+          }
+          _tapState = TapState.canTap;
+          Vibrate.feedback(FeedbackType.warning);
         });
-      });
+      }
+    );
   }
 
-//method to invoke setstate to change the state of the _tapState bool.
-  void _checkTap(){
+  _onSleepDetectionTap(){
     setState(() {
-      if(_detectState == DetectionState.waiting){
-        _detectState = DetectionState.started;
+      if(_tapState == TapState.canTap){
+        int caseNo = _checkDetectionState();
+        print(caseNo);
+
+        switch(caseNo){
+          case 1: //WAITING
+            _detectState = DetectionState.started;
+            _ssa.startTimer();
+            print("started");
+          break;
+
+          case 2: //STARTED
+            _detectState = DetectionState.running;
+            print("running");
+          break;
+
+          case 3: //RUNNING
+            _ssa.incrementTapCount();
+            if(_ssa.missedTaps == 5){
+              _ssa.stopTimer();
+            }
+          break;
+
+          case 4: //STOPPED
+          break;
+
+          case -1: //NEITHER OF THE OPTIONS
+          break;
+        }
       }
-      _checkSleepState();
-      _tapState = true;
+      else{
+        print("It is not time to tap yet");
+      }
+
+      _tapState = TapState.waitForTimer;
     });
   }
 
-  void _checkSleepState(){
-    if(_detectState == DetectionState.started){
-      SleepStateAlgorithm();
-      _detectState = DetectionState.running;
+  int _checkDetectionState(){
+    if(_detectState == DetectionState.waiting){
+      return 1;
     }
+    if(_detectState == DetectionState.started){
+      return 2;
+    }
+    if(_detectState == DetectionState.running){
+      return 3;
+    }
+    if(_detectState == DetectionState.stopped){
+      return 4;
+    }
+    return -1;
   }
+
 
 //WillPopScope requires Future<bool> to handle back button press to terminate nap session.
   Future<bool> _confirmEnd(){
@@ -73,25 +126,28 @@ class _TapMethodState extends State<TapMethod> {
 //Column returned to the main dart file to build a UI for the tap-testing.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: WillPopScope(
-        onWillPop: _confirmEnd,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              onTap: () => _checkTap(),
-              //Container Child is WIP - to detect taps (currently can only tap on the word)
-              child: Container(
-                decoration: BoxDecoration(
-                  //border: Border.all(color: Colors.white, width: 2.0)
-                ),
-                //padding: EdgeInsets.all(200),
-                alignment: Alignment.center,
-                child: _tapState == true ? Text("") : Text("Tap", style: TextStyle(fontSize: 40),),
-              )
-            )
-          ],
+    return WillPopScope(
+      onWillPop: _confirmEnd,
+      child: Scaffold(
+        appBar: AppBar(),
+        body: GestureDetector(
+          onTap: () => _onSleepDetectionTap(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(
+                height: 600,
+                child: SafeArea(
+                  child: Container(
+                    color: Colors.red,
+                    child: _tapState == TapState.waitForTimer ? Text("") : Text("Tap", style: TextStyle(fontSize: 40), textAlign: TextAlign.center,),
+                    alignment: Alignment(0.0, 0.0),
+                  ),
+                )
+              ),
+            ],
+          )
         ),
       ),
     );

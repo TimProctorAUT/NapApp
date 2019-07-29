@@ -28,7 +28,7 @@ class _NapAppState extends State<NapApp> {
 
           textTheme: TextTheme(
             title: TextStyle(color: Colors.white, fontSize: 50, ),
-            body1: TextStyle(color: Colors.white, fontSize: 25)
+            body1: TextStyle(color: Colors.white, fontSize: 12)
           )
           
 
