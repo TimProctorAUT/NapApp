@@ -38,11 +38,11 @@ class _NapSettingsState extends State<NapSettings> {
       ),
 
       body: Card(
-        color: Colors.black,
+        color: Color.fromRGBO(18, 18, 18, 1),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Column(
+            Column( 
               children: <Widget>[            
                 Container(
                   height: 30,
