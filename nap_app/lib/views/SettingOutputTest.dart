@@ -1,3 +1,4 @@
+import 'package:first_app/views/napSettingPage.dart';
 import 'package:flutter/material.dart';
 import '../sleep_detection/splash.dart' as SleepDetection;
 
@@ -6,7 +7,12 @@ class NapTracker extends StatefulWidget
   final int napLength;
   final int napLimit;
 
-  NapTracker({Key key, this.napLength, this.napLimit});
+  final DETECTION_METHODS detectionMethod;
+  final AUDIO_SETTINGS audioAssistOption;
+  final bool soundSwitch;
+  final bool vibrateSwitch;
+
+  NapTracker({Key key, this.napLength, this.napLimit, this.detectionMethod, this.audioAssistOption, this.soundSwitch, this.vibrateSwitch});
 
   @override 
   _NapTrackerState createState() => _NapTrackerState();
@@ -29,6 +35,14 @@ class _NapTrackerState extends State<NapTracker> {
               Text("Nap Length: ${widget.napLength}"),
 
               Text('Nap Limit: ${widget.napLimit}'),
+              
+              Text('Detection Method: ${widget.detectionMethod}'),
+
+              Text('Audio Assist Option: ${widget.audioAssistOption}'),
+              
+              Text('Sound Switch: ${widget.soundSwitch}'),
+              
+              Text('Vibrate Switch: ${widget.vibrateSwitch}'),
 
               //Buffer
               Container(height:20),
