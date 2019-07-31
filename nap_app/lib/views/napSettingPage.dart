@@ -554,13 +554,13 @@ class _NapSettingsState extends State<NapSettings> {
                                       child: MaterialButton(
                                         child: Text('Test Detection', style: TextStyle(color: Colors.black),),
                                         onPressed: (){
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //       builder: (context) => SleepDetection.SplashScreen()                                
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => SleepDetection.SplashScreen()                                
                                                 
-                                          //       ),
-                                          //   );
+                                                ),
+                                            );
                                         }                 
                                       ),
                                     ),
@@ -745,8 +745,7 @@ class _NapSettingsState extends State<NapSettings> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                //builder: (context) => SleepDetection.SplashScreen()                                
-
+                                //builder: (context) => SleepDetection.SplashScreen()                              
                                 builder: (context) => TestOutput.NapTracker(napLength: napLengthValue, napLimit: napLimitValue, detectionMethod: detectionMethod, audioAssistOption: audioAssistOption, soundSwitch: soundSwitch, vibrateSwitch: vibrateSwitch,)
                                 ),
                             );
