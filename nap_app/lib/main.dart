@@ -28,17 +28,7 @@ class _NapAppState extends State<NapApp> {
         scaffoldBackgroundColor: Color.fromRGBO(18, 18, 18, 1),
         cardColor: Color.fromRGBO(18, 18, 18, 0.8),
 
-        //Text Themes
-
-        fontFamily: "Montserrat",
-
-        textTheme: TextTheme(
-          title: TextStyle(color: Colors.white, fontSize: 50, ),
-          body1: TextStyle(color: Colors.white, fontSize: 12)
-        )
-        
-
-      ),
+        ),
       home:  HomePage.HomeScreen());
   }
 }
