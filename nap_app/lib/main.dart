@@ -28,6 +28,7 @@ class _NapAppState extends State<NapApp> {
         scaffoldBackgroundColor: Color.fromRGBO(18, 18, 18, 1),
         cardColor: Color.fromRGBO(18, 18, 18, 0.8),
 
+        brightness: Brightness.dark
         ),
       home:  HomePage.HomeScreen());
   }
