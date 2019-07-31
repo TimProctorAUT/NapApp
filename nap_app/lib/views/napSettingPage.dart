@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../sleep_detection/splash.dart' as SleepDetection;
+//import '../sleep_detection/splash.dart' as SleepDetection;
 import '../views/SettingOutputTest.dart' as TestOutput;
 
 enum AUDIO_SETTINGS{no_sound, white_noise, breathing_exercise}
@@ -557,13 +557,13 @@ class _NapSettingsState extends State<NapSettings> {
                                       child: MaterialButton(
                                         child: Text('Test Detection', style: TextStyle(color: Colors.black),),
                                         onPressed: (){
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => SleepDetection.SplashScreen()                                
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //       builder: (context) => SleepDetection.SplashScreen()                                
                                                 
-                                                ),
-                                            );
+                                          //       ),
+                                          //   );
                                         }                 
                                       ),
                                     ),

@@ -1,6 +1,6 @@
 import 'package:first_app/views/napSettingPage.dart';
 import 'package:flutter/material.dart';
-import '../sleep_detection/splash.dart' as SleepDetection;
+//import '../sleep_detection/splash.dart' as SleepDetection;
 
 class NapTracker extends StatefulWidget
 {
@@ -54,12 +54,12 @@ class _NapTrackerState extends State<NapTracker> {
                   child:  MaterialButton(
                       child: Text('Parse To Nap Tracker'),
                       onPressed: () {            
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                              builder: (context) => SleepDetection.SplashScreen()                                
-                              //builder: (context) => TestOutput.NapTracker()
-                              ),
-                          );
+                        // Navigator.push(context,
+                        //   MaterialPageRoute(
+                        //       //builder: (context) => SleepDetection.SplashScreen()                                
+                        //       //builder: (context) => TestOutput.NapTracker()
+                        //       ),
+                        //   );
                       },
                     ),
                 ),
