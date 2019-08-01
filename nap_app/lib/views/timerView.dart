@@ -1,8 +1,16 @@
+import 'package:first_app/views/testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
 class NapTimer extends StatefulWidget {
+
+//Change this if you want/need to.
+//Was added to show Brian functionality of alarm for meeting.
+  final int napLength;
+  NapTimer({this.napLength});
+//////////////////////////////////
+
   @override
   _NapTimerState createState() => _NapTimerState();
 }
@@ -37,10 +45,10 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   String get timerString {
     Duration duration = controller.duration * controller.value;
 
-    if(duration.inSeconds == 1.0)
+    if(duration.inSeconds == 1)
     {
       FlutterRingtonePlayer.playAlarm(volume: 1.0, looping: true);
-      
+
     }
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
@@ -50,7 +58,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 10),
+      duration: Duration(seconds: this.widget.napLength),
     );
   }
 
@@ -58,7 +66,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      body: Padding(
+        body: Padding(
         padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,7 +119,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
             ),
             Container(
               margin: EdgeInsets.all(8.0),
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FloatingActionButton(
@@ -128,12 +136,16 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                         controller.stop();
                       else {
                         controller.reverse(
-                            from: controller.value == 0.0
-                                ? 1.0
-                                : controller.value);
+                          from: controller.value == 0.0
+                            ? 1.0
+                            : controller.value);
                       }
                     },
-                  )
+                  ),
+                  FlatButton(
+                    child: Text("See Summary"),
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'))
+                  ),
                 ],
               ),
             )
@@ -143,7 +155,6 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     );
   }
 }
-
 
 class TimerPainter extends CustomPainter {
   TimerPainter({
@@ -175,8 +186,4 @@ class TimerPainter extends CustomPainter {
         color != old.color ||
         backgroundColor != old.backgroundColor;
   }
-
-  
-
-
 }

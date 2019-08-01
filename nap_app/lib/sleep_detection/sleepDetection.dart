@@ -10,8 +10,9 @@ class SleepStateAlgorithm{
   Stopwatch timeToSleep = Stopwatch();
   int missedDetectionEvents;
   bool isSleeping = false;
-  
-  SleepStateAlgorithm();
+  bool napLimitReached = false;
+  int napLimit;
+  int napLength;
 
   startTimer(){
     timeToSleep.start();
@@ -24,14 +25,19 @@ class SleepStateAlgorithm{
     print(timeToSleep.elapsed);
   }
 
+  setNapInformation(napLimit, napLength){
+    napLimit = this.napLimit;
+    napLength = this.napLength;
+  }
+
   updateAlgorithm(int missedDetectionEvents){
     this.missedDetectionEvents = missedDetectionEvents;
-    print("AlgorithmUpdated");
+    print("Algorithm Updated");
     checkStateChangeRequired();
   }
 
   checkStateChangeRequired(){
-    print("Chck state");
+    print("Check state");
     print(this.missedDetectionEvents);
     print(this._sleepState);
     if(this.missedDetectionEvents > 2 && _sleepState == SleepState.awake){
@@ -47,6 +53,10 @@ class SleepStateAlgorithm{
     if(_sleepState == SleepState.sleeping){
       isSleeping = true;
     }
+
+    // if((timeToSleep.elapsed.inSeconds + napLength) >= (napLimit)){
+    //   napLimitReached = true;
+    // }
 
     print("State checked, no update required");
   }
