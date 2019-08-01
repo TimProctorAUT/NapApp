@@ -13,6 +13,9 @@ class _PastNapsState extends State<PastNaps> {
       appBar: AppBar(
         title: Text('Past Naps'),
       ),
+      body: Center (
+        child: Text ("your Napp summary"),
+      )
     );
   }
 }
