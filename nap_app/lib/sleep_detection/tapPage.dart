@@ -1,3 +1,4 @@
+import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
@@ -54,6 +55,10 @@ class _TapMethodState extends State<TapMethod> {
 
           _ssa.updateAlgorithm(missedTaps);
 
+          if(_ssa.isSleeping){
+            _navigateToAlarm();
+          }
+
           _tapState = TapState.canTap;
           Vibrate.feedback(FeedbackType.warning);
           printCount();
@@ -62,6 +67,10 @@ class _TapMethodState extends State<TapMethod> {
         });
       }
     );
+  }
+
+  _navigateToAlarm(){
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer()), ModalRoute.withName('/'));
   }
 
   _onSleepDetectionTap(){
@@ -156,7 +165,6 @@ class _TapMethodState extends State<TapMethod> {
         appBar: AppBar(),
         body: GestureDetector(
           onTap: () => _onSleepDetectionTap(),
-          onDoubleTap: _ssa.forceSleepStateDebugOnly(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
