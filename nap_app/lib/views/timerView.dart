@@ -58,7 +58,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: this.widget.napLength),
+      duration: Duration(minutes: this.widget.napLength),
     );
   }
 
