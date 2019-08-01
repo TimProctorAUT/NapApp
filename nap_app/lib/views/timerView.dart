@@ -45,10 +45,10 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   String get timerString {
     Duration duration = controller.duration * controller.value;
 
-    if(duration.inSeconds == 1)
+    if(duration.inSeconds == 1.0)
     {
       FlutterRingtonePlayer.playAlarm(volume: 1.0, looping: true);
-
+      
     }
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
@@ -66,7 +66,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-        body: Padding(
+      body: Padding(
         padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
