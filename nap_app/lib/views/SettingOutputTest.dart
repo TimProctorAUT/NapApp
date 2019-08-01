@@ -59,7 +59,7 @@ class _NapTrackerState extends State<NapTracker> {
 
                         Navigator.push(context,
                           MaterialPageRoute(
-                              builder: (context) => SleepDetection.SplashScreen()                                
+                              builder: (context) => SleepDetection.SplashScreen(napLength: widget.napLength, napLimit: widget.napLimit,)                                
                               //builder: (context) => TestOutput.NapTracker()
                               ),
                           );
