@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../sleep_detection/splash.dart' as SleepDetection;
+import '../sleep_detection/tapInstruction.dart' as SleepDetection;
 import '../views/SettingOutputTest.dart' as TestOutput;
 
 enum AUDIO_SETTINGS{no_sound, white_noise, breathing_exercise}
@@ -197,7 +197,7 @@ class _NapSettingsState extends State<NapSettings> {
                             ],
                           ),
                         ),                     
-                      ),                     
+                      ),
                       
                     ],  
                   ),
@@ -227,8 +227,6 @@ class _NapSettingsState extends State<NapSettings> {
                     ],
                   )
                 ),
-               
-
                 //===========================================================Alarm Settings===================================================================//
 
                 Container(
@@ -287,7 +285,6 @@ class _NapSettingsState extends State<NapSettings> {
                                 height: 2,
                                 width: 250,
                               ),
-
                               Container(
                                 //color: Colors.green,
                                 width: 200,
@@ -748,7 +745,7 @@ class _NapSettingsState extends State<NapSettings> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                //builder: (context) => SleepDetection.SplashScreen()                                
+                                //builder: (context) => SleepDetection.SplashScreen()                              
                                 builder: (context) => TestOutput.NapTracker(napLength: napLengthValue, napLimit: napLimitValue, detectionMethod: detectionMethod, audioAssistOption: audioAssistOption, soundSwitch: soundSwitch, vibrateSwitch: vibrateSwitch,)
                                 ),
                             );
