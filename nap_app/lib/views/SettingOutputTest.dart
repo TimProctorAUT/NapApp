@@ -1,15 +1,15 @@
 
 import 'package:flutter/material.dart';
 import '../sleep_detection/tapInstruction.dart' as SleepDetection;
-import 'package:first_app/views/napSettingPage.dart';
+//import 'package:first_app/views/napSettingPage.dart';
 
 class NapTracker extends StatefulWidget
 {
   final int napLength;
   final int napLimit;
   
-  final DETECTION_METHODS detectionMethod;
-  final AUDIO_SETTINGS audioAssistOption;
+  final int detectionMethod;
+  final int audioAssistOption;
   final bool soundSwitch;
   final bool vibrateSwitch;
 
