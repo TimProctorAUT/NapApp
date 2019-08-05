@@ -1,3 +1,5 @@
+import 'package:first_app/views/testDataPage.dart';
+import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
@@ -28,7 +30,6 @@ enum TapState{
 }
 
 class _TapMethodState extends State<TapMethod> {
-
   SleepStateAlgorithm _ssa = SleepStateAlgorithm(); 
   TapState _tapState = TapState.canTap;
   DetectionState _detectState = DetectionState.waiting;
@@ -40,28 +41,46 @@ class _TapMethodState extends State<TapMethod> {
   @override
   void initState() { 
     super.initState();
-    _ssa.printSleepStateDebugOnly();
       Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 5), (timer) {
-        setState(() {
-          //This block of code will run every vibrationInterval (5) seconds.
-          
-          if(_tapState == TapState.canTap){
-            incrementMissedTapsCount();
-          }
-          else{
-            incrementTapCount();
-          }
+        if(this.mounted){
+            setState(() {
+              //This block of code will run every vibrationInterval (5) seconds.
+              _ssa.setNapInformation(this.widget.napLimit, this.widget.napLength);
 
-          _ssa.updateAlgorithm(missedTaps);
+              if(_tapState == TapState.canTap){
+                incrementMissedTapsCount();
+              }
+              else{
+                incrementTapCount();
+              }
 
-          _tapState = TapState.canTap;
-          Vibrate.feedback(FeedbackType.warning);
-          printCount();
+              _ssa.updateAlgorithm(missedTaps);
 
-          /////////////////////////////////////////////////////////////////////
-        });
+              if(_ssa.isSleeping){
+                _navigateToAlarm();
+              }
+
+              if(_ssa.napLimitReached){
+                _navigateToEnd();
+              }
+
+              _tapState = TapState.canTap;
+              Vibrate.feedback(FeedbackType.warning);
+              printCount();
+
+              /////////////////////////////////////////////////////////////////////
+            });
+        }
       }
     );
+  }
+
+  _navigateToAlarm(){
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength,)), ModalRoute.withName('/'));
+  }
+
+  _navigateToEnd(){
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
   }
 
   _onSleepDetectionTap(){
@@ -156,7 +175,6 @@ class _TapMethodState extends State<TapMethod> {
         appBar: AppBar(),
         body: GestureDetector(
           onTap: () => _onSleepDetectionTap(),
-          onDoubleTap: _ssa.forceSleepStateDebugOnly(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
