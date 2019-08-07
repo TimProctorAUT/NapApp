@@ -23,6 +23,7 @@ dependencies:
   # Add all 3rd party dependencies required for R&D project below
   vibrate: ^0.0.4
   flutter_ringtone_player: ^1.0.3
+  audioplayers: ^0.13.1
   # End of R&D project dependencies
 
 
@@ -53,6 +54,7 @@ flutter:
     - assets/about_icon.png
     - assets/graph_icon.png
     - assets/exit_icon.png
+    - assets/test.mp3
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -60,13 +60,4 @@ class SleepStateAlgorithm{
 
     print("State checked, no update required");
   }
-
-  //THIS IS FOR DEBUGGING ONLY
-  forceSleepStateDebugOnly(){
-    print("this was called");
-    _sleepState = SleepState.sleeping;
-  }
-  printSleepStateDebugOnly(){
-    print(_sleepState);
-  }
 }

@@ -1,9 +1,11 @@
+import 'package:audioplayers/audio_cache.dart';
 import 'package:first_app/views/testDataPage.dart';
 import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
+import 'package:audioplayers/audioplayers.dart';
 
 class TapMethod extends StatefulWidget {
 
@@ -37,21 +39,25 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   int missedTaps = 0;
   Timer _timer;
   bool _firstTap = true;
+  static AudioPlayer _audioPlayer = AudioPlayer();
+  static AudioCache _audioCache = AudioCache(fixedPlayer: _audioPlayer);
 
   
-//initstate required to create a periodic timer.
+//initstate allows any code to be run on load of this page.
   @override
   void initState() { 
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
 
+//dispose allows any code to be run before the instance of this page is disposed.
   @override
   void dispose(){
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
+//didChangeAppLifeCycleState allows any code to be run when the app is paused (minimized) or resumed.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state){
     super.didChangeAppLifecycleState(state);
@@ -76,6 +82,8 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
     }
   }
 
+//Starts the vibrate timer.
+//Contains all code run on every timer tick.
   _startTimer(){
     _timer = Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 5), (timer) {
       setState(() {
@@ -109,23 +117,47 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
     print("timer started");
   }
 
+//Stops the vibrate timer.
   _stopTimer(){
     _timer.cancel();
     print("timer stopped");
   }
 
+//Called when wanting to navigate to the alarm.
   _navigateToAlarm(){
     _stopTimer();
+    _stopAudio();
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength,)), ModalRoute.withName('/'));
   }
 
+//Called when the alarm is not needed and wanting to navigate to the summary page.
   _navigateToEnd(){
     _stopTimer();
+    _stopAudio();
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
   }
 
+_playAudio() async{
+  _audioCache.play('test.mp3');
+}
+
+_stopAudio(){
+_audioCache.fixedPlayer.stop();
+}
+
+_pauseAudio(){
+  _audioCache.fixedPlayer.pause();
+}
+
+_resumeAudio(){
+  _audioCache.fixedPlayer.resume();
+}
+
+//Called everytime the user taps the screen.
   _onSleepDetectionTap(){
     setState(() {
+
+      _playAudio();
 
       if(_firstTap){
         _firstTap = false;
@@ -150,6 +182,8 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
           break;
 
           case 4: //STOPPED
+            _detectState = DetectionState.running;
+            _resumeAudio();
           break;
 
           case -1: //NEITHER OF THE OPTIONS
@@ -164,6 +198,7 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
     });
   }
 
+//Returns number 0~4 to indicate current detection state.
   int _checkDetectionState(){
     if(_detectState == DetectionState.waiting){
       return 1;
@@ -195,6 +230,8 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 
 //WillPopScope requires Future<bool> to handle back button press to terminate nap session.
   Future<bool> _confirmEnd(){
+    _pauseAudio();
+    _detectState = DetectionState.stopped;
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
