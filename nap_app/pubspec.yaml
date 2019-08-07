@@ -1,4 +1,4 @@
-name: nap_app
+name: first_app
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -20,6 +20,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Add all 3rd party dependencies required for R&D project below
+  vibrate: ^0.0.4
+  flutter_ringtone_player: ^1.0.3
+  # End of R&D project dependencies
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -30,7 +36,7 @@ dev_dependencies:
 
 
 # For information on the generic Dart part of this file, see the
-# following page: https://www.dartlang.org/tools/pub/pubspec
+# following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
@@ -41,8 +47,12 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
+  assets:
+    - assets/nap_icon.png
+    - assets/sleep_icon.png
+    - assets/about_icon.png
+    - assets/graph_icon.png
+    - assets/exit_icon.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
