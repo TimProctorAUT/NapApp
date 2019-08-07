@@ -29,62 +29,109 @@ enum TapState{
   waitForTimer
 }
 
-class _TapMethodState extends State<TapMethod> {
+class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   SleepStateAlgorithm _ssa = SleepStateAlgorithm(); 
   TapState _tapState = TapState.canTap;
   DetectionState _detectState = DetectionState.waiting;
   int tapCount = 0;
   int missedTaps = 0;
+  Timer _timer;
+  bool _firstTap = true;
 
   
 //initstate required to create a periodic timer.
   @override
   void initState() { 
     super.initState();
-      Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 5), (timer) {
-        if(this.mounted){
-            setState(() {
-              //This block of code will run every vibrationInterval (5) seconds.
-              _ssa.setNapInformation(this.widget.napLimit, this.widget.napLength);
+    WidgetsBinding.instance.addObserver(this);
+  }
 
-              if(_tapState == TapState.canTap){
-                incrementMissedTapsCount();
-              }
-              else{
-                incrementTapCount();
-              }
+  @override
+  void dispose(){
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
-              _ssa.updateAlgorithm(missedTaps);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state){
+    super.didChangeAppLifecycleState(state);
+    switch(state){
+      case AppLifecycleState.paused:
+        print("paused");
+        _stopTimer();
+        break;
 
-              if(_ssa.isSleeping){
-                _navigateToAlarm();
-              }
+      case AppLifecycleState.resumed:
+        print("resumed");
+        _startTimer();
+        break;
 
-              if(_ssa.napLimitReached){
-                _navigateToEnd();
-              }
+      case AppLifecycleState.inactive:
+        print("inactive");
+        break;
 
-              _tapState = TapState.canTap;
-              Vibrate.feedback(FeedbackType.warning);
-              printCount();
+      case AppLifecycleState.suspending:
+        print("suspending");
+        break;
+    }
+  }
 
-              /////////////////////////////////////////////////////////////////////
-            });
+  _startTimer(){
+    _timer = Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 5), (timer) {
+      setState(() {
+        //This block of code will run every vibrationInterval (5) seconds.
+        _ssa.setNapInformation(this.widget.napLimit, this.widget.napLength);
+
+        if(_tapState == TapState.canTap){
+          incrementMissedTapsCount();
         }
-      }
-    );
+        else{
+          incrementTapCount();
+        }
+
+        _ssa.updateAlgorithm(missedTaps);
+
+        if(_ssa.isSleeping){
+          _navigateToAlarm();
+        }
+
+        if(_ssa.napLimitReached){
+          _navigateToEnd();
+        }
+
+        _tapState = TapState.canTap;
+        Vibrate.feedback(FeedbackType.warning);
+        printCount();
+        /////////////////////////////////////////////////////////////////////
+      });
+    });
+
+    print("timer started");
+  }
+
+  _stopTimer(){
+    _timer.cancel();
+    print("timer stopped");
   }
 
   _navigateToAlarm(){
+    _stopTimer();
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength,)), ModalRoute.withName('/'));
   }
 
   _navigateToEnd(){
+    _stopTimer();
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
   }
 
   _onSleepDetectionTap(){
     setState(() {
+
+      if(_firstTap){
+        _firstTap = false;
+        _startTimer();
+      }
+      
       if(_tapState == TapState.canTap){
         int caseNo = _checkDetectionState();
         print(caseNo);
@@ -184,7 +231,7 @@ class _TapMethodState extends State<TapMethod> {
                 child: SafeArea(
                   child: Container(
                     color: Colors.red,
-                    child: _tapState == TapState.waitForTimer ? Text("") : Text("Tap", style: TextStyle(fontSize: 40), textAlign: TextAlign.center,),
+                    child: _tapState == TapState.waitForTimer ? Text("Wait") : Text("Tap", style: TextStyle(fontSize: 40), textAlign: TextAlign.center,),
                     alignment: Alignment(0.0, 0.0),
                   ),
                 )
