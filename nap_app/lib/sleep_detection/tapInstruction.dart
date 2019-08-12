@@ -41,7 +41,9 @@ class _SplashScreenState extends State<SplashScreen> {
               ],
             ),
           ),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TapMethod(napLength: widget.napLength, napLimit: widget.napLimit))),
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: 
+          (BuildContext context) => 
+          TapMethod(napLength: widget.napLength, napLimit: widget.napLimit /*napLength: 4, napLimit: 5,*/))),
         ),
       ),
     );

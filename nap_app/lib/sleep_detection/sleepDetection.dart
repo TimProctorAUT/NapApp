@@ -6,46 +6,57 @@ enum SleepState{
 
 class SleepStateAlgorithm{
   SleepState _sleepState = SleepState.awake;
-  int variableTime;
   Stopwatch timeToSleep = Stopwatch();
   int missedDetectionEvents;
   bool isSleeping = false;
   bool napLimitReached = false;
-  int napLimit;
-  int napLength;
+  int _napLimit = 0;
+  int _napLength = 0;
 
   startTimer(){
     timeToSleep.start();
-    print("Timer Started");
+    print("Sleeping Elapsed Timer Started");
   }
 
   stopTimer(){
     timeToSleep.stop();
-    print("Timer Stopped");
-    print(timeToSleep.elapsed);
+    print("Sleeping Elapsed Timer Stopped");
+    print("Sleep Detection Elapsed Time: ${timeToSleep.elapsed.inSeconds}");
   }
 
-  setNapInformation(napLimit, napLength){
-    napLimit = this.napLimit;
-    napLength = this.napLength;
+  setNapInformation(int napLimit, int napLength){
+    _napLimit = napLimit;
+    _napLength = napLength;
   }
 
   updateAlgorithm(int missedDetectionEvents){
     this.missedDetectionEvents = missedDetectionEvents;
     print("Algorithm Updated");
+    calcTimeBeforeEndDetection();
     checkStateChangeRequired();
   }
 
+  calcTimeBeforeEndDetection(){
+    int napLengthInSeconds = _napLength * 60;
+    int napLimitInSeconds = _napLimit * 60;
+    int addElapsedAndTotalLength = timeToSleep.elapsed.inSeconds + napLengthInSeconds;
+    double percentOfRemainingTime = addElapsedAndTotalLength / napLimitInSeconds;
+    print("Total: $percentOfRemainingTime");
+
+    if(percentOfRemainingTime > 1.0){
+      napLimitReached = true;
+    }
+  }
+
   checkStateChangeRequired(){
-    print("Check state");
-    print(this.missedDetectionEvents);
-    print(this._sleepState);
+    print("Checking current sleep state");
+    print("Current State: ${this._sleepState}");
     if(this.missedDetectionEvents > 2 && _sleepState == SleepState.awake){
       _sleepState = SleepState.dozing;
       print("State changed to 'Dozing'");
     }
 
-    if(this.missedDetectionEvents > 3 && _sleepState == SleepState.dozing){
+    if(this.missedDetectionEvents > 10 && _sleepState == SleepState.dozing){
       _sleepState = SleepState.sleeping;
       print("State changed to 'Sleeping'");
     }
@@ -53,10 +64,6 @@ class SleepStateAlgorithm{
     if(_sleepState == SleepState.sleeping){
       isSleeping = true;
     }
-
-    // if((timeToSleep.elapsed.inSeconds + napLength) >= (napLimit)){
-    //   napLimitReached = true;
-    // }
 
     print("State checked, no update required");
   }

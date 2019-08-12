@@ -1,4 +1,5 @@
 import 'package:audioplayers/audio_cache.dart';
+import 'package:first_app/views/napSettingPage.dart';
 import 'package:first_app/views/testDataPage.dart';
 import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
@@ -6,18 +7,6 @@ import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
 import 'package:audioplayers/audioplayers.dart';
-
-class TapMethod extends StatefulWidget {
-
-  final int napLength;
-  final int napLimit;
-  final int vibrationInterval;
-
-  const TapMethod({Key key, this.napLength, this.napLimit, this.vibrationInterval}):super(key: key);
-
-  @override
-  _TapMethodState createState() => _TapMethodState();
-}
 
 enum DetectionState{
   waiting,
@@ -31,6 +20,19 @@ enum TapState{
   waitForTimer
 }
 
+class TapMethod extends StatefulWidget {
+
+  final int napLength;
+  final int napLimit;
+  final int vibrationInterval;
+  final String selectedAudio;
+
+  const TapMethod({Key key, this.napLength, this.napLimit, this.vibrationInterval, this.selectedAudio}):super(key: key);
+
+  @override
+  _TapMethodState createState() => _TapMethodState();
+}
+
 class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   SleepStateAlgorithm _ssa = SleepStateAlgorithm(); 
   TapState _tapState = TapState.canTap;
@@ -41,6 +43,8 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   bool _firstTap = true;
   static AudioPlayer _audioPlayer = AudioPlayer();
   static AudioCache _audioCache = AudioCache(fixedPlayer: _audioPlayer);
+  int loopCount = 0;
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
   
 //initstate allows any code to be run on load of this page.
@@ -85,8 +89,9 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 //Starts the vibrate timer.
 //Contains all code run on every timer tick.
   _startTimer(){
-    _timer = Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 5), (timer) {
+    _timer = Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 10), (timer) {
       setState(() {
+        print("~~~~~~~~~~ Loop No. $loopCount ~~~~~~~~~~");
         //This block of code will run every vibrationInterval (5) seconds.
         _ssa.setNapInformation(this.widget.napLimit, this.widget.napLength);
 
@@ -104,12 +109,14 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
         }
 
         if(_ssa.napLimitReached){
-          _navigateToEnd();
+          _navigateToAlarm();
         }
-
+        
         _tapState = TapState.canTap;
         Vibrate.feedback(FeedbackType.warning);
         printCount();
+        loopCount++;
+        print("~~~~~~~~~~ END LOOP ~~~~~~~~~~");
         /////////////////////////////////////////////////////////////////////
       });
     });
@@ -124,11 +131,12 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   }
 
 //Called when wanting to navigate to the alarm.
-  _navigateToAlarm(){
-    _stopTimer();
-    _stopAudio();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength,)), ModalRoute.withName('/'));
-  }
+_navigateToAlarm(){
+  _stopTimer();
+  _stopAudio();
+  _ssa.stopTimer();
+  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength,)), ModalRoute.withName('/'));
+}
 
 //Called when the alarm is not needed and wanting to navigate to the summary page.
   _navigateToEnd(){
@@ -137,21 +145,21 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
   }
 
-_playAudio() async{
-  _audioCache.play('test.mp3');
-}
+  _playAudio() async{
+    _audioCache.play('test.mp3');
+  }
 
-_stopAudio(){
-_audioCache.fixedPlayer.stop();
-}
+  _stopAudio(){
+  _audioCache.fixedPlayer.stop();
+  }
 
-_pauseAudio(){
-  _audioCache.fixedPlayer.pause();
-}
+  _pauseAudio(){
+    _audioCache.fixedPlayer.pause();
+  }
 
-_resumeAudio(){
-  _audioCache.fixedPlayer.resume();
-}
+  _resumeAudio(){
+    _audioCache.fixedPlayer.resume();
+  }
 
 //Called everytime the user taps the screen.
   _onSleepDetectionTap(){
@@ -166,7 +174,6 @@ _resumeAudio(){
       
       if(_tapState == TapState.canTap){
         int caseNo = _checkDetectionState();
-        print(caseNo);
 
         switch(caseNo){
           case 1: //WAITING
@@ -240,7 +247,7 @@ _resumeAudio(){
           FlatButton(
             child: Text("Yes"),
             onPressed: () => Navigator.pop(context, true),
-          ),
+            ),
           FlatButton(
             child: Text("No"),
             onPressed: () => Navigator.pop(context, false),
