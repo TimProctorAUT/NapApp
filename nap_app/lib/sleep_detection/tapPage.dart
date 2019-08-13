@@ -76,11 +76,11 @@ class _TapMethodState extends State<TapMethod> {
   }
 
   _navigateToAlarm(){
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength,)), ModalRoute.withName('/'));
+    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength, napLimit: widget.napLimit)));
   }
 
   _navigateToEnd(){
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
+    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TestData(napLength: widget.napLength, napLimit:widget.napLimit)));
   }
 
   _onSleepDetectionTap(){
