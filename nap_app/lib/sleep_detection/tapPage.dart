@@ -80,7 +80,7 @@ class _TapMethodState extends State<TapMethod> {
   }
 
   _navigateToEnd(){
-    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TestData(napLength: widget.napLength, napLimit:widget.napLimit)));
+    //Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TestData(napLength: widget.napLength, napLimit:widget.napLimit)));
   }
 
   _onSleepDetectionTap(){
