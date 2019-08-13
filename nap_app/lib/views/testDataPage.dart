@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:first_app/views/napSettingPage.dart';
+
 
 class TestData extends StatefulWidget
 {
@@ -18,16 +19,31 @@ class _TestDataPageState extends State<TestData> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
+       
+      title: 'NapApp Menu Tests',
+      theme: ThemeData(
+        //Colors
+        primaryColor: Color.fromRGBO(18, 18, 18, 1),
+        scaffoldBackgroundColor: Color.fromRGBO(18, 18, 18, 1),
+        cardColor: Color.fromRGBO(18, 18, 18, 0.8),
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: Text('Nap Summary'),
           
         ),
-        body: Center(
-        child: Text("Your nap Length is: ${widget.napLength}"),
+             body: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Text("Your nap Length is: ${widget.napLength}"),
+              Text("Your nap Length is: ${widget.napLimit}"),
+            ]
         )
+        ]
         ),
-      );
+      ),
+    );
   }
 }
