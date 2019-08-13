@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
+import 'donatePage.dart' as DonatePage;
 
 class HomeScreen extends StatefulWidget
 {
@@ -167,7 +168,9 @@ class _HomeScreenState  extends State<HomeScreen> {
                   color: Color.fromRGBO(18, 18, 18, 1),
                   padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                   child: Text('Keep us Free'),
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => DonatePage.DonatePage()),); 
+                  },
                 ),
       ),
       ),
