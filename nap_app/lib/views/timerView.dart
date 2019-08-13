@@ -7,8 +7,11 @@ class NapTimer extends StatefulWidget {
 
 //Change this if you want/need to.
 //Was added to show Brian functionality of alarm for meeting.
-  final int napLength;
-  NapTimer({this.napLength});
+ final int napLength;
+  final int napLimit;
+  final int vibrationInterval;
+
+  const NapTimer({Key key, this.napLength, this.napLimit, this.vibrationInterval}):super(key: key);
 //////////////////////////////////
 
   @override
@@ -144,7 +147,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                   ),
                   FlatButton(
                     child: Text("See Summary"),
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'))
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => TestData(napLength: widget.napLength, napLimit: widget.napLimit))),
                   ),
                 ],
               ),
