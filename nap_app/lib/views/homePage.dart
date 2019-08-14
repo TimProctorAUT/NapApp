@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'aboutPage.dart' as AboutPage;
-import 'napSettingPage.dart' as NapPage;
-import 'sleepPage.dart' as SleepPage;
+import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
+import 'aboutPage.dart' as AboutPage;
+import 'donatePage.dart' as DonatePage;
 
 class HomeScreen extends StatefulWidget
 {
@@ -12,188 +12,168 @@ class HomeScreen extends StatefulWidget
   _HomeScreenState createState() => _HomeScreenState ();
 }
 
-
 class _HomeScreenState  extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'NapApp Menu Tests',
+      title: 'Napping Superpowers',
       theme: ThemeData(
+        brightness: Brightness.dark,
+
         //Colors
         primaryColor: Color.fromRGBO(18, 18, 18, 1),
         scaffoldBackgroundColor: Color.fromRGBO(18, 18, 18, 1),
-        cardColor: Color.fromRGBO(18, 18, 18, 0.8),
+        cardColor: Color.fromRGBO(18, 18, 18, 1),
+
+        //Text
+
       ),
+
       home: Scaffold(
         appBar: AppBar(
           title: Text('Home'),
-        ),
+        ), 
+
         body: Card(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                height: 75,
-              ),
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  //Nap Button
-                  Container(
-                      child: MaterialButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/nap_icon.png'),
-                              width: 90,
-                              height: 90,
-                            ),
-                            Text(
-                              'Nap Tracker',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => NapPage.NapSettings()),
-                          );
-                        },
-                      ),
-                      color: Color.fromRGBO(30, 30, 30, 0.8),
-                      height: 150,
-                      width: 150,
-                      margin: EdgeInsets.all(15)),
 
-                  //Sleep Training
+                  //====Button One====//
                   Container(
-                      child: MaterialButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/sleep_icon.png'),
-                              width: 90,
-                              height: 90,
-                            ),
-                            Text(
-                              'Sleep Training',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SleepPage.SleepTraining()),
-                          );
-                        },
+                    color: Color.fromRGBO(30, 30, 30, 0.7),
+
+                    width: 130,
+                    height: 130,
+                    child: MaterialButton(
+                      onPressed: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings()),);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(height: 2.5,),
+
+                          Image(image: AssetImage('assets/nap_icon.png'), height: 75, width: 75,),
+
+                          Container(height: 10,),
+
+                          Text('Take a Nap', style: TextStyle(fontSize: 11),),
+                        ],
                       ),
-                      color: Color.fromRGBO(30, 30, 30, 0.8),
-                      height: 150,
-                      width: 150,
-                      margin: EdgeInsets.all(15)),
+                    ),
+                  ),
+
+                  //=========Spacer Division==========//
+                  Container(width: 35,),
+
+                  //====Button Two====//
+                  Container(
+                    color: Color.fromRGBO(30, 30, 30, 0.7),
+
+                    width: 130,
+                    height: 130,
+                    child: MaterialButton(
+                      onPressed: (){
+
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(height: 2.5,),
+
+                          Image(image: AssetImage('assets/sleep_icon.png'), height: 75, width: 75,),
+
+                          Container(height: 10,),
+
+                          Text('Sleep Training', style: TextStyle(fontSize: 11),),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  //Graphing Data
-                  Container(
-                      child: MaterialButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/graph_icon.png'),
-                              width: 90,
-                              height: 90,
-                            ),
-                            Text(
-                              'Past Nap',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => GraphPage.PastNaps()),
-                          );
-                        },
-                      ),
-                      color: Color.fromRGBO(30, 30, 30, 0.8),
-                      height: 150,
-                      width: 150,
-                      margin: EdgeInsets.all(15)),
 
-                  //About Us
-                  Container(
-                      child: MaterialButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/about_icon.png'),
-                              width: 90,
-                              height: 90,
-                            ),
-                            Text(
-                              'Why Should I Nap?',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AboutPage.AboutUs()),
-                          );
-                        },
-                      ),
-                      color: Color.fromRGBO(30, 30, 30, 0.8),
-                      height: 150,
-                      width: 150,
-                      margin: EdgeInsets.all(15)),
-                ],
-              ),
+              //=========Spacer Division==========//
+              Container(height: 35,),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  //Exit
+                  
+                  //====Button Three====//
                   Container(
-                      child: MaterialButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/exit_icon.png'),
-                              width: 60,
-                              height: 60,
-                            ),
-                            Text(
-                              'Exit',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          SystemNavigator.pop();
-                        },
+                    color: Color.fromRGBO(30, 30, 30, 0.7),
+
+                    width: 130,
+                    height: 130,
+                    child: MaterialButton(
+                      onPressed: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps()),);                        
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(height: 2.5,),
+
+                          Image(image: AssetImage('assets/graph_icon.png'), height: 75, width: 75,),
+
+                          Container(height: 10,),
+
+                          Text('Past Naps', style: TextStyle(fontSize: 11),),
+                        ],
                       ),
-                      color: Color.fromRGBO(30, 30, 30, 0.8),
-                      height: 100,
-                      width: 100,
-                      margin: EdgeInsets.all(15)),
+                    ),
+                  ),
+
+                  //=========Spacer Division==========//
+                  Container(width: 35,),
+
+                  //====Button Four====//                  
+                  Container(
+                    color: Color.fromRGBO(30, 30, 30, 0.7),
+
+                    width: 130,
+                    height: 130,
+                    child: MaterialButton(
+                      onPressed: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => AboutPage.AboutUs()),);                        
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(height: 2.5,),
+
+                          Image(image: AssetImage('assets/about_icon.png'), height: 75, width: 75,),
+
+                          Container(height: 10,),
+
+                          Text('Why should I Nap?', style: TextStyle(fontSize: 11),),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
         ),
+
+        bottomNavigationBar: BottomAppBar(
+        child:  RaisedButton(
+                  color: Color.fromRGBO(18, 18, 18, 1),
+                  padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
+                  child: Text('Keep us Free'),
+                  onPressed: (){
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => DonatePage.DonatePage()),); 
+                  },
+                ),
       ),
-    );
+      ),
+    );   
   }
 }
