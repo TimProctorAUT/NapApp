@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
+<<<<<<< Updated upstream
+=======
+class NapTimer extends StatefulWidget {
+
+  final int napLength;
+  NapTimer({this.napLength});
+>>>>>>> Stashed changes
 
 class NapTimer extends StatefulWidget {
   @override
@@ -24,7 +31,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
              elevation: 5.0,
              child: Text("Return Home"),
              onPressed: (){
-               FlutterRingtonePlayer.stop();
+               Navigator.popUntil(context, ModalRoute.withName('/'));
              },
            )
          ],
@@ -32,10 +39,14 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     });
   }
 
-  restfulWake(bool wakeType){
-    
+  void startTimer(BuildContext context){
+    controller.reverse(
+      from: controller.value == 0.0
+             ? 1.0
+             : controller.value);
   }
 
+  restfulWake(bool wakeType){}
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -51,6 +62,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+     WidgetsBinding.instance
+      .addPostFrameCallback((_) => startTimer(context));
     controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 10),
@@ -122,18 +135,25 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                       animation: controller,
                       builder: (BuildContext context, Widget child) {
                         return Icon(controller.isAnimating
-                            ? Icons.pause
-                            : Icons.play_arrow);
+                            ? Icons.stop
+                            : Icons.stop);
                       },
                     ),
                     onPressed: () {
-                      if (controller.isAnimating)
-                        controller.stop();
+                      if (controller.isAnimating){
+                        createAlertDialog(context);
+                        FlutterRingtonePlayer.stop();
+                      }
                       else {
+<<<<<<< Updated upstream
                         controller.reverse(
                             from: controller.value == 0.0
                                 ? 1.0
                                 : controller.value);
+=======
+                        FlutterRingtonePlayer.stop();
+                        createAlertDialog(context);
+>>>>>>> Stashed changes
                       }
                     },
                   )
