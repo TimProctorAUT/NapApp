@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
+
 class NapTimer extends StatefulWidget {
 
-//Change this if you want/need to.
-//Was added to show Brian functionality of alarm for meeting.
+ final int napLength;
+ NapTimer({this.napLength});
+
+class NapTimer extends StatefulWidget {
+
   final int napLength;
   NapTimer({this.napLength});
-//////////////////////////////////
 
   @override
   _NapTimerState createState() => _NapTimerState();
@@ -29,7 +32,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
              elevation: 5.0,
              child: Text("Return Home"),
              onPressed: (){
-               FlutterRingtonePlayer.stop();
+               Navigator.popUntil(context, ModalRoute.withName('/'));
              },
            )
          ],
@@ -37,10 +40,14 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     });
   }
 
-  restfulWake(bool wakeType){
-    
+  void startTimer(BuildContext context){
+    controller.reverse(
+      from: controller.value == 0.0
+             ? 1.0
+             : controller.value);
   }
 
+  restfulWake(bool wakeType){}
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -56,6 +63,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+     WidgetsBinding.instance
+      .addPostFrameCallback((_) => startTimer(context));
     controller = AnimationController(
       vsync: this,
       duration: Duration(minutes: this.widget.napLength),
@@ -127,18 +136,18 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                       animation: controller,
                       builder: (BuildContext context, Widget child) {
                         return Icon(controller.isAnimating
-                            ? Icons.pause
-                            : Icons.play_arrow);
+                            ? Icons.stop
+                            : Icons.stop);
                       },
                     ),
                     onPressed: () {
-                      if (controller.isAnimating)
-                        controller.stop();
+                      if (controller.isAnimating){
+                        createAlertDialog(context);
+                        FlutterRingtonePlayer.stop();
+                      }
                       else {
-                        controller.reverse(
-                          from: controller.value == 0.0
-                            ? 1.0
-                            : controller.value);
+                        FlutterRingtonePlayer.stop();
+                        createAlertDialog(context);
                       }
                     },
                   ),
