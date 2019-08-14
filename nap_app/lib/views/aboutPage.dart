@@ -25,6 +25,17 @@ class _AboutUsState extends State<AboutUs> {
               width: 100,
             ),
 
+            Container(
+              color: Colors.grey.withOpacity(0.2),
+              height: 150,
+              width: 250,
+            ),
+
+            Container(
+              height: 50,
+              width: 100,
+            ),
+
             Text(
               'Who Are We?',
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

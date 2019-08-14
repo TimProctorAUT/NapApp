@@ -20,10 +20,15 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Add all 3rd party dependencies required for R&D project below
+  vibrate: ^0.0.4
+  flutter_ringtone_player: ^1.0.3
+  # End of R&D project dependencies
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  flutter_ringtone_player: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -43,7 +48,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/skyrim_icon.png
     - assets/nap_icon.png
     - assets/sleep_icon.png
     - assets/about_icon.png

@@ -1,20 +1,21 @@
+import 'package:first_app/views/testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
-<<<<<<< Updated upstream
-=======
+
+class NapTimer extends StatefulWidget {
+
+ final int napLength;
+ NapTimer({this.napLength});
+
 class NapTimer extends StatefulWidget {
 
   final int napLength;
   NapTimer({this.napLength});
->>>>>>> Stashed changes
 
-class NapTimer extends StatefulWidget {
   @override
   _NapTimerState createState() => _NapTimerState();
-
-  
 }
 
 class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
@@ -66,7 +67,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
       .addPostFrameCallback((_) => startTimer(context));
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 10),
+      duration: Duration(minutes: this.widget.napLength),
     );
   }
 
@@ -127,7 +128,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
             ),
             Container(
               margin: EdgeInsets.all(8.0),
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FloatingActionButton(
@@ -145,18 +146,15 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                         FlutterRingtonePlayer.stop();
                       }
                       else {
-<<<<<<< Updated upstream
-                        controller.reverse(
-                            from: controller.value == 0.0
-                                ? 1.0
-                                : controller.value);
-=======
                         FlutterRingtonePlayer.stop();
                         createAlertDialog(context);
->>>>>>> Stashed changes
                       }
                     },
-                  )
+                  ),
+                  FlatButton(
+                    child: Text("See Summary"),
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'))
+                  ),
                 ],
               ),
             )
@@ -166,7 +164,6 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     );
   }
 }
-
 
 class TimerPainter extends CustomPainter {
   TimerPainter({
@@ -198,8 +195,4 @@ class TimerPainter extends CustomPainter {
         color != old.color ||
         backgroundColor != old.backgroundColor;
   }
-
-  
-
-
 }
