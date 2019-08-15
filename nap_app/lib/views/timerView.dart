@@ -1,13 +1,8 @@
-import 'package:first_app/views/testDataPage.dart';
+import 'testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
-
-class NapTimer extends StatefulWidget {
-
- final int napLength;
- NapTimer({this.napLength});
 
 class NapTimer extends StatefulWidget {
 
