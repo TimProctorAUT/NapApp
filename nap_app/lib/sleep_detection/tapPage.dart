@@ -1,6 +1,4 @@
 import 'package:audioplayers/audio_cache.dart';
-import 'package:first_app/views/napSettingPage.dart';
-import 'package:first_app/views/testDataPage.dart';
 import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'sleepDetection.dart';
@@ -105,11 +103,11 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
         _ssa.updateAlgorithm(missedTaps);
 
         if(_ssa.isSleeping){
-          _navigateToAlarm();
+          _navigateToAlarmSuccess();
         }
 
         if(_ssa.napLimitReached){
-          _navigateToAlarm();
+          _navigateToAlarmFail();
         }
         
         _tapState = TapState.canTap;
@@ -131,18 +129,21 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   }
 
 //Called when wanting to navigate to the alarm.
-_navigateToAlarm(){
+_navigateToAlarmSuccess(){
   _stopTimer();
   _stopAudio();
+  _audioCache.clearCache();
   _ssa.stopTimer();
-  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: widget.napLength,)), ModalRoute.withName('/'));
+  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime())), ModalRoute.withName('/'));
 }
 
 //Called when the alarm is not needed and wanting to navigate to the summary page.
-  _navigateToEnd(){
+  _navigateToAlarmFail(){
     _stopTimer();
     _stopAudio();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
+    _audioCache.clearCache();
+    _ssa.stopTimer();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 0)), ModalRoute.withName('/'));
   }
 
   _playAudio() async{
@@ -153,13 +154,13 @@ _navigateToAlarm(){
   _audioCache.fixedPlayer.stop();
   }
 
-  _pauseAudio(){
-    _audioCache.fixedPlayer.pause();
-  }
+  // _pauseAudio(){
+  //   _audioCache.fixedPlayer.pause();
+  // }
 
-  _resumeAudio(){
-    _audioCache.fixedPlayer.resume();
-  }
+  // _resumeAudio(){
+  //   _audioCache.fixedPlayer.resume();
+  // }
 
 //Called everytime the user taps the screen.
   _onSleepDetectionTap(){
@@ -189,8 +190,8 @@ _navigateToAlarm(){
           break;
 
           case 4: //STOPPED
-            _detectState = DetectionState.running;
-            _resumeAudio();
+            // _detectState = DetectionState.running;
+            // _resumeAudio();
           break;
 
           case -1: //NEITHER OF THE OPTIONS
@@ -230,14 +231,22 @@ _navigateToAlarm(){
     missedTaps++;
   }
 
+//DEBUG OUTPUT
   printCount(){
     print("Missed count: $missedTaps");
     print("Tap count: $tapCount");
   }
 
+//Called when "YES" is tapped on terminate session dialog
+bool terminateNapSession(){
+  _stopAudio();
+  _stopTimer();
+  _audioCache.clearCache();
+  return true;
+}
+
 //WillPopScope requires Future<bool> to handle back button press to terminate nap session.
   Future<bool> _confirmEnd(){
-    _pauseAudio();
     _detectState = DetectionState.stopped;
     return showDialog(
       context: context,
@@ -246,7 +255,7 @@ _navigateToAlarm(){
         actions: <Widget>[
           FlatButton(
             child: Text("Yes"),
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(context, terminateNapSession()),
             ),
           FlatButton(
             child: Text("No"),

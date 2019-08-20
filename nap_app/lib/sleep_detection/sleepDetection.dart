@@ -48,10 +48,24 @@ class SleepStateAlgorithm{
     }
   }
 
+//CHECK TO SEE IF BELOW CALCULATION IS GREATER/LESS THAN SELECTED NAP LENGTH
+//IF GREATER THEN SEND _NapLength. 
+//IF LESS THEN SEND CALCULATION.
+  int calcRemainingAlarmTime(){
+    int remainingTime = (_napLength * 60) - ((_napLimit * 60) - timeToSleep.elapsed.inSeconds);
+    
+    if(remainingTime > _napLength){
+      return _napLength;
+    } 
+    else{
+      return remainingTime;
+    }
+  }
+
   checkStateChangeRequired(){
     print("Checking current sleep state");
     print("Current State: ${this._sleepState}");
-    if(this.missedDetectionEvents > 2 && _sleepState == SleepState.awake){
+    if(this.missedDetectionEvents > 5 && _sleepState == SleepState.awake){
       _sleepState = SleepState.dozing;
       print("State changed to 'Dozing'");
     }
