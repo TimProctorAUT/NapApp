@@ -1,4 +1,5 @@
 import 'package:audioplayers/audio_cache.dart';
+import 'package:first_app/setting.dart';
 import 'package:first_app/views/homePage.dart';
 import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
@@ -21,13 +22,9 @@ enum TapState{
 
 class TapMethod extends StatefulWidget {
 
-  final int napLength;
-  final int napLimit;
-  final int vibrationInterval;
-  final String audioFileName;
-  final bool isAudioSelected;
+  final NapSettingsData settings;
 
-  TapMethod({Key key, this.napLength, this.napLimit, this.vibrationInterval, this.audioFileName, this.isAudioSelected}):super(key: key);
+  TapMethod({this.settings});
 
   @override
   _TapMethodState createState() => _TapMethodState();
@@ -41,7 +38,7 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   int missedTaps = 0;
   Timer _timer;
   bool _firstTap = true;
-  static AudioPlayer _audioPlayer = AudioPlayer();
+  static AudioPlayer _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   static AudioCache _audioCache = AudioCache(fixedPlayer: _audioPlayer);
   int loopCount = 0;
   final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -89,12 +86,12 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 //Starts the vibrate timer.
 //Contains all code run on every timer tick.
   _startTimer(){
-    _timer = Timer.periodic(Duration(seconds: this.widget.vibrationInterval != null ? this.widget.vibrationInterval : 10), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
       setState(() {
         print("~~~~~~~~~~ Loop No. $loopCount ~~~~~~~~~~");
         //This block of code will run every vibrationInterval (5) seconds.
-        _ssa.setNapInformation(this.widget.napLimit, this.widget.napLength);
-
+        //_ssa.setNapInformation(this.widget.settings.napLimit, this.widget.settings.napLength);
+        _ssa.setNapInformation(2, 1);
         if(_tapState == TapState.canTap){
           incrementMissedTapsCount();
         }
@@ -136,6 +133,8 @@ _navigateToAlarmSuccess(){
   _stopAudio();
   _audioCache.clearCache();
   _ssa.stopTimer();
+  this.widget.settings.successfullSleep = true;
+  this.widget.settings.timeSleptInSeconds = _ssa.calcRemainingAlarmTime();
   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime())), ModalRoute.withName('/'));
 }
 
@@ -145,6 +144,7 @@ _navigateToAlarmSuccess(){
     _stopAudio();
     _audioCache.clearCache();
     _ssa.stopTimer();
+    this.widget.settings.successfullSleep = false;
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1)), ModalRoute.withName('/'));
   }
 
@@ -152,7 +152,11 @@ _navigateToAlarmSuccess(){
     //SAMPLE AUDIO
     //https://www.youtube.com/watch?v=79io3wgRAFU
     //Check with Brian if he wants to purchase
-    _audioCache.play(this.widget.audioFileName);
+    try{
+      _audioCache.play(this.widget.settings.selectedAudioFile + ".mp3");
+    }
+    catch(e){
+    }
   }
 
   _stopAudio(){
@@ -165,7 +169,7 @@ _navigateToAlarmSuccess(){
   _onSleepDetectionTap(){
     setState(() {
       //Only plays audio if selected from the settings page
-      if(this.widget.isAudioSelected){
+      if(this.widget.settings.wantsAudio){
         _playAudio();
       }
 

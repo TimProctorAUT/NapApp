@@ -16,6 +16,12 @@ class NapTimer extends StatefulWidget {
 class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   AnimationController controller;
 
+  @override
+  void dispose(){
+    controller.dispose();
+    super.dispose();
+  }
+
   createAlertDialog(BuildContext context){
 
     return showDialog(context: context, builder: (context){
@@ -62,7 +68,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
       .addPostFrameCallback((_) => startTimer(context));
     controller = AnimationController(
       vsync: this,
-      duration: Duration(minutes: this.widget.napLength),
+      duration: Duration(seconds: this.widget.napLength),
     );
   }
 

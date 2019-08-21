@@ -1,36 +1,26 @@
-class NapSettings{
+class NapSettingsData{
 
   final int napLimit;
   final int napLength;
   final int elapsedTime;
+  
+  final bool wantsAudio;
 
-  final bool isAsleep;
+  final String selectedAudioFile;
 
-  //Calculating Remaining
-  int calculateRemainingTime(int napLimit, int elapsedTime)
-  { 
-    return napLimit - elapsedTime;
-  } 
 
-  //
-  asleepTest(int napLength, int napLimit, int elapsedTime)
-  {
-    int napDuration;
-    int remainingTime = calculateRemainingTime(napLimit, elapsedTime);
-    if (remainingTime >= napLength)
-    {
-      napDuration = napLength;
-    }
-    else
-    {
-      napDuration = remainingTime;
-    }
+  //Not final because it is not instantiated when settings object is created.
+  //Only set after sleep detection.
+  bool successfullSleep;
+  int timeSleptInSeconds;
 
-    return napDuration;
-  }
-
-  //Get and Set Methods
-
-  NapSettings(this.elapsedTime, this.isAsleep, this.napLength, this.napLimit);
-
+  NapSettingsData({
+    this.elapsedTime, 
+    this.successfullSleep, 
+    this.napLength, 
+    this.napLimit,
+    this.wantsAudio,
+    this.selectedAudioFile,
+    this.timeSleptInSeconds,
+  });
 }

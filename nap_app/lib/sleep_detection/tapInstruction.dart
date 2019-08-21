@@ -1,13 +1,12 @@
+import 'package:first_app/setting.dart';
 import 'package:flutter/material.dart';
 import 'tapPage.dart';
 
 class SplashScreen extends StatefulWidget {
 
-  final int napLength;
-  final int napLimit;
-  final int vibrationInterval;
+  final NapSettingsData settings;
 
-  const SplashScreen({Key key, this.napLength, this.napLimit, this.vibrationInterval}):super(key: key);
+  const SplashScreen({this.settings});
 
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -43,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: 
           (BuildContext context) => 
-          TapMethod(napLength: widget.napLength, napLimit: widget.napLimit, isAudioSelected: true, audioFileName: "relax.mp3",))),
+          TapMethod(settings: widget.settings,))),
         ),
       ),
     );

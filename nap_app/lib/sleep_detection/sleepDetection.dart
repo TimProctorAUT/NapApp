@@ -33,6 +33,10 @@ class SleepStateAlgorithm{
     this.missedDetectionEvents = missedDetectionEvents;
     print("Algorithm Updated");
     checkStateChangeRequired();
+
+    if(timeToSleep.elapsed.inSeconds >= (_napLimit * 60)){
+      napLimitReached = true;
+    }
   }
 
   int calcRemainingAlarmTime(){

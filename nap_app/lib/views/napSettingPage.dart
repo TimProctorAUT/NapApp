@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 //import '../sleep_detection/tapInstruction.dart' as SleepDetection;
 import '../views/SettingOutputTest.dart' as TestOutput;
+import '../setting.dart' as Settings;
 
 class NapSettings extends StatefulWidget
 {
@@ -27,6 +31,18 @@ class _NapSettingsState extends State<NapSettings> {
   
   int alarmSound = 1;
   int vibratePower = 1;
+
+  bool backgroundAudio = false;
+  String selectedAudioFile = "relax";
+
+  List<String> listOfFiles = List<String>();
+
+  @override
+  void initState() {
+    super.initState();
+    mapAssetsToList();
+  }
+
   
   @override
   Widget build(BuildContext context) {
@@ -570,43 +586,53 @@ class _NapSettingsState extends State<NapSettings> {
                                     child: Column(
                                       children: <Widget>[                                    
                                         Text('Audio Assistance:'),
-
+                                        
+                                        //TOGGLE SWITCH FOR WANTING TO LISTEN TO AUDIO DURING NAP
                                         Row(
                                           children: <Widget>[
-                                            Radio(
-                                              onChanged: (int e) => setAudioSetting(e),
-                                              activeColor: Colors.green,
-                                              value: 0,
-                                              groupValue: audioAssistSetting,                                          
-                                            ),
+                                            Text("Background Audio"),
+                                            Switch(
+                                              value: backgroundAudio,
+                                              onChanged: (value)
+                                              {
+                                                setState(() {
+                                                  backgroundAudio = value;
+                                                });
+                                                
+                                              },
 
-                                            Text('Breathing Exercise'),
+                                              activeColor: Colors.green,
+                                              activeTrackColor: Colors.lightGreen,
+
+                                              inactiveThumbColor: Colors.blueGrey,
+                                              inactiveTrackColor: Colors.blueGrey,
+                                            ),
                                           ],
                                         ),
 
+                                        //DROP DOWN MENU FOR AUDIO SELECTION
                                         Row(
                                           children: <Widget>[
-                                            Radio(
-                                              onChanged: (int e) => setAudioSetting(e),
-                                              activeColor: Colors.green,
-                                              value: 1,
-                                              groupValue: audioAssistSetting,                                          
-                                            ),
+                                            Text("Audio File"),
+                                            
+                                            Container(width: 15,),
 
-                                            Text('White Noise'),
-                                          ],
-                                        ),
-
-                                        Row(
-                                          children: <Widget>[
-                                            Radio(
-                                              onChanged: (int e) => setAudioSetting(e),
-                                              activeColor: Colors.green,
-                                              value: 2,
-                                              groupValue: audioAssistSetting,                                          
-                                            ),
-
-                                            Text('No Sound'),
+                                            DropdownButton <String>(
+                                              disabledHint: Text("Audio Disabled"),
+                                              value: selectedAudioFile,
+                                              onChanged: (String newValue){
+                                                setState(() {
+                                                  selectedAudioFile = newValue;
+                                                });
+                                              },
+                                              items: backgroundAudio ? listOfFiles.map<DropdownMenuItem<String>>((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              })
+                                              .toList() : null,
+                                            )
                                           ],
                                         ),
                                       ],
@@ -706,16 +732,38 @@ class _NapSettingsState extends State<NapSettings> {
                   textColor: Colors.black,
                   padding: EdgeInsets.fromLTRB(50.0, 15.0, 50.0, 15.0),
                   child: Text('Start Nap'),
-                  onPressed: (){
-                    Navigator.push(context,
-                      MaterialPageRoute(
-                          builder: (context) => TestOutput.NapTracker(napLength: napLength, napLimit: napLimit, detectionMethod: detectionMethod, audioAssistOption: audioAssistSetting, soundSwitch: soundSwitch, vibrateSwitch: vibrateSwitch,)                                
-                      ),
-                    );              
-                  },
+                  onPressed: () => navigateToNap()
                 ),
       ),
     );
+  }
+
+  navigateToNap(){
+    Settings.NapSettingsData settingsObject = Settings.NapSettingsData(napLimit: napLimit, napLength: napLength, wantsAudio: backgroundAudio, selectedAudioFile: selectedAudioFile);
+    Navigator.push(context,
+      MaterialPageRoute(
+          builder: (context) => TestOutput.NapTracker(napSettings: settingsObject,)                                
+      ),
+    ); 
+  }
+
+//Maps audio file assets in the /assets/ folder to a list.
+  mapAssetsToList() async{
+    final manifestContent = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+
+    final soundPaths = manifestMap.keys
+      .where((String key) => key.contains('assets/'))
+      .where((String key) => key.contains('.mp3'))
+      .toList();
+
+    for(String fileName in soundPaths){
+      List<String> tmpList = fileName.split(RegExp("([./])"));
+      listOfFiles.add(tmpList[1]);
+    }
+
+    print(listOfFiles);
   }
 
   void setDetectionMethod(int e){
