@@ -1,4 +1,5 @@
 import 'package:audioplayers/audio_cache.dart';
+import 'package:first_app/views/homePage.dart';
 import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'sleepDetection.dart';
@@ -23,9 +24,10 @@ class TapMethod extends StatefulWidget {
   final int napLength;
   final int napLimit;
   final int vibrationInterval;
-  final String selectedAudio;
+  final String audioFileName;
+  final bool isAudioSelected;
 
-  const TapMethod({Key key, this.napLength, this.napLimit, this.vibrationInterval, this.selectedAudio}):super(key: key);
+  TapMethod({Key key, this.napLength, this.napLimit, this.vibrationInterval, this.audioFileName, this.isAudioSelected}):super(key: key);
 
   @override
   _TapMethodState createState() => _TapMethodState();
@@ -143,31 +145,31 @@ _navigateToAlarmSuccess(){
     _stopAudio();
     _audioCache.clearCache();
     _ssa.stopTimer();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 0)), ModalRoute.withName('/'));
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1)), ModalRoute.withName('/'));
   }
 
   _playAudio() async{
-    _audioCache.play('test.mp3');
+    //SAMPLE AUDIO
+    //https://www.youtube.com/watch?v=79io3wgRAFU
+    //Check with Brian if he wants to purchase
+    _audioCache.play(this.widget.audioFileName);
   }
 
   _stopAudio(){
   _audioCache.fixedPlayer.stop();
+  //ADD TIMER TO SLOWLY DECREASE VOLUME
+  //HOPEFULLY PERSIST INTO ALARM PAGE???
   }
-
-  // _pauseAudio(){
-  //   _audioCache.fixedPlayer.pause();
-  // }
-
-  // _resumeAudio(){
-  //   _audioCache.fixedPlayer.resume();
-  // }
 
 //Called everytime the user taps the screen.
   _onSleepDetectionTap(){
     setState(() {
+      //Only plays audio if selected from the settings page
+      if(this.widget.isAudioSelected){
+        _playAudio();
+      }
 
-      _playAudio();
-
+      //Starts timer on the first tap
       if(_firstTap){
         _firstTap = false;
         _startTimer();
@@ -190,8 +192,6 @@ _navigateToAlarmSuccess(){
           break;
 
           case 4: //STOPPED
-            // _detectState = DetectionState.running;
-            // _resumeAudio();
           break;
 
           case -1: //NEITHER OF THE OPTIONS
@@ -238,12 +238,13 @@ _navigateToAlarmSuccess(){
   }
 
 //Called when "YES" is tapped on terminate session dialog
-bool terminateNapSession(){
-  _stopAudio();
-  _stopTimer();
-  _audioCache.clearCache();
-  return true;
-}
+  bool terminateNapSession(){
+    _stopAudio();
+    _stopTimer();
+    _audioCache.clearCache();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomeScreen()), ModalRoute.withName('/'));
+    return true;
+  }
 
 //WillPopScope requires Future<bool> to handle back button press to terminate nap session.
   Future<bool> _confirmEnd(){

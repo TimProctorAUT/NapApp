@@ -32,45 +32,33 @@ class SleepStateAlgorithm{
   updateAlgorithm(int missedDetectionEvents){
     this.missedDetectionEvents = missedDetectionEvents;
     print("Algorithm Updated");
-    calcTimeBeforeEndDetection();
     checkStateChangeRequired();
   }
 
-  calcTimeBeforeEndDetection(){
-    int napLengthInSeconds = _napLength * 60;
-    int napLimitInSeconds = _napLimit * 60;
-    int addElapsedAndTotalLength = timeToSleep.elapsed.inSeconds + napLengthInSeconds;
-    double percentOfRemainingTime = addElapsedAndTotalLength / napLimitInSeconds;
-    print("Total: $percentOfRemainingTime");
-
-    if(percentOfRemainingTime > 1.0){
-      napLimitReached = true;
-    }
-  }
-
-//CHECK TO SEE IF BELOW CALCULATION IS GREATER/LESS THAN SELECTED NAP LENGTH
-//IF GREATER THEN SEND _NapLength. 
-//IF LESS THEN SEND CALCULATION.
   int calcRemainingAlarmTime(){
-    int remainingTime = (_napLength * 60) - ((_napLimit * 60) - timeToSleep.elapsed.inSeconds);
+    int _remainingTime = (_napLimit * 60) - timeToSleep.elapsed.inSeconds;
     
-    if(remainingTime > _napLength){
-      return _napLength;
+    if(_remainingTime > (_napLength * 60)){
+      print("_NapLength RETURNED: $_napLength");
+      print("timeToSleep.elapsed.inSeconds RETURNED: ${timeToSleep.elapsed.inSeconds}");
+      return (_napLength * 60);
     } 
     else{
-      return remainingTime;
+      print("_remainingTime RETURNED: $_remainingTime");
+      print("timeToSleep.elapsed.inSeconds RETURNED: ${timeToSleep.elapsed.inSeconds}");
+      return _remainingTime;
     }
   }
 
   checkStateChangeRequired(){
     print("Checking current sleep state");
     print("Current State: ${this._sleepState}");
-    if(this.missedDetectionEvents > 5 && _sleepState == SleepState.awake){
+    if(this.missedDetectionEvents > 1 && _sleepState == SleepState.awake){
       _sleepState = SleepState.dozing;
       print("State changed to 'Dozing'");
     }
 
-    if(this.missedDetectionEvents > 10 && _sleepState == SleepState.dozing){
+    if(this.missedDetectionEvents > 2 && _sleepState == SleepState.dozing){
       _sleepState = SleepState.sleeping;
       print("State changed to 'Sleeping'");
     }
