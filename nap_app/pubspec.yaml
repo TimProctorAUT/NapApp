@@ -23,6 +23,8 @@ dependencies:
   # Add all 3rd party dependencies required for R&D project below
   vibrate: ^0.0.4
   flutter_ringtone_player: ^1.0.3
+  webview_flutter: ^0.3.13
+  flutter_html: ^0.10.4
   # End of R&D project dependencies
 
 
