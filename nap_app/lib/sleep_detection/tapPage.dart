@@ -246,7 +246,9 @@ _navigateToAlarmSuccess(){
 //Called when "YES" is tapped on terminate session dialog
   bool terminateNapSession(){
     _stopAudio();
-    _stopTimer();
+    if(!_firstTap){
+      _stopTimer();
+    }
     _audioCache.clearCache();
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomeScreen()), ModalRoute.withName('/'));
     return true;
