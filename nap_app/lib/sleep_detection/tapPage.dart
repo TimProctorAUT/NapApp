@@ -2,6 +2,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:first_app/setting.dart';
 import 'package:first_app/views/homePage.dart';
 import 'package:first_app/views/timerView.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
@@ -298,7 +299,7 @@ _navigateToAlarmSuccess(){
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               SizedBox(
-                height: 600,
+                height: 500,
                 child: SafeArea(
                   child: Container(
                     color: Colors.black12,

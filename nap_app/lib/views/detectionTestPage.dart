@@ -69,7 +69,7 @@ class _DetectionTestState extends State<DetectionTest> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           SizedBox(
-            height: 600,
+            height: 500,
             child: SafeArea(
               child: Container(
                 color: Colors.black26,
