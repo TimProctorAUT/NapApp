@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:first_app/views/detectionTestPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 //import '../sleep_detection/tapInstruction.dart' as SleepDetection;
@@ -293,7 +294,7 @@ class _NapSettingsState extends State<NapSettings> {
                                               groupValue: detectionMethod,                                          
                                             ),
 
-                                            Text('Drop Phone', style: TextStyle(decoration: TextDecoration.lineThrough),),
+                                            Text(' Drop Phone ', style: TextStyle(decoration: TextDecoration.lineThrough),),
                                           ],
                                         ),
 
@@ -312,9 +313,7 @@ class _NapSettingsState extends State<NapSettings> {
                                                 child: RaisedButton(
                                                   color: Colors.white,
                                                   child: Text('Test Detection', style: TextStyle(color: Colors.black),),
-                                                  onPressed: (){}
-                                                  //Leaving onPressed blank disables the button.
-                                                  //Since page is not testable yet.                 
+                                                  onPressed: () => testDetectionMethod(detectionMethod)               
                                                 ),
                                               ),
                                               ],
@@ -751,7 +750,11 @@ class _NapSettingsState extends State<NapSettings> {
   }
 
   testDetectionMethod(int methodSelected){
-    //code goes here.
+    Navigator.push(context,
+      MaterialPageRoute(
+          builder: (context) => DetectionTest(detectionMethod: methodSelected,)                                
+      ),
+    ); 
   }
 
   navigateToNap(){

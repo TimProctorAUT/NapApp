@@ -89,12 +89,12 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 //Starts the vibrate timer.
 //Contains all code run on every timer tick.
   _startTimer(){
-    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+    _timer = Timer.periodic(Duration(seconds: widget.settings.vibrationInterval), (timer) {
       setState(() {
         print("~~~~~~~~~~ Loop No. $loopCount ~~~~~~~~~~");
         //This block of code will run every vibrationInterval (5) seconds.
-        //_ssa.setNapInformation(this.widget.settings.napLimit, this.widget.settings.napLength);
-        _ssa.setNapInformation(2, 1);
+        _ssa.setNapInformation(this.widget.settings.napLimit, this.widget.settings.napLength);
+        //_ssa.setNapInformation(2, 1);
         if(_tapState == TapState.canTap){
           incrementMissedTapsCount();
         }

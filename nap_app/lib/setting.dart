@@ -1,5 +1,7 @@
 class NapSettingsData{
 
+  final int vibrationInterval = 10;
+
   final int napLimit;
   final int napLength;
   final int elapsedTime;
