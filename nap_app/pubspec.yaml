@@ -54,8 +54,7 @@ flutter:
     - assets/about_icon.png
     - assets/graph_icon.png
     - assets/exit_icon.png
-    - assets/test.mp3
-    - assets/relax.mp3
+    - assets/Meditation.mp3
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

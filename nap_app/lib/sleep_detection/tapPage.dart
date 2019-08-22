@@ -43,6 +43,8 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   int tapCount = 0;
   int missedTaps = 0;
   Timer _timer;
+  Timer _musicTimer;
+  double _musicVolume = 1;
   bool _firstTap = true;
 
   int loopCount = 0;
@@ -134,7 +136,6 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 _navigateToAlarmSuccess(){
   _stopTimer();
   _stopAudio();
-  _audioCache.clearCache();
   _ssa.stopTimer();
   this.widget.settings.successfullSleep = true;
   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime(), settings: widget.settings,)), ModalRoute.withName('/'));
@@ -144,7 +145,6 @@ _navigateToAlarmSuccess(){
   _navigateToAlarmFail(){
     _stopTimer();
     _stopAudio();
-    _audioCache.clearCache();
     _ssa.stopTimer();
     this.widget.settings.successfullSleep = false;
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1, settings: widget.settings,)), ModalRoute.withName('/'));
@@ -162,9 +162,18 @@ _navigateToAlarmSuccess(){
   }
 
   _stopAudio(){
-  _audioCache.fixedPlayer.stop();
-  //ADD TIMER TO SLOWLY DECREASE VOLUME
-  //HOPEFULLY PERSIST INTO ALARM PAGE???
+//Timer to fade music out over 30 seconds when entering the alarm page.
+  _musicTimer = Timer.periodic(Duration(seconds: 3), (timer) {
+    _musicVolume -= 0.1;
+    _audioPlayer.setVolume(_musicVolume);
+
+    if(_musicVolume <= 0){
+      _musicTimer.cancel();
+      _audioCache.fixedPlayer.stop();
+    }
+  });
+
+  _audioCache.clearCache();
   }
 
 //Called everytime the user taps the screen.
@@ -292,7 +301,7 @@ _navigateToAlarmSuccess(){
                 height: 600,
                 child: SafeArea(
                   child: Container(
-                    color: Colors.red,
+                    color: Colors.black12,
                     child: _tapState == TapState.waitForTimer ? Text("Wait") : Text("Tap", style: TextStyle(fontSize: 40), textAlign: TextAlign.center,),
                     alignment: Alignment(0.0, 0.0),
                   ),

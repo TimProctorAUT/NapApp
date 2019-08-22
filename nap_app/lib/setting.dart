@@ -1,3 +1,5 @@
+import 'package:vibrate/vibrate.dart';
+
 class NapSettingsData{
 
   final int vibrationInterval = 10;
@@ -5,8 +7,11 @@ class NapSettingsData{
   final int napLimit;
   final int napLength;
   final int elapsedTime;
+  final FeedbackType selectedVibrate;
   
   final bool wantsAudio;
+  final bool wantsAlarmAudio;
+  final bool wantsAlarmVibrate;
 
   final String selectedAudioFile;
   final String selectedAlarmSound; //Currently alarm library doesnt support.
@@ -30,6 +35,9 @@ class NapSettingsData{
     this.wantsAudio,
     this.selectedAudioFile,
     this.timeSleptInSeconds,
-    this.selectedAlarmSound
+    this.selectedAlarmSound,
+    this.wantsAlarmAudio,
+    this.wantsAlarmVibrate,
+    this.selectedVibrate
   });
 }
