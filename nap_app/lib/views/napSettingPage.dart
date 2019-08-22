@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 //import '../sleep_detection/tapInstruction.dart' as SleepDetection;
 import '../views/SettingOutputTest.dart' as TestOutput;
 import '../setting.dart' as Settings;
@@ -28,6 +29,7 @@ class _NapSettingsState extends State<NapSettings> {
 
   bool soundSwitch = true;
   bool vibrateSwitch = true;
+  bool tapPlay = true;
   
   int alarmSound = 1;
   int vibratePower = 1;
@@ -307,9 +309,12 @@ class _NapSettingsState extends State<NapSettings> {
                                                 color: Colors.white,
                                                 height: 25,
                                                 width: 150,
-                                                child: MaterialButton(
+                                                child: RaisedButton(
+                                                  color: Colors.white,
                                                   child: Text('Test Detection', style: TextStyle(color: Colors.black),),
-                                                  onPressed: (){}                 
+                                                  onPressed: (){}
+                                                  //Leaving onPressed blank disables the button.
+                                                  //Since page is not testable yet.                 
                                                 ),
                                               ),
                                               ],
@@ -407,8 +412,11 @@ class _NapSettingsState extends State<NapSettings> {
                                               {
                                                 setState(() {
                                                   soundSwitch = value;
+
+                                                  if(!soundSwitch){
+                                                    FlutterRingtonePlayer.stop();
+                                                  }
                                                 });
-                                                
                                               },
 
                                               activeColor: Colors.green,
@@ -416,6 +424,11 @@ class _NapSettingsState extends State<NapSettings> {
 
                                               inactiveThumbColor: Colors.blueGrey,
                                               inactiveTrackColor: Colors.blueGrey,
+                                            ),
+                                            RaisedButton(
+                                              color: Colors.white,
+                                              child: tapPlay ? Text("Test Alarm", style: TextStyle(color: Colors.black),) : Text("Stop", style: TextStyle(color: Colors.black)),
+                                              onPressed: soundSwitch ? testAlarmSound : null
                                             ),
                                           ],
                                         ),                                  
@@ -443,8 +456,7 @@ class _NapSettingsState extends State<NapSettings> {
                                               }) .toList(),
                                             )                              
                                       ],
-                                    ),
-                                                                        
+                                    ),                                  
                                   ],
                                 )
                               ),
@@ -738,6 +750,10 @@ class _NapSettingsState extends State<NapSettings> {
     );
   }
 
+  testDetectionMethod(int methodSelected){
+    //code goes here.
+  }
+
   navigateToNap(){
     Settings.NapSettingsData settingsObject = Settings.NapSettingsData(napLimit: napLimit, napLength: napLength, wantsAudio: backgroundAudio, selectedAudioFile: selectedAudioFile);
     Navigator.push(context,
@@ -745,6 +761,19 @@ class _NapSettingsState extends State<NapSettings> {
           builder: (context) => TestOutput.NapTracker(napSettings: settingsObject,)                                
       ),
     ); 
+  }
+
+  testAlarmSound(){
+    setState(() {
+      if(tapPlay){
+        FlutterRingtonePlayer.playAlarm();
+        tapPlay = false;
+      }
+      else{
+        tapPlay = true;
+        FlutterRingtonePlayer.stop();
+      }
+    });
   }
 
 //Maps audio file assets in the /assets/ folder to a list.

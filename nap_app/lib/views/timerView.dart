@@ -1,3 +1,5 @@
+import 'package:first_app/setting.dart';
+
 import 'testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -7,7 +9,8 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 class NapTimer extends StatefulWidget {
 
   final int napLength;
-  NapTimer({this.napLength});
+  final NapSettingsData settings;
+  NapTimer({this.napLength, this.settings});
 
   @override
   _NapTimerState createState() => _NapTimerState();
@@ -15,6 +18,7 @@ class NapTimer extends StatefulWidget {
 
 class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   AnimationController controller;
+  Stopwatch timeSlept = Stopwatch();
 
   @override
   void dispose(){
@@ -33,6 +37,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
              elevation: 5.0,
              child: Text("Return Home"),
              onPressed: (){
+               timeSlept.stop();
+               widget.settings.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
                Navigator.popUntil(context, ModalRoute.withName('/'));
              },
            )
@@ -56,7 +62,6 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     if(duration.inSeconds == 1.0)
     {
       FlutterRingtonePlayer.playAlarm(volume: 1.0, looping: true);
-      
     }
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
@@ -64,12 +69,21 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    timeSlept.start();
+
      WidgetsBinding.instance
       .addPostFrameCallback((_) => startTimer(context));
     controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: this.widget.napLength),
     );
+  }
+
+  navigateToSummary(){
+    timeSlept.stop();
+    widget.settings.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
   }
 
   @override
@@ -154,7 +168,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                   ),
                   FlatButton(
                     child: Text("See Summary"),
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'))
+                    onPressed: () => navigateToSummary
                   ),
                 ],
               ),

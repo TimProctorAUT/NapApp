@@ -7,6 +7,12 @@ class NapSettingsData{
   final bool wantsAudio;
 
   final String selectedAudioFile;
+  final String selectedAlarmSound; //Currently alarm library doesnt support.
+
+  List<String> encouragingMessages = [
+    "Atleast you tried.",
+    "Good Job!",
+  ];
 
 
   //Not final because it is not instantiated when settings object is created.
@@ -22,5 +28,6 @@ class NapSettingsData{
     this.wantsAudio,
     this.selectedAudioFile,
     this.timeSleptInSeconds,
+    this.selectedAlarmSound
   });
 }

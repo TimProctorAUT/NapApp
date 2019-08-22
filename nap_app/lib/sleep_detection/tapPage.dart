@@ -31,18 +31,21 @@ class TapMethod extends StatefulWidget {
 }
 
 class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
+  
   SleepStateAlgorithm _ssa = SleepStateAlgorithm(); 
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
+  static AudioPlayer _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  static AudioCache _audioCache = AudioCache(fixedPlayer: _audioPlayer);
+
   TapState _tapState = TapState.canTap;
   DetectionState _detectState = DetectionState.waiting;
   int tapCount = 0;
   int missedTaps = 0;
   Timer _timer;
   bool _firstTap = true;
-  static AudioPlayer _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  static AudioCache _audioCache = AudioCache(fixedPlayer: _audioPlayer);
-  int loopCount = 0;
-  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
+  int loopCount = 0;
   
 //initstate allows any code to be run on load of this page.
   @override
@@ -134,8 +137,7 @@ _navigateToAlarmSuccess(){
   _audioCache.clearCache();
   _ssa.stopTimer();
   this.widget.settings.successfullSleep = true;
-  this.widget.settings.timeSleptInSeconds = _ssa.calcRemainingAlarmTime();
-  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime())), ModalRoute.withName('/'));
+  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime(), settings: widget.settings,)), ModalRoute.withName('/'));
 }
 
 //Called when the alarm is not needed and wanting to navigate to the summary page.
@@ -145,7 +147,7 @@ _navigateToAlarmSuccess(){
     _audioCache.clearCache();
     _ssa.stopTimer();
     this.widget.settings.successfullSleep = false;
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1)), ModalRoute.withName('/'));
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1, settings: widget.settings,)), ModalRoute.withName('/'));
   }
 
   _playAudio() async{
