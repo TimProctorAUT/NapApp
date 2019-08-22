@@ -6,46 +6,63 @@ enum SleepState{
 
 class SleepStateAlgorithm{
   SleepState _sleepState = SleepState.awake;
-  int variableTime;
   Stopwatch timeToSleep = Stopwatch();
   int missedDetectionEvents;
   bool isSleeping = false;
   bool napLimitReached = false;
-  int napLimit;
-  int napLength;
+  int _napLimit = 0;
+  int _napLength = 0;
 
   startTimer(){
     timeToSleep.start();
-    print("Timer Started");
+    print("Sleeping Elapsed Timer Started");
   }
 
   stopTimer(){
     timeToSleep.stop();
-    print("Timer Stopped");
-    print(timeToSleep.elapsed);
+    print("Sleeping Elapsed Timer Stopped");
+    print("Sleep Detection Elapsed Time: ${timeToSleep.elapsed.inSeconds}");
   }
 
-  setNapInformation(napLimit, napLength){
-    napLimit = this.napLimit;
-    napLength = this.napLength;
+  setNapInformation(int napLimit, int napLength){
+    _napLimit = napLimit;
+    _napLength = napLength;
   }
 
   updateAlgorithm(int missedDetectionEvents){
     this.missedDetectionEvents = missedDetectionEvents;
     print("Algorithm Updated");
     checkStateChangeRequired();
+
+    if(timeToSleep.elapsed.inSeconds >= (_napLimit * 60)){
+      napLimitReached = true;
+    }
+  }
+
+  int calcRemainingAlarmTime(){
+    int _remainingTime = (_napLimit * 60) - timeToSleep.elapsed.inSeconds;
+    
+    if(_remainingTime > (_napLength * 60)){
+      print("_NapLength RETURNED: $_napLength");
+      print("timeToSleep.elapsed.inSeconds RETURNED: ${timeToSleep.elapsed.inSeconds}");
+      return (_napLength * 60);
+    } 
+    else{
+      print("_remainingTime RETURNED: $_remainingTime");
+      print("timeToSleep.elapsed.inSeconds RETURNED: ${timeToSleep.elapsed.inSeconds}");
+      return _remainingTime;
+    }
   }
 
   checkStateChangeRequired(){
-    print("Check state");
-    print(this.missedDetectionEvents);
-    print(this._sleepState);
-    if(this.missedDetectionEvents > 2 && _sleepState == SleepState.awake){
+    print("Checking current sleep state");
+    print("Current State: ${this._sleepState}");
+    if(this.missedDetectionEvents > 5 && _sleepState == SleepState.awake){
       _sleepState = SleepState.dozing;
       print("State changed to 'Dozing'");
     }
 
-    if(this.missedDetectionEvents > 3 && _sleepState == SleepState.dozing){
+    if(this.missedDetectionEvents > 10 && _sleepState == SleepState.dozing){
       _sleepState = SleepState.sleeping;
       print("State changed to 'Sleeping'");
     }
@@ -54,19 +71,6 @@ class SleepStateAlgorithm{
       isSleeping = true;
     }
 
-    // if((timeToSleep.elapsed.inSeconds + napLength) >= (napLimit)){
-    //   napLimitReached = true;
-    // }
-
     print("State checked, no update required");
-  }
-
-  //THIS IS FOR DEBUGGING ONLY
-  forceSleepStateDebugOnly(){
-    print("this was called");
-    _sleepState = SleepState.sleeping;
-  }
-  printSleepStateDebugOnly(){
-    print(_sleepState);
   }
 }

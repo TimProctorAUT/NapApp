@@ -45,7 +45,16 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                   //====Button One====//
                   Container(
-                    color: Color.fromRGBO(30, 30, 30, 0.7),
+                    //color: Color.fromRGBO(100, 100, 100, 0.7),
+
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      color: Color.fromRGBO(50, 50, 50, 0.7),
+                      boxShadow: [BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 20
+                      ),]
+                    ),
 
                     width: 130,
                     height: 130,
@@ -73,7 +82,16 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                   //====Button Two====//
                   Container(
-                    color: Color.fromRGBO(30, 30, 30, 0.7),
+                    //color: Color.fromRGBO(100, 100, 100, 0.7),
+
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      color: Color.fromRGBO(50, 50, 50, 0.7),
+                      boxShadow: [BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 20
+                      ),]
+                    ),
 
                     width: 130,
                     height: 130,
@@ -107,7 +125,16 @@ class _HomeScreenState  extends State<HomeScreen> {
                   
                   //====Button Three====//
                   Container(
-                    color: Color.fromRGBO(30, 30, 30, 0.7),
+                    //color: Color.fromRGBO(100, 100, 100, 0.7),
+
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      color: Color.fromRGBO(50, 50, 50, 0.7),
+                      boxShadow: [BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 20
+                      ),]
+                    ),
 
                     width: 130,
                     height: 130,
@@ -135,7 +162,16 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                   //====Button Four====//                  
                   Container(
-                    color: Color.fromRGBO(30, 30, 30, 0.7),
+                    //color: Color.fromRGBO(100, 100, 100, 0.7),
+
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      color: Color.fromRGBO(50, 50, 50, 0.7),
+                      boxShadow: [BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 20
+                      ),]
+                    ),
 
                     width: 130,
                     height: 130,
@@ -165,7 +201,7 @@ class _HomeScreenState  extends State<HomeScreen> {
 
         bottomNavigationBar: BottomAppBar(
         child:  RaisedButton(
-                  color: Color.fromRGBO(18, 18, 18, 1),
+                  color: Color.fromRGBO(50, 50, 50, 1),
                   padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                   child: Text('Keep us Free'),
                   onPressed: (){

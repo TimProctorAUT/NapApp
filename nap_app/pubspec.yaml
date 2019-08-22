@@ -25,6 +25,7 @@ dependencies:
   flutter_ringtone_player: ^1.0.3
   webview_flutter: ^0.3.13
   flutter_html: ^0.10.4
+  audioplayers: ^0.13.1
   # End of R&D project dependencies
 
 
@@ -55,6 +56,7 @@ flutter:
     - assets/about_icon.png
     - assets/graph_icon.png
     - assets/exit_icon.png
+    - assets/Meditation.mp3
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

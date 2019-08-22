@@ -1,36 +1,43 @@
-class NapSettings{
+import 'package:vibrate/vibrate.dart';
+
+class NapSettingsData{
+
+  final int vibrationInterval = 10;
 
   final int napLimit;
   final int napLength;
   final int elapsedTime;
+  final FeedbackType selectedVibrate;
+  
+  final bool wantsAudio;
+  final bool wantsAlarmAudio;
+  final bool wantsAlarmVibrate;
 
-  final bool isAsleep;
+  final String selectedAudioFile;
+  final String selectedAlarmSound; //Currently alarm library doesnt support.
 
-  //Calculating Remaining
-  int calculateRemainingTime(int napLimit, int elapsedTime)
-  { 
-    return napLimit - elapsedTime;
-  } 
+  List<String> encouragingMessages = [
+    "Atleast you tried.",
+    "Good Job!",
+  ];
 
-  //
-  asleepTest(int napLength, int napLimit, int elapsedTime)
-  {
-    int napDuration;
-    int remainingTime = calculateRemainingTime(napLimit, elapsedTime);
-    if (remainingTime >= napLength)
-    {
-      napDuration = napLength;
-    }
-    else
-    {
-      napDuration = remainingTime;
-    }
 
-    return napDuration;
-  }
+  //Not final because it is not instantiated when settings object is created.
+  //Only set after sleep detection.
+  bool successfullSleep;
+  int timeSleptInSeconds;
 
-  //Get and Set Methods
-
-  NapSettings(this.elapsedTime, this.isAsleep, this.napLength, this.napLimit);
-
+  NapSettingsData({
+    this.elapsedTime, 
+    this.successfullSleep, 
+    this.napLength, 
+    this.napLimit,
+    this.wantsAudio,
+    this.selectedAudioFile,
+    this.timeSleptInSeconds,
+    this.selectedAlarmSound,
+    this.wantsAlarmAudio,
+    this.wantsAlarmVibrate,
+    this.selectedVibrate
+  });
 }
