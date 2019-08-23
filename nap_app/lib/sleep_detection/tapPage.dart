@@ -139,7 +139,7 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 //Called when wanting to navigate to the alarm.
 _navigateToAlarmSuccess(){
   _stopTimer();
-  _stopAudio();
+  _stopAudio(1);
   _ssa.stopTimer();
   this.widget.settings.successfullSleep = true;
   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime(), settings: widget.settings,)), ModalRoute.withName('/'));
@@ -148,7 +148,7 @@ _navigateToAlarmSuccess(){
 //Called when the alarm is not needed and wanting to navigate to the summary page.
   _navigateToAlarmFail(){
     _stopTimer();
-    _stopAudio();
+    _stopAudio(1);
     _ssa.stopTimer();
     this.widget.settings.successfullSleep = false;
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1, settings: widget.settings,)), ModalRoute.withName('/'));
@@ -165,19 +165,25 @@ _navigateToAlarmSuccess(){
     }
   }
 
-  _stopAudio(){
+  _stopAudio(int push){
 //Timer to fade music out over 30 seconds when entering the alarm page.
-  _musicTimer = Timer.periodic(Duration(seconds: 3), (timer) {
-    _musicVolume -= 0.1;
-    _audioPlayer.setVolume(_musicVolume);
 
-    if(_musicVolume <= 0){
-      _musicTimer.cancel();
-      _audioCache.fixedPlayer.stop();
+    if(push == 1){
+      _musicTimer = Timer.periodic(Duration(seconds: 3), (timer) {
+        _musicVolume -= 0.1;
+        _audioPlayer.setVolume(_musicVolume);
+
+        if(_musicVolume <= 0){
+          _musicTimer.cancel();
+          _audioCache.fixedPlayer.stop();
+        }
+      });
+      _audioCache.clearCache();
     }
-  });
-
-  _audioCache.clearCache();
+    else{
+      _audioPlayer.stop();
+      _audioCache.clearCache();
+    }
   }
 
 //Called everytime the user taps the screen.
@@ -258,7 +264,7 @@ _navigateToAlarmSuccess(){
 
 //Called when "YES" is tapped on terminate session dialog
   bool terminateNapSession(){
-    _stopAudio();
+    _stopAudio(0);
     if(!_firstTap){
       _stopTimer();
     }
