@@ -480,7 +480,7 @@ class _NapSettingsState extends State<NapSettings> {
                                             ],
                                           ),                                  
 
-                                          Row(
+                                        /*   Row(
                                             children: <Widget>[
                                               Text(
                                                 'Alarm Sound Choices',
@@ -503,7 +503,7 @@ class _NapSettingsState extends State<NapSettings> {
                                                 }) .toList(),
                                               )                              
                                         ],
-                                      ),                                  
+                                      ),                       */            
                                     ],
                                   )
                                 ),
@@ -720,77 +720,6 @@ class _NapSettingsState extends State<NapSettings> {
                     ),
                   ),
 
-                  //=========Spacer Division==========//
-                  Container(height: 2,),
-
-                  //=======Setting Card Number Five=======//
-                  Card(
-                    child: Container(
-                      color: Color.fromRGBO(30, 30, 30, 0.45),
-
-                      width: 300,
-                      height: (settingCard5? 250 : 50),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              //==============Dropdown Button=================//
-                              Container(
-                                child: MaterialButton(
-                                  minWidth: 250,
-                                  height: 40,
-                                  onPressed: (){
-                                    setState(() {
-                                      if(settingCard5)
-                                      {
-                                        settingCard5 = false;
-                                      }
-                                      else
-                                      {
-                                        settingCard1 = false;
-                                        settingCard2 = false;
-                                        settingCard3 = false;
-                                        settingCard4 = false;
-                                        settingCard5 = true;
-                                      }
-                                    });
-                                  },
-                                  child: Row(
-                                    children: <Widget>[                                    
-                                      Text('Volume Setting'),
-                                      (settingCard5? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                                    ],
-                                  ),
-                                )
-                              ),       
-                              //=================================================//
-
-                              Visibility(
-                                visible: settingCard5,
-                                child: Column(
-                                  children: <Widget>[
-
-                                    //Line Division
-                                    Container(
-                                      color: Colors.white,
-                                      height: 1,
-                                      width: 250,
-                                    ),
-
-                                    //Spacer
-                                    Container(height: 20),
-
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
                 ],
               ),
             ],
@@ -919,8 +848,7 @@ class _NapSettingsState extends State<NapSettings> {
       else if (e == 0){detectionMethod = 2;}
     });
   }
-  
- 
+   
   void setAudioSetting(int e){
     setState((){
       if (e == 0){audioAssistSetting = 0;}
