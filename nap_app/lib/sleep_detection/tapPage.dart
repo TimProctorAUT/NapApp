@@ -8,6 +8,7 @@ import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
 import 'package:audioplayers/audioplayers.dart';
+import 'package:wakelock/wakelock.dart';
 
 enum DetectionState{
   waiting,
@@ -54,12 +55,14 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   @override
   void initState() { 
     super.initState();
+    Wakelock.enable();
     WidgetsBinding.instance.addObserver(this);
   }
 
 //dispose allows any code to be run before the instance of this page is disposed.
   @override
   void dispose(){
+    Wakelock.disable();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

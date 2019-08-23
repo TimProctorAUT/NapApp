@@ -1,5 +1,6 @@
 import 'package:first_app/setting.dart';
 
+import 'package:wakelock/wakelock.dart';
 import 'testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -22,6 +23,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
 
   @override
   void dispose(){
+    Wakelock.disable();
     controller.dispose();
     super.dispose();
   }
@@ -70,6 +72,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    Wakelock.enable();
     timeSlept.start();
 
      WidgetsBinding.instance

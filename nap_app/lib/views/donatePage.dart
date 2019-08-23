@@ -15,25 +15,25 @@ class _DonatePageState extends State<DonatePage> {
       appBar: AppBar(
         title: Text('Make A Donatation'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Html(
-                data: 
-                  """                   
-                    <a href="https://www.paypal.com/">https://www.paypal.com/</a><br />
-                  """,
-              ),
-            ],
-          ),
-        ],
-      ),
-      //body: WebView(initialUrl: "https://www.paypal.com/",),
+      // body: Column(
+      //   crossAxisAlignment: CrossAxisAlignment.center,
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   children: <Widget>[
+      //     Row(
+      //       crossAxisAlignment: CrossAxisAlignment.center,
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: <Widget>[
+      //         Html(
+      //           data: 
+      //             """
+      //               <a href="https://www.paypal.com/">https://www.paypal.com/</a><br />
+      //             """,
+      //         ),
+      //       ],
+      //     ),
+      //   ],
+      // ),
+      body: WebView(initialUrl: "https://www.paypal.com/",),
     );
   }
 }
