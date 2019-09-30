@@ -27,6 +27,7 @@ dependencies:
   webview_flutter: ^0.3.13
   flutter_html: ^0.10.4
   wakelock: ^0.1.2+8
+  charts_flutter: ^0.8.1
   # End of R&D project dependencies
 
 
