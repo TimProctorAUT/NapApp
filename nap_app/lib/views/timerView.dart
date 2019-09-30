@@ -7,6 +7,8 @@ import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
 
+//TODO: Line 116
+
 class NapTimer extends StatefulWidget {
 
   final int napLength;
@@ -113,7 +115,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                                 painter: TimerPainter(
                               animation: controller,
                               backgroundColor: Colors.white,
-                              color: themeData.indicatorColor,
+                              color: Colors.red,                             //TODO: Set ALARM Colors to a Changeable Color 
                             ));
                           },
                         ),

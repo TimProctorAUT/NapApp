@@ -27,7 +27,47 @@ class SimpleTimeSeriesChart extends StatelessWidget {
       // should create the same type of [DateTime] as the data provided. If none
       // specified, the default creates local date time.
       dateTimeFactory: const charts.LocalDateTimeFactory(),
-      defaultRenderer: new charts.LineRendererConfig(includePoints: true)
+      defaultRenderer: new charts.LineRendererConfig(
+        includePoints: true,
+        
+      ),
+
+      domainAxis: new charts.DateTimeAxisSpec(
+        tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
+                day: new charts.TimeFormatterSpec(
+                    format: 'd', transitionFormat: 'dd/MM')),
+
+        renderSpec: new charts.SmallTickRendererSpec(
+          labelStyle: new charts.TextStyleSpec(
+            color: charts.Color.white,
+          ),
+
+          axisLineStyle: new charts.LineStyleSpec(
+            color: charts.Color.white,
+          ),
+
+          lineStyle: new charts.LineStyleSpec(
+            color: charts.Color.white,
+          )
+        ),
+      ),
+
+      primaryMeasureAxis: new charts.NumericAxisSpec(
+        tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+          desiredTickCount: 5,
+        ),
+
+        renderSpec: new charts.GridlineRendererSpec(
+          lineStyle: charts.LineStyleSpec(
+            color: charts.Color.white,
+            dashPattern: [4, 4],
+          ),
+
+          labelStyle: charts.TextStyleSpec(
+            color: charts.Color.white,
+          ),
+        ),
+      ),
     );
   }
 
@@ -44,7 +84,7 @@ class SimpleTimeSeriesChart extends StatelessWidget {
     return [
       new charts.Series<NapDataset, DateTime>(
         id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
         domainFn: (NapDataset sales, _) => sales.time,
         measureFn: (NapDataset sales, _) => sales.sales,
         data: data,
