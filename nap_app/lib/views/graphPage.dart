@@ -1,9 +1,4 @@
-import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
-import '../graphs/LineChart.dart' as lineChart;
-import '../graphs/DonutChart.dart' as donutChart;
-import '../graphs/GuageChart.dart' as guageChart;
 
 class PastNaps extends StatefulWidget
 {
@@ -18,11 +13,6 @@ class _PastNapsState extends State<PastNaps> {
       appBar: AppBar(
         title: Text('Past Naps'),
       ),
-      //Insert Content
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(height: 25,),
 
             Container(      
               margin: EdgeInsets.all(15),

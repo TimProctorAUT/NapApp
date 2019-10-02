@@ -1,6 +1,9 @@
+import 'package:first_app/fileOperations.dart';
+import 'package:first_app/setting.dart';
+import 'package:first_app/sleep_detection/tapInstruction.dart';
+import 'package:first_app/sleep_detection/tapPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
@@ -13,6 +16,76 @@ class HomeScreen extends StatefulWidget
 }
 
 class _HomeScreenState  extends State<HomeScreen> {
+
+  FileOperations fileOps = FileOperations();
+  NapSettingsData settingsObject;
+
+  dialogBuilder(){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Looks like you don't have any saved settings!\n\nWe have tried to setup the app to work just for you!\n\nIf you wish to personalize your naps, please visit the 'Nap Setup' from the homepage!"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      )
+    );
+  }
+
+  readFromFile() async{
+    await fileOps.readSettings();
+
+    setState(() {
+      try{
+        settingsObject = NapSettingsData(
+          vibrationInterval: FileOperations.decodedObject['vibrateInterval'],
+          napLimit: FileOperations.decodedObject['napLimit'],
+          napLength: FileOperations.decodedObject['napLength'],
+          elapsedTime: FileOperations.decodedObject['elapsedTime'],
+          selectedVibrate: FileOperations.decodedObject['selectedVibrate'],
+          wantsAudio: FileOperations.decodedObject['wantsAudio'],
+          wantsAlarmAudio: FileOperations.decodedObject['wantsAlarmAudio'],
+          wantsAlarmVibrate: FileOperations.decodedObject['wantsAlarmVibrate'],
+          selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
+          selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
+          successfullSleep: FileOperations.decodedObject['successfullSleep'],
+          timeSleptInSeconds: FileOperations.decodedObject['timeSleptInSeconds'],
+          dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
+          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings']
+        );
+
+        if(settingsObject.dontDisplayInstructions){
+          Navigator.push(context,MaterialPageRoute(builder: (context) => TapMethod(settings: settingsObject,)),); 
+        }
+        else{
+          Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
+        }
+
+      }
+      catch(e){
+        settingsObject = NapSettingsData(
+          vibrationInterval: 30,
+          napLength: 10,
+          napLimit: 30,
+          dontDisplayInstructions: false,
+          wantsAudio: false
+        );
+
+        Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
+
+        dialogBuilder();
+
+        print("file doesnt exist");
+      }  
+    });     
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,15 +111,20 @@ class _HomeScreenState  extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+
+              Spacer(),
+
+              Text("Nap", style: TextStyle(fontSize: 55),),
+              Text("Optimizer", style: TextStyle(fontSize: 20),),
               
+              Spacer(),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
 
                   //====Button One====//
                   Container(
-                    //color: Color.fromRGBO(100, 100, 100, 0.7),
-
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(16.0)),
                       color: Color.fromRGBO(50, 50, 50, 0.7),
@@ -59,9 +137,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                     width: 130,
                     height: 130,
                     child: MaterialButton(
-                      onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings()),);
-                      },
+                      onPressed: readFromFile,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -71,7 +147,7 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                           Container(height: 10,),
 
-                          Text('Take a Nap', style: TextStyle(fontSize: 11),),
+                          Text('Start Nap', style: TextStyle(fontSize: 11),),
                         ],
                       ),
                     ),
@@ -97,18 +173,18 @@ class _HomeScreenState  extends State<HomeScreen> {
                     height: 130,
                     child: MaterialButton(
                       onPressed: (){
-
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings()),);
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(height: 2.5,),
 
-                          Image(image: AssetImage('assets/sleep_icon.png'), height: 75, width: 75,),
-
+                          //Image(image: AssetImage('assets/lifespansmall.png'), height: 75, width: 75,),
+                          Icon(Icons.settings, size: 75,),
                           Container(height: 10,),
 
-                          Text('Sleep Training', style: TextStyle(fontSize: 11),),
+                          Text('Nap Setup', style: TextStyle(fontSize: 11),),
                         ],
                       ),
                     ),
@@ -151,7 +227,7 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                           Container(height: 10,),
 
-                          Text('Past Naps', style: TextStyle(fontSize: 11),),
+                          Text('Last Nap', style: TextStyle(fontSize: 11),),
                         ],
                       ),
                     ),
@@ -195,6 +271,44 @@ class _HomeScreenState  extends State<HomeScreen> {
                   ),
                 ],
               ),
+
+              Spacer(),
+
+              Stack(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image(image: AssetImage('assets/lifespantrust.png'), height: 40, width: 300,),
+                        ],
+                      )
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          MaterialButton(
+                            onPressed: (){
+                              print("asd");
+                            },
+                            height: 50,
+                            minWidth: 200,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              Container(height: 20,)
             ],
           ),
         ),

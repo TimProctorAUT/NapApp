@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:first_app/fileOperations.dart';
 import 'package:first_app/setting.dart';
 import 'package:flutter/material.dart';
 import 'tapPage.dart';
@@ -12,10 +15,65 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+  FileOperations fileOps = FileOperations();
+
+  saveToFile() async{
+    fileOps.writeSettings(jsonEncode(widget.settings));
+  }
+
+  dialogBuilder(){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("You have opted to not display the instructions anymore.\n\nTo enable the instructions again, please visit the 'Nap Setup' from the homepage."),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Don't Display Again", style: Theme.of(context).textTheme.body1,),
+            ],
+          ),
+          
+          Switch(
+            value: widget.settings.dontDisplayInstructions,
+            onChanged: (value){
+              setState(() {
+                widget.settings.dontDisplayInstructions = value;
+                saveToFile();
+
+                print(value);
+
+                if(value){
+                  dialogBuilder();
+                }
+              });
+            },
+
+            activeColor: Colors.green,
+            activeTrackColor: Colors.lightGreen,
+
+            inactiveThumbColor: Colors.blueGrey,
+            inactiveTrackColor: Colors.blueGrey,
+          )
+        ],
+      ),
       body: Container(
         child: RaisedButton(
           color: Theme.of(context).primaryColor,
@@ -29,14 +87,15 @@ class _SplashScreenState extends State<SplashScreen> {
                 Padding(
                   padding: EdgeInsets.all(16),
                 ),
-                Text("1. Tap Screen to Start", style: Theme.of(context).textTheme.body1,),
-                Text("2. Wait for Vibration", style: Theme.of(context).textTheme.body1,),
-                Text("3. Tap Screen Again", style: Theme.of(context).textTheme.body1,),
-                Text("4. Repeat Until Asleep", style: Theme.of(context).textTheme.body1,),
+                Text("1. Tap Screen to Start", style: Theme.of(context).textTheme.title,),
+                Text("2. Place Finger on the 'TAP' Text in the center of the Screen.", style: Theme.of(context).textTheme.title,),
+                Text("2. Wait for Vibration", style: Theme.of(context).textTheme.title,),
+                Text("3. Lift Finger and Place Back on Screen.", style: Theme.of(context).textTheme.title,),
+                Text("4. Repeat Until Asleep", style: Theme.of(context).textTheme.title,),
                 Padding(
                   padding: EdgeInsets.all(16),
                 ),
-                Text("Tap when you're ready to start tracking your nap!", style: Theme.of(context).textTheme.body1,),
+                Text("Tap anywhere to dismiss this page and follow the onscreen instructions", style: Theme.of(context).textTheme.title,),
               ],
             ),
           ),
