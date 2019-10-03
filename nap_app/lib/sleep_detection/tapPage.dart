@@ -3,12 +3,15 @@ import 'package:first_app/setting.dart';
 import 'package:first_app/views/homePage.dart';
 import 'package:first_app/views/timerView.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
 import 'package:audioplayers/audioplayers.dart';
 import 'package:wakelock/wakelock.dart';
+
+
 
 enum DetectionState{
   waiting,
