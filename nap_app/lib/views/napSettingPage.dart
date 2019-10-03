@@ -277,7 +277,7 @@ class _NapSettingsState extends State<NapSettings> {
                                   },
                                   child: Row(
                                     children: <Widget>[                                    
-                                      Text('Sleep Detection Method'),
+                                      Text('Accessability Settings'),
                                       (settingCard2? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
                                       (settingCard2NeedsAttention ? Icon(Icons.warning, color: Colors.orange,) : Icon(Icons.done, color: Colors.green,)),
                                     ],
@@ -307,7 +307,7 @@ class _NapSettingsState extends State<NapSettings> {
                                       child: Column(
                                         children: <Widget>[                     
                                                 
-                                          Text('Select a Sleep Detection Method:'),
+                                          Text('Select a Theme Colour'),
 
                                           //Spacer
                                           Container(height: 5),
@@ -316,12 +316,12 @@ class _NapSettingsState extends State<NapSettings> {
                                             children: <Widget>[
                                               Radio(
                                                 onChanged: (int e) => setDetectionMethod(e),
-                                                activeColor: Colors.green,
+                                                activeColor: Colors.cyan,
                                                 value: 0,
                                                 groupValue: detectionMethod,                                          
                                               ),
 
-                                              Text('Tap Screen'),
+                                              Text('Normal'),
                                             ],
                                           ),
 
@@ -330,35 +330,27 @@ class _NapSettingsState extends State<NapSettings> {
                                               Radio(
                                                 onChanged: (int e) => setDetectionMethod(e),
                                                 activeColor: Colors.red,
-                                                value: null,
+                                                value: 1,
                                                 groupValue: detectionMethod,                                          
                                               ),
 
-                                              Text(' Drop Phone ', style: TextStyle(decoration: TextDecoration.lineThrough),),
+                                              Text('Red/Green Colourblind'),
                                             ],
                                           ),
 
-                                          //Spacer
-                                          Container(height: 15),
-                                          Container(
-                                            width: 250,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                //Button One
-                                                Container(
-                                                  color: Colors.white,
-                                                  height: 25,
-                                                  width: 150,
-                                                  child: RaisedButton(
-                                                    color: Colors.white,
-                                                    child: Text('Test Detection', style: TextStyle(color: Colors.black),),
-                                                    onPressed: () => testDetectionMethod(detectionMethod)               
-                                                  ),
-                                                ),
-                                                ],
+                                          Row(
+                                            children: <Widget>[
+                                              Radio(
+                                                onChanged: (int e) => setDetectionMethod(e),
+                                                activeColor: Colors.yellow,
+                                                value: 2,
+                                                groupValue: detectionMethod,                                          
                                               ),
-                                            ),
+
+                                              Text('Yellow/Blue Colourblind'),
+                                            ],
+                                          ),
+
                                         ],
                                       ),
                                     ),                                  
@@ -844,8 +836,8 @@ class _NapSettingsState extends State<NapSettings> {
   void setDetectionMethod(int e){
     setState((){
       if (e == 0){detectionMethod = 0;}
-      else if (e == 0){detectionMethod = 1;}
-      else if (e == 0){detectionMethod = 2;}
+      else if (e == 1){detectionMethod = 1;}
+      else if (e == 2){detectionMethod = 2;}
     });
   }
    
