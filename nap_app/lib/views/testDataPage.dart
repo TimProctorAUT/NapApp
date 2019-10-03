@@ -21,33 +21,70 @@ class _TestDataPageState extends State<TestData> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Home'),
+          title: Text('Summary Page'),
         ),
-        body: Container(
-                      child: MaterialButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/exit_icon.png'),
-                              width: 60,
-                              height: 60,
-                            ),
-                            Text(
-                              'Exit',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          SystemNavigator.pop();
-                        },
-                      ),
-                      color: Color.fromRGBO(30, 30, 30, 0.8),
-                      height: 100,
-                      width: 100,
-                      margin: EdgeInsets.all(15)
-                  ),
+        body: Row(    
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Column( 
+
+          children: <Widget> [
+            
+
+            Text(
+              'Who Are We?',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+
+            ),
+            Container(height: 20,),
+
+            Text(       
+              '[INSERT CONTENT]',
+              overflow: TextOverflow.clip,
+              style: TextStyle(color: Colors.white),      
+            ),
+
+            Container(
+              height: 50,
+              width: 100,
+            ),
+
+            Text(
+              'Why Should you Nap?',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+
+            ),
+            Container(height: 20,),
+
+
+            Text(       
+              '[INSERT CONTENT]',
+              overflow: TextOverflow.clip,
+              style: TextStyle(color: Colors.white),      
+            ),
+
+            Container(
+              height: 50,
+              width: 100,
+            ),
+
+            Text(
+              'How Can this App Help?',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+
+            ),
+            Container(height: 20,),
+
+            Text(       
+              '[INSERT CONTENT]',
+              overflow: TextOverflow.clip,
+              style: TextStyle(color: Colors.white),      
+            ),
+
+          ],
+        ),
+      ],           
+    ),
         ),
       );
   }
