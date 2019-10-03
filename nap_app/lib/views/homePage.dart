@@ -5,7 +5,7 @@ import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
 import 'donatePage.dart' as DonatePage;
-import 'testDataPage.dart' as TestData;
+import 'summaryPage.dart' as TestData;
 
 class HomeScreen extends StatefulWidget
 {
