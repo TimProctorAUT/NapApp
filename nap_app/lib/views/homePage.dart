@@ -5,6 +5,7 @@ import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
 import 'donatePage.dart' as DonatePage;
+import 'testDataPage.dart' as TestData;
 
 class HomeScreen extends StatefulWidget
 {
@@ -97,7 +98,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                     height: 130,
                     child: MaterialButton(
                       onPressed: (){
-
+                         Navigator.push(context,MaterialPageRoute(builder: (context) => TestData.TestData()),);
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
