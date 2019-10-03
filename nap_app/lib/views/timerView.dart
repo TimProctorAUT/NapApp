@@ -5,6 +5,8 @@ import 'testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'aboutPage.dart' as AboutPage;
+import 'testDataPage.dart' as TestData;
 
 
 //TODO: Line 116
@@ -88,7 +90,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   navigateToSummary(){
     timeSlept.stop();
     widget.settings.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
+    //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
   }
 
   @override
@@ -173,7 +175,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                   ),
                   FlatButton(
                     child: Text("See Summary"),
-                    onPressed: () => navigateToSummary
+                    onPressed: (){
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => TestData.TestData()),);}
                   ),
                 ],
               ),
