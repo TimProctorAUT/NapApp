@@ -31,8 +31,18 @@ class _TestDataPageState extends State<TestData> {
   
   @override
   Widget build(BuildContext context) {
-    int  hello = widget.settings.napLength;
-    String oneAsString = hello.toString();
+
+    int  napLength = widget.settings.napLength;
+    String napLength1 = napLength.toString();
+    
+    int elapsedTime =widget.settings.elapsedTime;
+    String elapsedTime1 = elapsedTime.toString();
+
+    var date2 = DateTime.now();
+    String stringValue = date2.toString();
+
+
+
     return MaterialApp(
       title: 'NapApp Menu Tests',
       theme: ThemeData(
@@ -45,7 +55,7 @@ class _TestDataPageState extends State<TestData> {
       home: Scaffold(
         appBar: AppBar(
           
-          title: Text('Summary Page'+ oneAsString),
+          title: Text('Summary Page'),
           
         ),
         body: Row(    
@@ -58,17 +68,13 @@ class _TestDataPageState extends State<TestData> {
             
 
             Text(
-              'Your Nap Time',
+              'Your Nap Timeis: '+ napLength1,
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
 
             ),
             Container(height: 20,),
 
-            Text(       
-              '[INSERT CONTENT]',
-              overflow: TextOverflow.clip,
-              style: TextStyle(color: Colors.white),      
-            ),
+            
 
             Container(
               height: 50,
@@ -76,37 +82,25 @@ class _TestDataPageState extends State<TestData> {
             ),
 
             Text(
-              'Your Start Time' ,
+              'Your Start Time ' + elapsedTime1,
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
 
             ),
             Container(height: 20,),
 
      
-            Text(       
-              
-              '[INSERT CONTENT]',
-              overflow: TextOverflow.clip,
-              style: TextStyle(color: Colors.white),      
-            ),
-
             Container(
               height: 50,
               width: 100,
             ),
 
             Text(
-              'Your End Time',
+              'Your End Time is:'+ stringValue,
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
 
             ),
             Container(height: 20,),
 
-            Text(       
-              '[INSERT CONTENT]',
-              overflow: TextOverflow.clip,
-              style: TextStyle(color: Colors.white),      
-            ),
 
           ],
         ),
