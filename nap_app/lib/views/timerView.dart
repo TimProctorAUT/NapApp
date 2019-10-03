@@ -1,12 +1,12 @@
 import 'package:first_app/setting.dart';
 
 import 'package:wakelock/wakelock.dart';
-import 'testDataPage.dart';
+import 'summaryPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'aboutPage.dart' as AboutPage;
-import 'testDataPage.dart' as TestData;
+import 'summaryPage.dart' as TestData;
 
 
 //TODO: Line 116
