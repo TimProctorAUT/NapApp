@@ -90,7 +90,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   navigateToSummary(){
     timeSlept.stop();
     widget.settings.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
-    //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
+   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData.TestData( settings: widget.settings,)), ModalRoute.withName('/'));
   }
 
   @override
@@ -176,7 +176,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                   FlatButton(
                     child: Text("See Summary"),
                     onPressed: (){
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => TestData.TestData()),);}
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData.TestData( settings: widget.settings,)), ModalRoute.withName('/'));}
+                    
                   ),
                 ],
               ),
