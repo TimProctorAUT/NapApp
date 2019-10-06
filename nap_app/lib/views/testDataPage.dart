@@ -1,14 +1,55 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:first_app/fileOperations.dart';
+import 'package:first_app/userNapData.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import 'homePage.dart';
 
 class TestData extends StatefulWidget
 {
+  final UserNapData napData;
+
+  TestData({this.napData});
+
   @override
   _TestDataPageState createState() => _TestDataPageState();
 }
 
 
 class _TestDataPageState extends State<TestData> {
+
+  FileOperations fileOps = FileOperations();
+  UserNapData tmpData = UserNapData();
+
+  @override
+  void initState() {
+    super.initState();
+    writeNapData();
+  }
+
+  writeNapData() async{
+    await fileOps.writeNapData(jsonEncode(widget.napData), widget.napData.napNumber);
+    getNapData();
+  }
+
+  getNapData() async{
+    await fileOps.readNapData(widget.napData.napNumber);
+
+    print("file read");
+
+    setState(() {
+      tmpData = UserNapData(
+        napNumber: FileOperations.decodedNapData['napNumber'],
+        successfullSleep: FileOperations.decodedNapData['successfullSleep'],
+        timeOfNap: FileOperations.decodedNapData['timeOfNap'],
+        timeSleptInSeconds: FileOperations.decodedNapData['timeSleptInSeconds'],
+        timeToSleep: FileOperations.decodedNapData['timeToSleep']
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,32 +64,28 @@ class _TestDataPageState extends State<TestData> {
         appBar: AppBar(
           title: Text('Home'),
         ),
-        body: Container(
-                      child: MaterialButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/exit_icon.png'),
-                              width: 60,
-                              height: 60,
-                            ),
-                            Text(
-                              'Exit',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          SystemNavigator.pop();
-                        },
-                      ),
-                      color: Color.fromRGBO(30, 30, 30, 0.8),
-                      height: 100,
-                      width: 100,
-                      margin: EdgeInsets.all(15)
-                  ),
-        ),
-      );
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Nap Number: ${tmpData.napNumber}", style: Theme.of(context).textTheme.body1,),
+                Text("Did you fall asleep: ${tmpData.successfullSleep}", style: Theme.of(context).textTheme.body1,),
+                Text("Time of Nap: ${tmpData.timeOfNap}", style: Theme.of(context).textTheme.body1,),
+                Text("Time Slept: ${tmpData.timeSleptInSeconds}", style: Theme.of(context).textTheme.body1,),
+                Text("Time to Sleep: ${tmpData.timeToSleep}", style: Theme.of(context).textTheme.body1,),
+                RaisedButton(
+                  child: Text("Go Home"),
+                  onPressed: (){
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => HomeScreen()),);
+                  },
+                ),
+              ],
+            ),
+          ],
+        )
+      ),
+    );
   }
 }

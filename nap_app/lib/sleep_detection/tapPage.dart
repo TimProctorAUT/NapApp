@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:audioplayers/audio_cache.dart';
+import 'package:first_app/fileOperations.dart';
 import 'package:first_app/setting.dart';
+import 'package:first_app/userNapData.dart';
+import 'package:first_app/views/graphPage.dart';
 import 'package:first_app/views/homePage.dart';
 import 'package:first_app/views/timerView.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
+import 'package:intl/intl.dart';
 import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
@@ -48,6 +55,9 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   double _musicVolume = 1;
   bool _firstTap = true;
 
+  UserNapData napData = UserNapData();
+  FileOperations fileOps = FileOperations();
+
   int loopCount = 0;
   
 //initstate allows any code to be run on load of this page.
@@ -56,6 +66,7 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
     super.initState();
     Wakelock.enable();
     WidgetsBinding.instance.addObserver(this);
+    loadNapNumber();
   }
 
 //dispose allows any code to be run before the instance of this page is disposed.
@@ -91,15 +102,50 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
     }
   }
 
+//Sets default napNumber to 1 if this is first nap, else it checks what files have been created and sets napnumber to that.
+  loadNapNumber() async{
+    //Checking to see what files exist to get the current napNumber.
+    for(int i = 1; i <= 10; i++){
+      File file = await FileOperations().getDataFile(i);
+
+      if(i == 10 && await file.exists()){
+        buildErrorPopup();
+      }
+
+      if(await file.exists()){
+        print(file);
+      }
+      else{
+        print("The file for nap number $i dont exist yet");
+        napData.napNumber = i;
+        i = 10;
+      }
+    }
+  }
+
+  buildErrorPopup(){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("You already have the maximum number of saved nap's.\n\nTo continue, please reset your nap data from the 'Past Naps' page."),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            onPressed: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => PastNaps()), ModalRoute.withName('/'))
+            ),
+        ],
+      )
+    );
+  }
+
 //Starts the vibrate timer.
 //Contains all code run on every timer tick.
   _startTimer(){
     _timer = Timer.periodic(Duration(seconds: widget.settings.vibrationInterval), (timer) {
       setState(() {
         print("~~~~~~~~~~ Loop No. $loopCount ~~~~~~~~~~");
-        //This block of code will run every vibrationInterval (5) seconds.
+        //This block of code will run every vibrationInterval (30) seconds.
         _ssa.setNapInformation(this.widget.settings.napLimit, this.widget.settings.napLength);
-        //_ssa.setNapInformation(2, 1);
         if(_tapState == TapState.canTap){
           incrementMissedTapsCount();
         }
@@ -140,8 +186,8 @@ _navigateToAlarmSuccess(){
   _stopTimer();
   _stopAudio(1);
   _ssa.stopTimer();
-  this.widget.settings.successfullSleep = true;
-  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime(), settings: widget.settings,)), ModalRoute.withName('/'));
+  updateNapData(true);
+  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: _ssa.calcRemainingAlarmTime(), napData: napData, settings: widget.settings,)), ModalRoute.withName('/'));
 }
 
 //Called when the alarm is not needed and wanting to navigate to the summary page.
@@ -149,8 +195,14 @@ _navigateToAlarmSuccess(){
     _stopTimer();
     _stopAudio(1);
     _ssa.stopTimer();
-    this.widget.settings.successfullSleep = false;
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1, settings: widget.settings,)), ModalRoute.withName('/'));
+    updateNapData(false);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1, napData: napData, settings: widget.settings,)), ModalRoute.withName('/'));
+  }
+
+  updateNapData(bool didSleep){
+    napData.successfullSleep = didSleep;
+    napData.timeToSleep = _ssa.timeToSleep.elapsed.inSeconds;
+    napData.timeOfNap = DateFormat().add_yMMMd().add_Hm().format(DateTime.now());
   }
 
   _playAudio() async{

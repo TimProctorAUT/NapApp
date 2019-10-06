@@ -4,52 +4,37 @@ import 'package:first_app/views/homePage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
-import 'package:vibrate/vibrate.dart';
 import '../setting.dart' as Settings;
 
 class NapSettings extends StatefulWidget
 {
+  final Settings.NapSettingsData napSettings;
+  NapSettings({this.napSettings});
+
   @override 
   _NapSettingsState createState() => _NapSettingsState();
 }
 
 class _NapSettingsState extends State<NapSettings> {
 
-  bool settingCard1 = false;
+  bool settingCard1 = true;
   bool settingCard2 = false;
   bool settingCard3 = false;
   bool settingCard4 = false;
   bool settingCard5 = false;
 
-//TESTING TO SEE IF THIS IMPROVES USABILITY.
-  bool settingCard1NeedsAttention = true;
-  bool settingCard2NeedsAttention = true;
-  bool settingCard3NeedsAttention = true;
-  bool settingCard4NeedsAttention = true;
-  bool settingCard5NeedsAttention = true;
-  bool noAttentionNeeded = false;
-///////////////////////////////////////////
+  int napLimit;
+  int napLength;
 
-  int napLimit = 20;
-  int napLength = 10;
-
-  int detectionMethod = 0;
-  int audioAssistSetting = 2;
-
-  bool soundSwitch = true;
-  bool showInstructions = true;
+  bool soundSwitch;
+  bool showInstructions;
   bool tapPlay = true;
-  
-  int alarmSound = 1;
-  int vibratePower = 1;
 
-  bool backgroundAudio = false;
+  bool backgroundAudio;
   String selectedAudioFile = "Meditation";
 
-  FeedbackType selectedVibrate;
-
   List<String> listOfFiles = List<String>();
-  static Settings.NapSettingsData settingsObject;
+  Settings.NapSettingsData settingsObject;
   bool hasSavedSettings = false;
 
   FileOperations fileOps = FileOperations();
@@ -58,7 +43,23 @@ class _NapSettingsState extends State<NapSettings> {
   void initState() {
     super.initState();
     mapAssetsToList();
+    loadSettings();
   }
+
+  loadSettings(){
+    napLimit = widget.napSettings.napLimit;
+    napLength = widget.napSettings.napLength;
+    showInstructions = widget.napSettings.dontDisplayInstructions;
+    backgroundAudio = widget.napSettings.wantsAudio;
+
+    if(widget.napSettings.wantsAlarmAudio == null){
+      soundSwitch = true;
+    }
+    else{
+      soundSwitch = widget.napSettings.wantsAlarmAudio;
+    }
+  }
+
 
 //Testing to see if this improves usabilitiy
   Future<bool> closeSettingsTabs() async{
@@ -128,20 +129,13 @@ class _NapSettingsState extends State<NapSettings> {
                                         settingCard3 = false;
                                         settingCard4 = false;
                                         settingCard5 = false;
-                                        settingCard1NeedsAttention = false;
-
-                                        if(!settingCard1NeedsAttention && !settingCard2NeedsAttention && !settingCard3NeedsAttention && !settingCard4NeedsAttention){
-                                          noAttentionNeeded = true;
-                                        }
                                       }
                                     });
                                   },
                                   child: Row(
                                     children: <Widget>[                                    
                                       Text('Nap Times'),
-                                      (settingCard1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                                      (settingCard1NeedsAttention ? Icon(Icons.warning, color: Colors.orange,) : Icon(Icons.done, color: Colors.green,)),
-                                    ],
+                                      (settingCard1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),                                    ],
                                   ),
                                 )
                               ),       
@@ -269,19 +263,13 @@ class _NapSettingsState extends State<NapSettings> {
                                         settingCard3 = false;
                                         settingCard4 = false;
                                         settingCard5 = false;
-                                        settingCard2NeedsAttention = false;
-
-                                        if(!settingCard1NeedsAttention && !settingCard2NeedsAttention && !settingCard3NeedsAttention && !settingCard4NeedsAttention){
-                                          noAttentionNeeded = true;
-                                        }
                                       }
                                     });
                                   },
                                   child: Row(
                                     children: <Widget>[                                    
-                                      Text('Sleep Detection Method'),
+                                      Text('Accessibility Options'),
                                       (settingCard2? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                                      (settingCard2NeedsAttention ? Icon(Icons.warning, color: Colors.orange,) : Icon(Icons.done, color: Colors.green,)),
                                     ],
                                   ),
                                 )
@@ -308,59 +296,33 @@ class _NapSettingsState extends State<NapSettings> {
                                       height: 180,
                                       child: Column(
                                         children: <Widget>[                     
-                                                
-                                          Text('Select a Sleep Detection Method:'),
-
-                                          //Spacer
-                                          Container(height: 5),
 
                                           Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              Radio(
-                                                onChanged: (int e) => setDetectionMethod(e),
+                                              Text('Toggle Instructions'),
+
+                                              Switch(
+                                                value: !showInstructions,
+                                                onChanged: (value)
+                                                {
+                                                  setState(() {
+                                                    showInstructions = !value;
+                                                  });
+                                                  
+                                                },
+
                                                 activeColor: Colors.green,
-                                                value: 0,
-                                                groupValue: detectionMethod,                                          
+                                                activeTrackColor: Colors.lightGreen,
+
+                                                inactiveThumbColor: Colors.blueGrey,
+                                                inactiveTrackColor: Colors.blueGrey,
                                               ),
-
-                                              Text('Tap Screen'),
                                             ],
-                                          ),
-
-                                          Row(
-                                            children: <Widget>[
-                                              Radio(
-                                                onChanged: (int e) => setDetectionMethod(e),
-                                                activeColor: Colors.red,
-                                                value: null,
-                                                groupValue: detectionMethod,                                          
-                                              ),
-
-                                              Text(' Drop Phone ', style: TextStyle(decoration: TextDecoration.lineThrough),),
-                                            ],
-                                          ),
+                                          ), 
 
                                           //Spacer
                                           Container(height: 15),
-                                          Container(
-                                            width: 250,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                //Button One
-                                                Container(
-                                                  color: Colors.white,
-                                                  height: 25,
-                                                  width: 150,
-                                                  child: RaisedButton(
-                                                    color: Colors.white,
-                                                    child: Text('Test Detection', style: TextStyle(color: Colors.black),),
-                                                    onPressed: (){}            
-                                                  ),
-                                                ),
-                                                ],
-                                              ),
-                                            ),
                                         ],
                                       ),
                                     ),                                  
@@ -408,11 +370,6 @@ class _NapSettingsState extends State<NapSettings> {
                                         settingCard3 = true;
                                         settingCard4 = false;
                                         settingCard5 = false;
-                                        settingCard3NeedsAttention = false;
-
-                                        if(!settingCard1NeedsAttention && !settingCard2NeedsAttention && !settingCard3NeedsAttention && !settingCard4NeedsAttention){
-                                          noAttentionNeeded = true;
-                                        }
                                       }
                                     });
                                   },
@@ -420,7 +377,6 @@ class _NapSettingsState extends State<NapSettings> {
                                     children: <Widget>[                                    
                                       Text('Alarm Settings'),
                                       (settingCard3? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                                      (settingCard3NeedsAttention ? Icon(Icons.warning, color: Colors.orange,) : Icon(Icons.done, color: Colors.green,)),
                                     ],
                                   ),
                                 )
@@ -515,29 +471,7 @@ class _NapSettingsState extends State<NapSettings> {
                                   width: 200,
                                   height: 96,
                                   child: Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Text('Toggle Instructions'),
-
-                                          Switch(
-                                            value: !showInstructions,
-                                            onChanged: (value)
-                                            {
-                                              setState(() {
-                                                showInstructions = !value;
-                                              });
-                                              
-                                            },
-
-                                            activeColor: Colors.green,
-                                            activeTrackColor: Colors.lightGreen,
-
-                                            inactiveThumbColor: Colors.blueGrey,
-                                            inactiveTrackColor: Colors.blueGrey,
-                                          ),
-                                        ],
-                                      ),                                                               
+                                    children: <Widget>[                                                            
                                 ],
                               )
                             ),
@@ -586,19 +520,13 @@ class _NapSettingsState extends State<NapSettings> {
                                         settingCard3 = false;
                                         settingCard4 = true;
                                         settingCard5 = false;
-                                        settingCard4NeedsAttention = false;
-
-                                        if(!settingCard1NeedsAttention && !settingCard2NeedsAttention && !settingCard3NeedsAttention && !settingCard4NeedsAttention){
-                                          noAttentionNeeded = true;
-                                        }
                                       }
                                     });
                                   },
                                   child: Row(
                                     children: <Widget>[                                    
-                                      Text('Audio Assistance'),
+                                      Text('Background Audio'),
                                       (settingCard4? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                                      (settingCard4NeedsAttention ? Icon(Icons.warning, color: Colors.orange,) : Icon(Icons.done, color: Colors.green,)),
                                     ],
                                   ),
                                 )
@@ -625,7 +553,6 @@ class _NapSettingsState extends State<NapSettings> {
                                       height: 180,
                                       child: Column(
                                         children: <Widget>[                                    
-                                          Text('Audio Assistance:'),
                                           
                                           //TOGGLE SWITCH FOR WANTING TO LISTEN TO AUDIO DURING NAP
                                           Row(
@@ -653,11 +580,11 @@ class _NapSettingsState extends State<NapSettings> {
                                           //DROP DOWN MENU FOR AUDIO SELECTION
                                           Row(
                                             children: <Widget>[
-                                              Text("Audio File"),
+                                              backgroundAudio ? Text("Audio File") : Container(),
                                               
                                               Container(width: 15,),
 
-                                              DropdownButton <String>(
+                                              backgroundAudio ? DropdownButton <String>(
                                                 disabledHint: Text("Audio Disabled"),
                                                 value: selectedAudioFile,
                                                 onChanged: (String newValue){
@@ -672,7 +599,7 @@ class _NapSettingsState extends State<NapSettings> {
                                                   );
                                                 })
                                                 .toList() : null,
-                                              )
+                                              ) : Container()
                                             ],
                                           ),
                                         ],
@@ -693,9 +620,9 @@ class _NapSettingsState extends State<NapSettings> {
                   Spacer(),
 
                   RaisedButton(
-                    color: noAttentionNeeded ? Colors.green : Colors.white,
+                    color: Colors.green,
                     textColor: Colors.black,
-                    padding: EdgeInsets.fromLTRB(120.0, 15.0, 120.0, 15.0),
+                    padding: EdgeInsets.fromLTRB(90.0, 15.0, 90.0, 15.0),
                     child: Text('Save Settings'),
                     onPressed: () => saveToFile()
                   ),
@@ -760,10 +687,9 @@ class _NapSettingsState extends State<NapSettings> {
       wantsAudio: backgroundAudio, 
       selectedAudioFile: selectedAudioFile, 
       wantsAlarmAudio: soundSwitch, 
-      selectedVibrate: selectedVibrate,
       dontDisplayInstructions: showInstructions,
       vibrationInterval: 30,
-      hasSavedSettings: true
+      hasSavedSettings: true,
     );
 
     fileOps.writeSettings(jsonEncode(settingsObject));
@@ -788,52 +714,6 @@ class _NapSettingsState extends State<NapSettings> {
         ],
       )
     );
-  }
-
-  testVibrate(){
-    setState(() {
-      switch(vibratePower){
-        case 1:
-          Vibrate.feedback(FeedbackType.error);
-          selectedVibrate = FeedbackType.error;
-        break;
-
-        case 2:
-          Vibrate.feedback(FeedbackType.heavy);
-          selectedVibrate = FeedbackType.heavy;
-        break;
-
-        case 3:
-          Vibrate.feedback(FeedbackType.impact);
-          selectedVibrate = FeedbackType.impact;
-        break;
-
-        case 4:
-          Vibrate.feedback(FeedbackType.light);
-          selectedVibrate = FeedbackType.light;
-        break;
-
-        case 5:
-          Vibrate.feedback(FeedbackType.medium);
-          selectedVibrate = FeedbackType.medium;
-        break;
-
-        case 6:
-          Vibrate.feedback(FeedbackType.selection);
-          selectedVibrate = FeedbackType.selection;
-        break;
-
-        case 7:
-          Vibrate.feedback(FeedbackType.success);
-          selectedVibrate = FeedbackType.success;
-        break;
-
-        case 8:
-          Vibrate.feedback(FeedbackType.warning);
-          selectedVibrate = FeedbackType.warning;
-        break;
-      }
-    });
   }
 
   testAlarmSound(){
@@ -866,21 +746,5 @@ class _NapSettingsState extends State<NapSettings> {
     }
 
     print(listOfFiles);
-  }
-
-  void setDetectionMethod(int e){
-    setState((){
-      if (e == 0){detectionMethod = 0;}
-      else if (e == 0){detectionMethod = 1;}
-      else if (e == 0){detectionMethod = 2;}
-    });
-  }
-   
-  void setAudioSetting(int e){
-    setState((){
-      if (e == 0){audioAssistSetting = 0;}
-      else if (e == 0){audioAssistSetting = 1;}
-      else if (e == 0){audioAssistSetting = 2;}
-    });
   }
 }

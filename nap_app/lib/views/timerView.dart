@@ -1,6 +1,9 @@
-import 'package:first_app/setting.dart';
+import 'dart:async';
 
+import 'package:first_app/fileOperations.dart';
+import 'package:first_app/setting.dart';
 import 'package:wakelock/wakelock.dart';
+import '../userNapData.dart';
 import 'testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -10,8 +13,9 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 class NapTimer extends StatefulWidget {
 
   final int napLength;
+  final UserNapData napData;
   final NapSettingsData settings;
-  NapTimer({this.napLength, this.settings});
+  NapTimer({this.napLength, this.napData, this.settings});
 
   @override
   _NapTimerState createState() => _NapTimerState();
@@ -20,6 +24,7 @@ class NapTimer extends StatefulWidget {
 class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   AnimationController controller;
   Stopwatch timeSlept = Stopwatch();
+  double alarmVolume = 1; 
 
   @override
   void dispose(){
@@ -39,8 +44,9 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
              elevation: 5.0,
              child: Text("Return Home"),
              onPressed: (){
+               FlutterRingtonePlayer.stop();
                timeSlept.stop();
-               widget.settings.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
+               widget.napData.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
                Navigator.popUntil(context, ModalRoute.withName('/'));
              },
            )
@@ -56,14 +62,14 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
              : controller.value);
   }
 
-  restfulWake(bool wakeType){}
-
+//TODO
+//Gentle wake not viable with current alarm system.
   String get timerString {
     Duration duration = controller.duration * controller.value;
 
     if(duration.inSeconds == 1.0)
     {
-      FlutterRingtonePlayer.playAlarm(volume: 1.0, looping: true);
+      FlutterRingtonePlayer.playAlarm(volume: alarmVolume, looping: true);
     }
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
@@ -83,10 +89,14 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     );
   }
 
+//TODO
+//add this method to whever the navigate out function is.
+//REQUIRED TO UPDATE USER NAP DATA.
   navigateToSummary(){
+    FlutterRingtonePlayer.stop();
     timeSlept.stop();
-    widget.settings.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData()), ModalRoute.withName('/'));
+    widget.napData.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData(napData: widget.napData,)), ModalRoute.withName('/'));
   }
 
   @override
@@ -159,19 +169,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                       },
                     ),
                     onPressed: () {
-                      if (controller.isAnimating){
-                        createAlertDialog(context);
-                        FlutterRingtonePlayer.stop();
-                      }
-                      else {
-                        FlutterRingtonePlayer.stop();
-                        createAlertDialog(context);
-                      }
-                    },
-                  ),
-                  FlatButton(
-                    child: Text("See Summary"),
-                    onPressed: () => navigateToSummary
+                      navigateToSummary();
+                    }
                   ),
                 ],
               ),

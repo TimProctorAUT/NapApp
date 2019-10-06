@@ -4,10 +4,10 @@ import 'package:first_app/sleep_detection/tapInstruction.dart';
 import 'package:first_app/sleep_detection/tapPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
-import 'donatePage.dart' as DonatePage;
 
 class HomeScreen extends StatefulWidget
 {
@@ -37,7 +37,7 @@ class _HomeScreenState  extends State<HomeScreen> {
     );
   }
 
-  readFromFile() async{
+  loadSettingsForNap() async{
     await fileOps.readSettings();
 
     setState(() {
@@ -46,17 +46,15 @@ class _HomeScreenState  extends State<HomeScreen> {
           vibrationInterval: FileOperations.decodedObject['vibrateInterval'],
           napLimit: FileOperations.decodedObject['napLimit'],
           napLength: FileOperations.decodedObject['napLength'],
-          elapsedTime: FileOperations.decodedObject['elapsedTime'],
           selectedVibrate: FileOperations.decodedObject['selectedVibrate'],
           wantsAudio: FileOperations.decodedObject['wantsAudio'],
           wantsAlarmAudio: FileOperations.decodedObject['wantsAlarmAudio'],
           wantsAlarmVibrate: FileOperations.decodedObject['wantsAlarmVibrate'],
           selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
           selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
-          successfullSleep: FileOperations.decodedObject['successfullSleep'],
-          timeSleptInSeconds: FileOperations.decodedObject['timeSleptInSeconds'],
           dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
-          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings']
+          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings'],
+          wantsGentleWake: FileOperations.decodedObject['gentleWake']
         );
 
         if(settingsObject.dontDisplayInstructions){
@@ -69,11 +67,12 @@ class _HomeScreenState  extends State<HomeScreen> {
       }
       catch(e){
         settingsObject = NapSettingsData(
-          vibrationInterval: 30,
-          napLength: 10,
-          napLimit: 30,
+          vibrationInterval: 2,
+          napLength: 1,
+          napLimit: 1,
           dontDisplayInstructions: false,
-          wantsAudio: false
+          wantsAudio: false,
+          wantsGentleWake: false
         );
 
         Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
@@ -84,6 +83,49 @@ class _HomeScreenState  extends State<HomeScreen> {
       }  
     });     
   }
+
+  loadSettings() async{
+    await fileOps.readSettings();
+
+    setState(() {
+      try{
+        settingsObject = NapSettingsData(
+          vibrationInterval: FileOperations.decodedObject['vibrateInterval'],
+          napLimit: FileOperations.decodedObject['napLimit'],
+          napLength: FileOperations.decodedObject['napLength'],
+          selectedVibrate: FileOperations.decodedObject['selectedVibrate'],
+          wantsAudio: FileOperations.decodedObject['wantsAudio'],
+          wantsAlarmAudio: FileOperations.decodedObject['wantsAlarmAudio'],
+          wantsAlarmVibrate: FileOperations.decodedObject['wantsAlarmVibrate'],
+          selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
+          selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
+          dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
+          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings']
+        );
+      }
+      catch(e){
+        print("file doesnt exists");
+        settingsObject = NapSettingsData(
+          napLength: 10,
+          napLimit: 20,
+          dontDisplayInstructions: false,
+          wantsAudio: false,
+        );
+      }
+    });
+
+
+    Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
+  }
+
+  launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  
 
 
   @override
@@ -137,7 +179,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                     width: 130,
                     height: 130,
                     child: MaterialButton(
-                      onPressed: readFromFile,
+                      onPressed: loadSettingsForNap,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -172,9 +214,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                     width: 130,
                     height: 130,
                     child: MaterialButton(
-                      onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings()),);
-                      },
+                      onPressed: loadSettings,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -295,8 +335,8 @@ class _HomeScreenState  extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           MaterialButton(
-                            onPressed: (){
-                              print("asd");
+                            onPressed: () {
+                              launchUrl("https://www.lifespantrust.com");
                             },
                             height: 50,
                             minWidth: 200,
@@ -319,8 +359,8 @@ class _HomeScreenState  extends State<HomeScreen> {
                   padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                   child: Text('Keep us Free'),
                   onPressed: (){
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => DonatePage.DonatePage()),); 
-                  },
+                    launchUrl("https://paypal.com");
+                  } 
                 ),
       ),
       ),
