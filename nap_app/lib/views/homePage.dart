@@ -1,13 +1,13 @@
 import 'package:first_app/fileOperations.dart';
 import 'package:first_app/setting.dart';
-import 'package:first_app/sleep_detection/tapInstruction.dart';
-import 'package:first_app/sleep_detection/tapPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'instructionPage.dart';
 import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
+import 'tapPage.dart';
 
 class HomeScreen extends StatefulWidget
 {

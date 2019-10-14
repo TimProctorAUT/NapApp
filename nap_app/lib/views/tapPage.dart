@@ -5,14 +5,15 @@ import 'package:first_app/setting.dart';
 import 'package:first_app/userNapData.dart';
 import 'package:first_app/views/graphPage.dart';
 import 'package:first_app/views/homePage.dart';
-import 'package:first_app/views/timerView.dart';
+import 'package:first_app/views/timerPage.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
 import 'package:intl/intl.dart';
-import 'sleepDetection.dart';
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
 import 'package:audioplayers/audioplayers.dart';
 import 'package:wakelock/wakelock.dart';
+
+import '../sleepDetection.dart';
 
 enum DetectionState{
   waiting,
