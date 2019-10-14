@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:first_app/fileOperations.dart';
 import 'package:first_app/setting.dart';
+import 'package:first_app/views/summaryPage.dart';
 import 'package:wakelock/wakelock.dart';
 import '../userNapData.dart';
-import 'testDataPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
-
+import 'package:volume/volume.dart';
 
 class NapTimer extends StatefulWidget {
 
@@ -25,6 +24,10 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   AnimationController controller;
   Stopwatch timeSlept = Stopwatch();
   double alarmVolume = 1; 
+  AudioManager audioManager;
+  int currentVol, maxVol;
+  Timer gentleWakeTimer;
+  bool hasRunCode = false;
 
   @override
   void dispose(){
@@ -62,18 +65,6 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
              : controller.value);
   }
 
-//TODO
-//Gentle wake not viable with current alarm system.
-  String get timerString {
-    Duration duration = controller.duration * controller.value;
-
-    if(duration.inSeconds == 1.0)
-    {
-      FlutterRingtonePlayer.playAlarm(volume: alarmVolume, looping: true);
-    }
-    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
-  }
-
   @override
   void initState() {
     super.initState();
@@ -87,16 +78,73 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
       vsync: this,
       duration: Duration(seconds: this.widget.napLength),
     );
+
+
+    audioManager = AudioManager.STREAM_SYSTEM;
+    initPlatformState();
+    updateVolumes();
   }
 
-//TODO
-//add this method to whever the navigate out function is.
-//REQUIRED TO UPDATE USER NAP DATA.
+  Future<void> initPlatformState() async{
+    await Volume.controlVolume(AudioManager.STREAM_SYSTEM);
+  }
+
+//Must be called after setVol is used to change volume.
+  updateVolumes() async {
+    // get Max Volume
+    maxVol = await Volume.getMaxVol;
+    // get Current Volume
+    currentVol = await Volume.getVol;
+    setState(() {});
+  }
+
+//Call this to change the system volume on phone.
+//Requires an INT parameter of range from 0 - Volume.getMaxVol;
+  setVol(int i) async {
+    await Volume.setVol(i);
+  }
+
+  gentleWake(){
+    FlutterRingtonePlayer.playAlarm(volume: alarmVolume, looping: true);
+    setVol(0);
+    updateVolumes();
+    gentleWakeTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if(currentVol >= maxVol){
+        gentleWakeTimer.cancel();
+      }
+      else{
+        setVol(currentVol + 1);
+        updateVolumes();
+      }
+    });
+  }
+
+  String timerString() {
+    Duration duration = controller.duration * controller.value;
+
+    if(duration.inSeconds == 1.0){
+      if(!hasRunCode){
+        if(widget.settings.wantsGentleWake){
+          gentleWake();
+        }
+        else{
+          FlutterRingtonePlayer.playAlarm(volume: alarmVolume, looping: true);
+        }
+
+      hasRunCode = true;
+      }
+    }
+
+    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+  }
+
+//Navigates to the summary pages passing through the napData and napSettings objects.
+//Ensure all navigation out of this page stops all relevant timers/media players.
   navigateToSummary(){
     FlutterRingtonePlayer.stop();
     timeSlept.stop();
     widget.napData.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TestData(napData: widget.napData,)), ModalRoute.withName('/'));
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => SummaryPage(napData: widget.napData,)), ModalRoute.withName('/'));
   }
 
   @override
@@ -142,7 +190,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                                 animation: controller,
                                 builder: (BuildContext context, Widget child) {
                                   return Text(
-                                    timerString,
+                                    timerString(),
                                     style: themeData.textTheme.display4,
                                   );
                                 }),

@@ -17,7 +17,8 @@ class NapSettingsData{
   final String selectedAudioFile;
   final String selectedAlarmSound;
 
-  final List<String> encouragingMessages = [
+//TODO update list with new messages
+  static List<String> encouragingMessages = [
     "Atleast you tried.",
     "Good Job!",
     "Don't give up, we'll all die one day!",

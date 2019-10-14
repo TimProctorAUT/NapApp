@@ -37,6 +37,7 @@ class _HomeScreenState  extends State<HomeScreen> {
     );
   }
 
+//TODO REVISE DEFAULT SETTINGS FOR QUICK NAPS
   loadSettingsForNap() async{
     await fileOps.readSettings();
 
@@ -72,7 +73,7 @@ class _HomeScreenState  extends State<HomeScreen> {
           napLimit: 1,
           dontDisplayInstructions: false,
           wantsAudio: false,
-          wantsGentleWake: false
+          wantsGentleWake: true
         );
 
         Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
@@ -100,7 +101,8 @@ class _HomeScreenState  extends State<HomeScreen> {
           selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
           selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
           dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
-          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings']
+          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings'],
+          wantsGentleWake: FileOperations.decodedObject['gentleWake']
         );
       }
       catch(e){
@@ -110,6 +112,8 @@ class _HomeScreenState  extends State<HomeScreen> {
           napLimit: 20,
           dontDisplayInstructions: false,
           wantsAudio: false,
+          wantsAlarmAudio: true,
+          wantsGentleWake: false
         );
       }
     });
@@ -126,7 +130,6 @@ class _HomeScreenState  extends State<HomeScreen> {
     }
   }
   
-
 
   @override
   Widget build(BuildContext context) {
@@ -359,7 +362,8 @@ class _HomeScreenState  extends State<HomeScreen> {
                   padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                   child: Text('Keep us Free'),
                   onPressed: (){
-                    launchUrl("https://paypal.com");
+                    //TODO CHANGE URL TO BRIANS EMAIL
+                    launchUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=auminist3%40gmail.com&item_name=Keep+the+app+free%21&currency_code=NZD&amount=2&source=url");
                   } 
                 ),
       ),

@@ -26,7 +26,7 @@ class _NapSettingsState extends State<NapSettings> {
   int napLimit;
   int napLength;
 
-  bool soundSwitch;
+  bool gentleWake;
   bool showInstructions;
   bool tapPlay = true;
 
@@ -35,7 +35,7 @@ class _NapSettingsState extends State<NapSettings> {
 
   List<String> listOfFiles = List<String>();
   Settings.NapSettingsData settingsObject;
-  bool hasSavedSettings = false;
+  //bool hasSavedSettings = false;
 
   FileOperations fileOps = FileOperations();
 
@@ -51,12 +51,16 @@ class _NapSettingsState extends State<NapSettings> {
     napLength = widget.napSettings.napLength;
     showInstructions = widget.napSettings.dontDisplayInstructions;
     backgroundAudio = widget.napSettings.wantsAudio;
+    //gentleWake = widget.napSettings.wantsGentleWake;
+
+    print(widget.napSettings.wantsAlarmAudio);
+    print(widget.napSettings.wantsGentleWake);
 
     if(widget.napSettings.wantsAlarmAudio == null){
-      soundSwitch = true;
+      gentleWake = true;
     }
     else{
-      soundSwitch = widget.napSettings.wantsAlarmAudio;
+      gentleWake = widget.napSettings.wantsGentleWake;
     }
   }
 
@@ -396,87 +400,54 @@ class _NapSettingsState extends State<NapSettings> {
                                     ),
 
                                     //Spacer
-                                    Container(height: 5),
+                                    Container(height: 15),
 
                                     Container(
-                                      //color: Colors.green,
                                       width: 200,
                                       height: 96,
                                       child: Column(
                                         children: <Widget>[
                                           Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              Text('Sound'),
-
-                                              Switch(
-                                                value: soundSwitch,
-                                                onChanged: (value)
-                                                {
-                                                  setState(() {
-                                                    soundSwitch = value;
-
-                                                    if(!soundSwitch){
-                                                      FlutterRingtonePlayer.stop();
-                                                    }
-                                                  });
-                                                },
-
-                                                activeColor: Colors.green,
-                                                activeTrackColor: Colors.lightGreen,
-
-                                                inactiveThumbColor: Colors.blueGrey,
-                                                inactiveTrackColor: Colors.blueGrey,
-                                              ),
                                               Container(
                                                 width: 96,
                                                 child: RaisedButton(
                                                   color: Colors.white,
                                                   child: tapPlay ? Text("Test Alarm", style: TextStyle(color: Colors.black, fontSize: 11),) : Text("Stop", style: TextStyle(color: Colors.black, fontSize: 11)),
-                                                  onPressed: soundSwitch ? testAlarmSound : null
+                                                  onPressed: testAlarmSound
                                                 ),
                                               ),
                                             ],
-                                          ),                                  
+                                          ),
 
-                                        /*   Row(
-                                            children: <Widget>[
-                                              Text(
-                                                'Alarm Sound Choices',
-                                                style: TextStyle(color: soundSwitch? Colors.white : Colors.grey),
-                                              ),
+                                      //Container(height: 5,),
 
-                                              Container(width: 15),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text('Gentle Wake'),
 
-                                              DropdownButton <int>(
-                                                value: alarmSound,
-                                                onChanged: (soundSwitch? (int newValue) {setState(() {alarmSound = newValue;}); } : null ),
-                                                                                        
-                                                items: <int>[(1), (2), (3), (4)]
-                                                  
-                                                .map<DropdownMenuItem<int>>((int value) {
-                                                  return DropdownMenuItem<int>(
-                                                    value: value,
-                                                    child: Text('$value'),
-                                                  );
-                                                }) .toList(),
-                                              )                              
+                                          Switch(
+                                            value: gentleWake,
+                                            onChanged: (value)
+                                            {
+                                              setState(() {
+                                                gentleWake = value;
+                                              });
+                                            },
+
+                                            activeColor: Colors.green,
+                                            activeTrackColor: Colors.lightGreen,
+
+                                            inactiveThumbColor: Colors.blueGrey,
+                                            inactiveTrackColor: Colors.blueGrey,
+                                          ),
                                         ],
-                                      ),                       */            
+                                      ),
                                     ],
                                   )
                                 ),
-
-                                Container(
-                                  //color: Colors.green,
-                                  width: 200,
-                                  height: 96,
-                                  child: Column(
-                                    children: <Widget>[                                                            
-                                ],
-                              )
-                            ),
-
-                                   
                                   ],
                                 ),
                               ),
@@ -629,11 +600,11 @@ class _NapSettingsState extends State<NapSettings> {
 
                   Spacer(),
 
-                  RaisedButton(
-                    color: Colors.redAccent,
-                    textColor: Colors.black,
+                  FlatButton(
+                    color: Color.fromRGBO(30, 30, 30, 0.45),
+                    textColor: Colors.white,
                     padding: EdgeInsets.fromLTRB(50.0, 15.0, 50.0, 15.0),
-                    child: Text('Delete Settings'),
+                    child: Text('Default Settings'),
                     onPressed: () => deleteDialog()
                   ),
 
@@ -686,7 +657,7 @@ class _NapSettingsState extends State<NapSettings> {
       napLength: napLength, 
       wantsAudio: backgroundAudio, 
       selectedAudioFile: selectedAudioFile, 
-      wantsAlarmAudio: soundSwitch, 
+      wantsGentleWake: gentleWake, 
       dontDisplayInstructions: showInstructions,
       vibrationInterval: 30,
       hasSavedSettings: true,
