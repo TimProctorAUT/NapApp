@@ -433,6 +433,10 @@ class _NapSettingsState extends State<NapSettings> {
                                             onChanged: (value)
                                             {
                                               setState(() {
+                                                
+                                                //TODO add message to user
+                                                //that gentle wake only works on android 8+
+                                                
                                                 gentleWake = value;
                                               });
                                             },

@@ -83,7 +83,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     initPlatformState();
     updateVolumes();
   }
-
+//TODO add wigetsbindingobserver to catch application suspension
+  
   Future<void> initPlatformState() async{
     await Wakelock.enable();
     bool isEnabled = await Wakelock.isEnabled;
