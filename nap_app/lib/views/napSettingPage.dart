@@ -51,6 +51,7 @@ class _NapSettingsState extends State<NapSettings> {
     napLength = widget.napSettings.napLength;
     showInstructions = widget.napSettings.dontDisplayInstructions;
     backgroundAudio = widget.napSettings.wantsAudio;
+    //gentleWake = widget.napSettings.wantsGentleWake;
 
     print(widget.napSettings.wantsAlarmAudio);
     print(widget.napSettings.wantsGentleWake);
@@ -432,8 +433,10 @@ class _NapSettingsState extends State<NapSettings> {
                                             onChanged: (value)
                                             {
                                               setState(() {
+                                                
                                                 //TODO add message to user
                                                 //that gentle wake only works on android 8+
+                                                
                                                 gentleWake = value;
                                               });
                                             },
