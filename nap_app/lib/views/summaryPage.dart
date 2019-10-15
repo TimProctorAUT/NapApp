@@ -20,11 +20,13 @@ class _SummaryPageState extends State<SummaryPage> {
   FileOperations fileOps = FileOperations();
   UserNapData tmpData = UserNapData();
   int random;
+  Duration duration;
 
   @override
   void initState() {
     super.initState();
     writeNapData();
+    convertToTimeDisplay(20);
   }
 
   writeNapData() async{
@@ -79,6 +81,7 @@ class _SummaryPageState extends State<SummaryPage> {
     if(widget.napData.successfullSleep){
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(mainText, style: TextStyle(fontSize: 50),),
           Text(subText, style: TextStyle(fontSize: 20),)
@@ -86,8 +89,30 @@ class _SummaryPageState extends State<SummaryPage> {
       );
     }
     else{
-      return random == null ? Text("Something went wrong reading nap data") : Text(NapSettingsData.encouragingMessages[random], style: TextStyle(fontSize: 30),);
+      //if
+      return random == null 
+      //then
+      ? Text("Something went wrong reading nap data", textAlign: TextAlign.center,) 
+      //else
+      : Text(NapSettingsData.encouragingMessages[random], style: TextStyle(fontSize: 30), textAlign: TextAlign.center,);
     }
+  }
+
+  String convertToTimeDisplay(int savedValue){
+    duration = Duration(seconds: savedValue);
+    String minutesSeconds;
+
+    if(duration.inMinutes == 0){
+      //print("0 minutes");
+      minutesSeconds = "seconds";
+    }
+    else{
+      minutesSeconds = "minutes";
+    }
+
+    //print("${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds");
+
+    return "${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds";
   }
 
   @override
@@ -100,19 +125,51 @@ class _SummaryPageState extends State<SummaryPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
+            padding: EdgeInsets.fromLTRB(5, 15, 5, 15),
           ),
+          //Center Piece Title
           Spacer(),
           tmpData.successfullSleep == null ? centerBuilder("Oops", "Something went wrong") : centerBuilder("Good Job", "You Fell Asleep"),
           Spacer(),
+
+          //Start of Stat cards
           Divider(),
-          tmpData.napNumber == null ? cardBuilder("Oops", "${null}") : cardBuilder("Nap Number", "${tmpData.napNumber}"),
+
+          //if
+          tmpData.napNumber == null
+          //then 
+          ? cardBuilder("Oops", "${null}")
+          //else 
+          : cardBuilder("Nap Number", "${tmpData.napNumber}"),
+
           Divider(),
-          tmpData.successfullSleep == null ? cardBuilder("Oops", "${null}") : cardBuilder("Fell Asleep", "${tmpData.successfullSleep}"),
+
+          //if
+          tmpData.successfullSleep == null
+          //then 
+          ? cardBuilder("Oops", "${null}")
+          //else 
+          : cardBuilder("Fell Asleep", "${tmpData.successfullSleep}"),
           Divider(),
-          tmpData.timeToSleep == null ? cardBuilder("Oops", "${null}") : cardBuilder("Time to Sleep", "${(tmpData.timeToSleep / 60).toStringAsFixed(2)} minutes"),
+
+//TODO Implement saved seconds to display as a time
+          //if
+          tmpData.successfullSleep == null 
+          //then
+          ? cardBuilder("Oops", "${null}") 
+          //else
+          //: cardBuilder("Time Till Asleep", "${(tmpData.timeToSleep / 60).toStringAsFixed(2)} minutes"),
+          : cardBuilder("Time Till Asleep", "${convertToTimeDisplay(tmpData.timeToSleep)}"),
+         
           Divider(),
-          tmpData.timeSleptInSeconds == null ? cardBuilder("Oops", "${null}") : cardBuilder("Time Slept", "${(tmpData.timeSleptInSeconds / 60).toStringAsFixed(2)} minutes"),
+
+          //if
+          tmpData.successfullSleep == null
+          //then
+          ? cardBuilder("Oops", "${null}")
+          //else
+          : cardBuilder("Time Slept", "${convertToTimeDisplay(tmpData.timeSleptInSeconds)}"),
+          
           Divider(),
         ],
       ),

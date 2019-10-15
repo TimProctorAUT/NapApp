@@ -69,7 +69,6 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    Wakelock.enable();
     timeSlept.start();
 
      WidgetsBinding.instance
@@ -86,6 +85,9 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   }
 
   Future<void> initPlatformState() async{
+    await Wakelock.enable();
+    bool isEnabled = await Wakelock.isEnabled;
+    print(isEnabled);
     await Volume.controlVolume(AudioManager.STREAM_SYSTEM);
   }
 
@@ -143,6 +145,11 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   navigateToSummary(){
     FlutterRingtonePlayer.stop();
     timeSlept.stop();
+    if(gentleWakeTimer != null){
+      if(gentleWakeTimer.isActive){
+        gentleWakeTimer.cancel();
+      }
+    }
     widget.napData.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => SummaryPage(napData: widget.napData,)), ModalRoute.withName('/'));
   }
