@@ -1,10 +1,13 @@
+import 'package:first_app/fileOperations.dart';
+import 'package:first_app/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import 'instructionPage.dart';
 import 'napSettingPage.dart' as NapSettings;
 import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
-import 'donatePage.dart' as DonatePage;
+import 'tapPage.dart';
 
 class HomeScreen extends StatefulWidget
 {
@@ -13,6 +16,121 @@ class HomeScreen extends StatefulWidget
 }
 
 class _HomeScreenState  extends State<HomeScreen> {
+
+  FileOperations fileOps = FileOperations();
+  NapSettingsData settingsObject;
+
+  dialogBuilder(){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Looks like you don't have any saved settings!\n\nWe have tried to setup the app to work just for you!\n\nIf you wish to personalize your naps, please visit the 'Nap Setup' from the homepage!"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      )
+    );
+  }
+
+//TODO REVISE DEFAULT SETTINGS FOR QUICK NAPS
+  loadSettingsForNap() async{
+    await fileOps.readSettings();
+
+    setState(() {
+      try{
+        settingsObject = NapSettingsData(
+          vibrationInterval: FileOperations.decodedObject['vibrateInterval'],
+          napLimit: FileOperations.decodedObject['napLimit'],
+          napLength: FileOperations.decodedObject['napLength'],
+          selectedVibrate: FileOperations.decodedObject['selectedVibrate'],
+          wantsAudio: FileOperations.decodedObject['wantsAudio'],
+          wantsAlarmAudio: FileOperations.decodedObject['wantsAlarmAudio'],
+          wantsAlarmVibrate: FileOperations.decodedObject['wantsAlarmVibrate'],
+          selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
+          selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
+          dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
+          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings'],
+          wantsGentleWake: FileOperations.decodedObject['gentleWake']
+        );
+
+        if(settingsObject.dontDisplayInstructions){
+          Navigator.push(context,MaterialPageRoute(builder: (context) => TapMethod(settings: settingsObject,)),); 
+        }
+        else{
+          Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
+        }
+
+      }
+      catch(e){
+        settingsObject = NapSettingsData(
+          vibrationInterval: 2,
+          napLength: 1,
+          napLimit: 1,
+          dontDisplayInstructions: false,
+          wantsAudio: false,
+          wantsGentleWake: true
+        );
+
+        Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
+
+        dialogBuilder();
+
+        print("file doesnt exist");
+      }  
+    });     
+  }
+
+  loadSettings() async{
+    await fileOps.readSettings();
+
+    setState(() {
+      try{
+        settingsObject = NapSettingsData(
+          vibrationInterval: FileOperations.decodedObject['vibrateInterval'],
+          napLimit: FileOperations.decodedObject['napLimit'],
+          napLength: FileOperations.decodedObject['napLength'],
+          selectedVibrate: FileOperations.decodedObject['selectedVibrate'],
+          wantsAudio: FileOperations.decodedObject['wantsAudio'],
+          wantsAlarmAudio: FileOperations.decodedObject['wantsAlarmAudio'],
+          wantsAlarmVibrate: FileOperations.decodedObject['wantsAlarmVibrate'],
+          selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
+          selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
+          dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
+          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings'],
+          wantsGentleWake: FileOperations.decodedObject['gentleWake']
+        );
+      }
+      catch(e){
+        print("file doesnt exists");
+        settingsObject = NapSettingsData(
+          napLength: 10,
+          napLimit: 20,
+          dontDisplayInstructions: false,
+          wantsAudio: false,
+          wantsAlarmAudio: true,
+          wantsGentleWake: false
+        );
+      }
+    });
+
+
+    Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
+  }
+
+  launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,15 +156,20 @@ class _HomeScreenState  extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+
+              Spacer(),
+
+              Text("Nap", style: TextStyle(fontSize: 55),),
+              Text("Optimizer", style: TextStyle(fontSize: 20),),
               
+              Spacer(),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
 
                   //====Button One====//
                   Container(
-                    //color: Color.fromRGBO(100, 100, 100, 0.7),
-
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(16.0)),
                       color: Color.fromRGBO(50, 50, 50, 0.7),
@@ -59,9 +182,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                     width: 130,
                     height: 130,
                     child: MaterialButton(
-                      onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings()),);
-                      },
+                      onPressed: loadSettingsForNap,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -71,7 +192,7 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                           Container(height: 10,),
 
-                          Text('Take a Nap', style: TextStyle(fontSize: 11),),
+                          Text('Start Nap', style: TextStyle(fontSize: 11),),
                         ],
                       ),
                     ),
@@ -96,19 +217,17 @@ class _HomeScreenState  extends State<HomeScreen> {
                     width: 130,
                     height: 130,
                     child: MaterialButton(
-                      onPressed: (){
-
-                      },
+                      onPressed: loadSettings,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(height: 2.5,),
 
-                          Image(image: AssetImage('assets/sleep_icon.png'), height: 75, width: 75,),
-
+                          //Image(image: AssetImage('assets/lifespansmall.png'), height: 75, width: 75,),
+                          Icon(Icons.settings, size: 75,),
                           Container(height: 10,),
 
-                          Text('Sleep Training', style: TextStyle(fontSize: 11),),
+                          Text('Nap Setup', style: TextStyle(fontSize: 11),),
                         ],
                       ),
                     ),
@@ -151,7 +270,7 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                           Container(height: 10,),
 
-                          Text('Past Naps', style: TextStyle(fontSize: 11),),
+                          Text('Last Nap', style: TextStyle(fontSize: 11),),
                         ],
                       ),
                     ),
@@ -195,6 +314,44 @@ class _HomeScreenState  extends State<HomeScreen> {
                   ),
                 ],
               ),
+
+              Spacer(),
+
+              Stack(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image(image: AssetImage('assets/lifespantrust.png'), height: 40, width: 300,),
+                        ],
+                      )
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          MaterialButton(
+                            onPressed: () {
+                              launchUrl("https://www.lifespantrust.com");
+                            },
+                            height: 50,
+                            minWidth: 200,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              Container(height: 20,)
             ],
           ),
         ),
@@ -205,8 +362,9 @@ class _HomeScreenState  extends State<HomeScreen> {
                   padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                   child: Text('Keep us Free'),
                   onPressed: (){
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => DonatePage.DonatePage()),); 
-                  },
+                    //TODO CHANGE URL TO BRIANS EMAIL
+                    launchUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=auminist3%40gmail.com&item_name=Keep+the+app+free%21&currency_code=NZD&amount=2&source=url");
+                  } 
                 ),
       ),
       ),
