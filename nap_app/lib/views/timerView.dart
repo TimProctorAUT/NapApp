@@ -5,11 +5,9 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
 class NapTimer extends StatefulWidget {
 
-//Change this if you want/need to.
-//Was added to show Brian functionality of alarm for meeting.
+  //Passed into 
   final int napLength;
   NapTimer({this.napLength});
-//////////////////////////////////
 
   @override
   _NapTimerState createState() => _NapTimerState();
@@ -18,6 +16,7 @@ class NapTimer extends StatefulWidget {
 class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
   AnimationController controller;
 
+  //Pop-up for end of nap
   createAlertDialog(BuildContext context){
 
     return showDialog(context: context, builder: (context){
@@ -37,19 +36,16 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     });
   }
 
-  restfulWake(bool wakeType){
-    
-  }
-
-
   String get timerString {
     Duration duration = controller.duration * controller.value;
 
+    //Function to start alarm when timer has finished
     if(duration.inSeconds == 1.0)
     {
       FlutterRingtonePlayer.playAlarm(volume: 1.0, looping: true);
       
     }
+    //Formula to maintain 00:00:00 format
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
 
@@ -174,12 +170,14 @@ class TimerPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
+    //Math for painter to draw in circle. Takes in duration as progress to stay synced
     canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
     paint.color = color;
     double progress = (1.0 - animation.value) * 2 * math.pi;
     canvas.drawArc(Offset.zero & size, math.pi * 1.5, -progress, false, paint);
   }
 
+  //Function where it checks if area has been painted yet 
   @override
   bool shouldRepaint(TimerPainter old) {
     return animation.value != old.animation.value ||
