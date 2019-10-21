@@ -29,6 +29,7 @@ class _NapSettingsState extends State<NapSettings> {
   bool gentleWake = false;
   bool showInstructions = true;
   bool tapPlay = true;
+  bool colorblindMode = false;
 
   bool backgroundAudio;
   String selectedAudioFile = "Meditation";
@@ -51,9 +52,8 @@ class _NapSettingsState extends State<NapSettings> {
     napLength = widget.napSettings.napLength;
     showInstructions = widget.napSettings.dontDisplayInstructions;
     backgroundAudio = widget.napSettings.wantsAudio;
-
-    //TODO add loaded colorblind modes here if they have been saved.
-
+    colorblindMode = widget.napSettings.wantColourblindMode;
+    
     print(widget.napSettings.wantsAlarmAudio);
     print(widget.napSettings.wantsGentleWake);
 
@@ -325,6 +325,33 @@ class _NapSettingsState extends State<NapSettings> {
                                               ),
                                             ],
                                           ), 
+
+                                          //Spacer
+                                          Container(height: 15),
+
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text('Colourblind Mode'),
+
+                                              Switch(
+                                                value: colorblindMode,
+                                                onChanged: (value)
+                                                {
+                                                  setState(() {
+                                                    colorblindMode = value;
+                                                  });
+                                                  
+                                                },
+
+                                                activeColor: Colors.green,
+                                                activeTrackColor: Colors.lightGreen,
+
+                                                inactiveThumbColor: Colors.blueGrey,
+                                                inactiveTrackColor: Colors.blueGrey,
+                                              ),
+                                            ],
+                                          ),
 
                                           //Spacer
                                           Container(height: 15),
@@ -669,8 +696,7 @@ class _NapSettingsState extends State<NapSettings> {
       dontDisplayInstructions: showInstructions,
       vibrationInterval: 30,
       hasSavedSettings: true,
-      //TODO add colorblind settings here
-      
+      wantColourblindMode: colorblindMode,
     );
 
     fileOps.writeSettings(jsonEncode(settingsObject));

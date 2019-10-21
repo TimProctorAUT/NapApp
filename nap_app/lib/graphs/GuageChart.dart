@@ -3,6 +3,8 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
+import '../userNapData.dart';
+
 class GaugeChart extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate;
@@ -10,9 +12,9 @@ class GaugeChart extends StatelessWidget {
   GaugeChart(this.seriesList, {this.animate});
 
   /// Creates a [PieChart] with sample data and no transition.
-  factory GaugeChart.withSampleData() {
+  factory GaugeChart.withSampleData(List<UserNapData> napList) {
     return new GaugeChart(
-      _createSampleData(),
+      _createSampleData(napList),
       // Disable animations for image tests.
       animate: true,
     );
@@ -26,19 +28,37 @@ class GaugeChart extends StatelessWidget {
         behaviors: [
           new charts.DatumLegend()
         ],
-        // Configure the width of the pie slices to 30px. The remaining space in
-        // the chart will be left as a hole in the center. Adjust the start
-        // angle and the arc length of the pie so it resembles a gauge.
         defaultRenderer: new charts.ArcRendererConfig(
             arcWidth: 30, startAngle: 4 / 5 * 3.14159265, arcLength: 7 / 5 * 3.14159265));
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<GaugeSegment, String>> _createSampleData() {
-    final data = [
-      new GaugeSegment('Successful', 4, Colors.green),
-      new GaugeSegment('Unsuccessful', 1, Colors.red),
-    ];
+  static List<charts.Series<GaugeSegment, String>> _createSampleData(List<UserNapData> napList) {
+    var success = 0;
+    var unsccessful = 0;
+
+    for(int i = 0; i < napList.length; i++)
+    {
+      if(napList[i].successfullSleep)
+      {
+        success++;
+      }
+      else
+      {
+        unsccessful++;
+      }
+    }
+
+    final List<GaugeSegment> data = List<GaugeSegment>();
+
+    if(success != 0)
+    {
+      data.add(new GaugeSegment('Successful', success, Colors.green)); 
+    }
+    if(unsccessful != 0)
+    {
+      data.add(new GaugeSegment('Unsuccessful', unsccessful, Colors.red)); 
+    }   
 
     return [
       new charts.Series<GaugeSegment, String>(

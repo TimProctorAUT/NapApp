@@ -43,7 +43,7 @@ class _PastNapsState extends State<PastNaps> {
               ),     
               child: Column(
                 children: <Widget>[                
-                  Text('Length of Successful Naps'),
+                  Text('Time Taken to fall Asleep'),
 
                   Container(height: 15,),
                   
@@ -54,7 +54,7 @@ class _PastNapsState extends State<PastNaps> {
                     padding: EdgeInsets.all(15),
                     height: 250,
                     width: 320,
-                    child: lineChart.SimpleTimeSeriesChart.withSampleData(),
+                    child: lineChart.SimpleTimeSeriesChart.withSampleData(widget.napList),
                   ),
                 ],
               ),          
@@ -83,7 +83,7 @@ class _PastNapsState extends State<PastNaps> {
                     padding: EdgeInsets.all(15),
                     height: 250,
                     width: 320,
-                    child: donutChart.DonutAutoLabelChart.withSampleData(),
+                    child: donutChart.DonutAutoLabelChart.withSampleData(widget.napList),
                   ),
                 ],
               ),          
@@ -112,7 +112,7 @@ class _PastNapsState extends State<PastNaps> {
                     padding: EdgeInsets.all(15),
                     height: 250,
                     width: 320,
-                    child: guageChart.GaugeChart.withSampleData(),
+                    child: guageChart.GaugeChart.withSampleData(widget.napList),
                   ),
                 ],
               ),          

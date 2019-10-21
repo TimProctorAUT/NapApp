@@ -181,7 +181,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
                                 painter: TimerPainter(
                               animation: controller,
                               backgroundColor: Colors.white,
-                              color: themeData.indicatorColor,
+                              color: widget.settings.wantColourblindMode ? Colors.red : themeData.indicatorColor,
                             ));
                           },
                         ),
