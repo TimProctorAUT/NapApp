@@ -57,6 +57,7 @@ class _HomeScreenState  extends State<HomeScreen> {
           dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
           hasSavedSettings: decodedObject['hasSavedSettings'],
           wantsGentleWake: decodedObject['gentleWake']
+          //TODO add colorblind from file
         );
 
         if(settingsObject.dontDisplayInstructions){
@@ -67,6 +68,7 @@ class _HomeScreenState  extends State<HomeScreen> {
         }
 
       }
+      //Default nap settings
       catch(e){
         settingsObject = NapSettingsData(
           vibrationInterval: 2,
@@ -75,6 +77,7 @@ class _HomeScreenState  extends State<HomeScreen> {
           dontDisplayInstructions: false,
           wantsAudio: false,
           wantsGentleWake: true
+          //TODO add colorblind default.
         );
 
         Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
@@ -104,8 +107,10 @@ class _HomeScreenState  extends State<HomeScreen> {
           dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
           hasSavedSettings: decodedObject['hasSavedSettings'],
           wantsGentleWake: decodedObject['gentleWake']
+          //TODO add colorblind settings from file.
         );
       }
+      //Default nap settings
       catch(e){
         print("file doesnt exists");
         settingsObject = NapSettingsData(
@@ -115,10 +120,10 @@ class _HomeScreenState  extends State<HomeScreen> {
           wantsAudio: false,
           wantsAlarmAudio: true,
           wantsGentleWake: false
+          //TODO add colorblind default.
         );
       }
     });
-
 
     Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
   }
@@ -178,8 +183,8 @@ class _HomeScreenState  extends State<HomeScreen> {
 
               Spacer(),
 
-              Text("Nap", style: TextStyle(fontSize: 55),),
-              Text("Optimizer", style: TextStyle(fontSize: 20),),
+              Text("NAP", style: TextStyle(fontSize: 70, fontFamily: 'Times New Roman', color: Color.fromRGBO(10, 86, 148, 1)),),
+              Text("OPTIMIZER", style: TextStyle(fontSize: 30, fontFamily: 'Times New Roman', color: Color.fromRGBO(144, 144, 144, 1)),),
               
               Spacer(),
 
@@ -380,7 +385,8 @@ class _HomeScreenState  extends State<HomeScreen> {
                   child: Text('Keep us Free'),
                   onPressed: (){
                     //TODO CHANGE URL TO BRIANS EMAIL
-                    launchUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=auminist3%40gmail.com&item_name=Keep+the+app+free%21&currency_code=NZD&amount=2&source=url");
+                    //launchUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=auminist3%40gmail.com&item_name=Keep+the+app+free%21&currency_code=NZD&amount=2&source=url");
+                    launchUrl("http://www.lifespantrust.com/donations-and-payments/");
                   } 
                 ),
       ),

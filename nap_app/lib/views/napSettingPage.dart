@@ -51,7 +51,8 @@ class _NapSettingsState extends State<NapSettings> {
     napLength = widget.napSettings.napLength;
     showInstructions = widget.napSettings.dontDisplayInstructions;
     backgroundAudio = widget.napSettings.wantsAudio;
-    //gentleWake = widget.napSettings.wantsGentleWake;
+
+    //TODO add loaded colorblind modes here if they have been saved.
 
     print(widget.napSettings.wantsAlarmAudio);
     print(widget.napSettings.wantsGentleWake);
@@ -668,6 +669,8 @@ class _NapSettingsState extends State<NapSettings> {
       dontDisplayInstructions: showInstructions,
       vibrationInterval: 30,
       hasSavedSettings: true,
+      //TODO add colorblind settings here
+      
     );
 
     fileOps.writeSettings(jsonEncode(settingsObject));
