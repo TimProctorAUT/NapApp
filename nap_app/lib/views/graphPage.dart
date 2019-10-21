@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart' as prefix0;
 import '../graphs/LineChart.dart' as lineChart;
-import '../graphs/DonutChart.dart' as donutChart;
+import '../graphs/SDonutChart.dart' as donutChart;
 import '../graphs/GuageChart.dart' as guageChart;
 
 class PastNaps extends StatefulWidget
@@ -79,7 +79,7 @@ class _PastNapsState extends State<PastNaps> {
                     padding: EdgeInsets.all(15),
                     height: 250,
                     width: 320,
-                    child: donutChart.DonutAutoLabelChart.withSampleData(),
+                    child: donutChart.DonutChart(),
                   ),
                 ],
               ),          

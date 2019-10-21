@@ -88,4 +88,24 @@ class FileOperations{
     file.delete(recursive: true);
     decodedObject = null;
   }
+
+
+//Get Number of Valid Nap Files Saved
+  Future<int> getVaildNaps() async{
+    var lastNapNumber = 0;
+
+    for(int i = 1; i < 500; i++){
+      File file = await getDataFile(i);
+
+      if(await file.exists()){
+        print("YEET that Meat");
+        lastNapNumber = i;
+      }
+      else
+      {
+        print("Nah Doesn't Exist");
+      }
+    }
+    return lastNapNumber;
+  }
 }
