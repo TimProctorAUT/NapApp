@@ -56,6 +56,7 @@ class _HomeScreenState  extends State<HomeScreen> {
   loadSettings() async{
     settingsObject = await fileOps.readObjectFromFile("NapSettings");
 
+
     Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
   }
 
@@ -106,7 +107,7 @@ class _HomeScreenState  extends State<HomeScreen> {
 
               Spacer(),
 
-              Text("NAP", style: TextStyle(fontSize: 70, fontFamily: 'Times New Roman', color: Color.fromRGBO(10, 86, 148, 1)),),
+              Text("NAP", style: TextStyle(fontSize: 65, fontFamily: 'Times New Roman', color: Color.fromRGBO(10, 86, 148, 1)),),
               Text("OPTIMIZER", style: TextStyle(fontSize: 30, fontFamily: 'Times New Roman', color: Color.fromRGBO(144, 144, 144, 1)),),
               
               Spacer(),

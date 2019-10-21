@@ -3,16 +3,17 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
+import '../userNapData.dart';
+
 class DonutAutoLabelChart extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate;
 
   DonutAutoLabelChart(this.seriesList, {this.animate});
 
-  /// Creates a [PieChart] with sample data and no transition.
-  factory DonutAutoLabelChart.withSampleData() {
+  factory DonutAutoLabelChart.withSampleData(List<UserNapData> napList) {
     return new DonutAutoLabelChart(
-      _createSampleData(),
+      _createSampleData(napList),
       // Disable animations for image tests.
       animate: true,
     );
@@ -23,21 +24,6 @@ class DonutAutoLabelChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return new charts.PieChart(seriesList,
         animate: animate,
-        // Configure the width of the pie slices to 60px. The remaining space in
-        // the chart will be left as a hole in the center.
-        //
-        // [ArcLabelDecorator] will automatically position the label inside the
-        // arc if the label will fit. If the label will not fit, it will draw
-        // outside of the arc with a leader line. Labels can always display
-        // inside or outside using [LabelPosition].
-        //
-        // Text style for inside / outside can be controlled independently by
-        // setting [insideLabelStyleSpec] and [outsideLabelStyleSpec].
-        //
-        // Example configuring different styles for inside/outside:
-        //       new charts.ArcLabelDecorator(
-        //          insideLabelStyleSpec: new charts.TextStyleSpec(...),
-        //          outsideLabelStyleSpec: new charts.TextStyleSpec(...)),
         defaultRenderer: new charts.ArcRendererConfig(
             arcWidth: 50,
             arcRendererDecorators: [
@@ -52,19 +38,76 @@ class DonutAutoLabelChart extends StatelessWidget {
       );
   }
 
-  /// Create one series with sample hard coded data.
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
-    //TODO: Implement FileOperations; Loop Till File doesn't Exist
-    //Create new Linear
 
-    final data = [
-      new LinearSales(0, 2, Colors.red),
-      new LinearSales(1, 4, Colors.yellow),
-      new LinearSales(2, 2, Colors.blue),
-      new LinearSales(3, 5, Colors.orange),
-      new LinearSales(4, 3, Colors.green),
-    ];
+  static List<charts.Series<LinearSales, int>> _createSampleData(List<UserNapData> napList) {
 
+    var fiveMins = 0;
+    var tenMins = 0;
+    var fifteenMins = 0;
+    var twentyMins = 0;
+    var twentyfiveMins = 0;
+    var thirtyMins = 0;
+
+
+    for(int i = 0; i < napList.length; i++)
+    {
+      if(napList[i].successfullSleep)
+      {
+        print(napList[i].timeSleptInSeconds);
+        if(napList[i].timeSleptInSeconds <= 350 && napList[i].timeSleptInSeconds > 0)
+        {
+          fiveMins++;
+        }
+        else if(napList[i].timeSleptInSeconds <= 650  && napList[i].timeSleptInSeconds > 350)
+        {
+          tenMins++;
+        }
+        else if(napList[i].timeSleptInSeconds <= 950  && napList[i].timeSleptInSeconds > 650)
+        {
+          fifteenMins++;
+        }
+        else if(napList[i].timeSleptInSeconds <= 1250  && napList[i].timeSleptInSeconds > 950)
+        {
+          twentyMins++;
+        }
+        else if(napList[i].timeSleptInSeconds <= 1550  && napList[i].timeSleptInSeconds > 1250)
+        {
+          twentyfiveMins++;
+        }
+        else if(napList[i].timeSleptInSeconds < 1850  && napList[i].timeSleptInSeconds > 1550)
+        {
+          thirtyMins++;
+        }      
+      }      
+    }
+
+    final List<LinearSales> data = List<LinearSales>();
+
+      if(fiveMins != 0)
+      {
+        data.add(new LinearSales(5, fiveMins, Colors.red)); 
+      }
+      if(tenMins != 0)
+      {
+        data.add(new LinearSales(10, tenMins, Colors.green)); 
+      }
+      if(fifteenMins != 0)
+      {
+        data.add(new LinearSales(15, fifteenMins, Colors.blue)); 
+      }
+      if(twentyMins != 0)
+      {
+        data.add(new LinearSales(20, twentyMins, Colors.orange));
+      }
+      if(twentyfiveMins != 0)
+      {
+        data.add(new LinearSales(25, twentyfiveMins, Colors.purple)); 
+      }
+      if(thirtyMins != 0)
+      {
+        data.add(new LinearSales(30, thirtyMins, Colors.pink)); 
+      }       
+    
     return [
       new charts.Series<LinearSales, int>(
         id: 'Sales',
@@ -73,7 +116,7 @@ class DonutAutoLabelChart extends StatelessWidget {
         colorFn: (LinearSales sales, _) => sales.color,
         data: data,
         // Set a label accessor to control the text of the arc label.
-        labelAccessorFn: (LinearSales row, _) => '${row.year}: ${row.sales}',
+        labelAccessorFn: (LinearSales row, _) => '${row.year} mins : ${row.sales}',
       )
     ];
   }

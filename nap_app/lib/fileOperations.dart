@@ -65,9 +65,8 @@ class FileOperations{
       String contents = await file.readAsString();
       
       Map<String, dynamic> decodedSettings = jsonDecode(contents);
-
+      
       print("Read $decodedSettings from file!");
-
       return decodedSettings;
     }
     catch(e){
@@ -93,7 +92,7 @@ class FileOperations{
 
   //Get Number of Valid Nap Files Saved
   Future<int> getVaildNaps() async{
-    var lastNapNumber = 1;
+    var lastNapNumber = 0;
 
     for(int i = 1; i < 500; i++){
       File file = await getDataFile(i);

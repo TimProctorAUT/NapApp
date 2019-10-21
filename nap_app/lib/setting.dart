@@ -12,7 +12,7 @@ class NapSettingsData{
   final bool wantsAlarmAudio;
   final bool wantsAlarmVibrate;
   final bool wantsGentleWake;
-  
+  final bool wantColourblindMode;
   final String selectedAudioFile;
   final String selectedAlarmSound;
 
@@ -43,7 +43,8 @@ class NapSettingsData{
     this.vibrationInterval,
     this.hasSavedSettings,
     this.wantsGentleWake,
-    this.defaultSettings
+    this.defaultSettings,
+    this.wantColourblindMode,
   });
 
 //If you add anymore field variables to this model class, you need to update
@@ -64,7 +65,8 @@ class NapSettingsData{
     'dontDisplayInstructions' : dontDisplayInstructions,
     'hasSavedSettings' : hasSavedSettings,
     'gentleWake' : wantsGentleWake,
-    'defaultSettings' : defaultSettings
+    'defaultSettings' : defaultSettings,
+    'colourblindMode' : wantColourblindMode,
   };
 
 //To deserialze from JSON format.
@@ -81,5 +83,6 @@ class NapSettingsData{
       dontDisplayInstructions = json['dontDisplayInstructions'],
       hasSavedSettings = json['hasSavedSettings'],
       wantsGentleWake = json['gentleWake'],
-      defaultSettings = json['defaultSettings'];
+      defaultSettings = json['defaultSettings'],
+      wantColourblindMode = json['colourblindMode'];
 }
