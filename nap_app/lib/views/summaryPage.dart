@@ -35,23 +35,25 @@ class _SummaryPageState extends State<SummaryPage> {
   }
 
   getNapData() async{
-    await fileOps.readNapData(widget.napData.napNumber);
+    UserNapData decodedNapData = await fileOps.readObjectFromFile("UserNapData", napNumber: widget.napData.napNumber);
 
     print("file read");
 
     setState(() {
-      tmpData = UserNapData(
-        napNumber: FileOperations.decodedNapData['napNumber'],
-        successfullSleep: FileOperations.decodedNapData['successfullSleep'],
-        timeOfNap: FileOperations.decodedNapData['timeOfNap'],
-        timeSleptInSeconds: FileOperations.decodedNapData['timeSleptInSeconds'],
-        timeToSleep: FileOperations.decodedNapData['timeToSleep']
-      );
+      tmpData = decodedNapData;
       random = 0 + Random().nextInt(NapSettingsData.encouragingMessages.length);
     });
   }
 
   cardBuilder(String title, String subtitle){
+
+    if(subtitle == "true"){
+      subtitle = "Successfull";
+    }
+    else if(subtitle == "false"){
+      subtitle = "Unsuccessfull";
+    }
+
     return Card(
       color: Color.fromRGBO(50, 50, 50, 0.7),
       child: Row(
@@ -103,16 +105,31 @@ class _SummaryPageState extends State<SummaryPage> {
     String minutesSeconds;
 
     if(duration.inMinutes == 0){
-      //print("0 minutes");
-      minutesSeconds = "seconds";
+      minutesSeconds = "second(s)";
     }
     else{
-      minutesSeconds = "minutes";
+      minutesSeconds = "minute(s)";
     }
 
-    //print("${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds");
+    bool leadingZeroRequired;
 
-    return "${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds";
+    if(duration.inSeconds < 10){
+      leadingZeroRequired = true;
+    }
+    else{
+      leadingZeroRequired = false;
+    }
+
+    if(duration.inSeconds == 60){
+      return "${duration.inMinutes}:${duration.inSeconds.remainder(60)}0 $minutesSeconds";
+    }
+
+    if(leadingZeroRequired){
+      return "${duration.inMinutes}:0${duration.inSeconds.remainder(60)} $minutesSeconds";
+    }
+    else{
+      return "${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds";
+    }
   }
 
   @override
@@ -129,7 +146,7 @@ class _SummaryPageState extends State<SummaryPage> {
           ),
           //Center Piece Title
           Spacer(),
-          tmpData.successfullSleep == null ? centerBuilder("Oops", "Something went wrong") : centerBuilder("Good Job", "You Fell Asleep"),
+          tmpData.successfullSleep == null ? centerBuilder("Oops", "Something went wrong") : centerBuilder("You Fell Asleep!", "That's definitely time well spent!"),
           Spacer(),
 
           //Start of Stat cards
@@ -149,16 +166,14 @@ class _SummaryPageState extends State<SummaryPage> {
           //then 
           ? cardBuilder("Oops", "${null}")
           //else 
-          : cardBuilder("Fell Asleep", "${tmpData.successfullSleep}"),
+          : cardBuilder("Fell Asleep?", "${tmpData.successfullSleep}"),
           Divider(),
 
-//TODO Implement saved seconds to display as a time
           //if
           tmpData.successfullSleep == null 
           //then
           ? cardBuilder("Oops", "${null}") 
           //else
-          //: cardBuilder("Time Till Asleep", "${(tmpData.timeToSleep / 60).toStringAsFixed(2)} minutes"),
           : cardBuilder("Time Till Asleep", "${convertToTimeDisplay(tmpData.timeToSleep)}"),
          
           Divider(),

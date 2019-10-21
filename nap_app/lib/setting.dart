@@ -12,17 +12,15 @@ class NapSettingsData{
   final bool wantsAlarmAudio;
   final bool wantsAlarmVibrate;
   final bool wantsGentleWake;
-
-
+  
   final String selectedAudioFile;
   final String selectedAlarmSound;
 
 //TODO update list with new messages
   static List<String> encouragingMessages = [
-    "Atleast you tried.",
-    "Good Job!",
-    "Don't give up, we'll all die one day!",
-    "Congratulations, You got the super rare pepe message. Nap now for successful sleep"
+    "You might not have fallen asleep, but atleast you relaxed!",
+    "Feeling refreshed? That's all that matters!",
+    "Everytime you don't fall asleep, you're training yourself to relax.",
   ];
 
 
@@ -30,6 +28,7 @@ class NapSettingsData{
   //Only set after sleep detection.
   bool dontDisplayInstructions = false;
   bool hasSavedSettings = false;
+  bool defaultSettings = true;
 
   NapSettingsData({
     this.napLength, 
@@ -43,7 +42,8 @@ class NapSettingsData{
     this.dontDisplayInstructions,
     this.vibrationInterval,
     this.hasSavedSettings,
-    this.wantsGentleWake
+    this.wantsGentleWake,
+    this.defaultSettings
   });
 
 //If you add anymore field variables to this model class, you need to update
@@ -63,7 +63,8 @@ class NapSettingsData{
     'selectedAlarmSound' : selectedAlarmSound,
     'dontDisplayInstructions' : dontDisplayInstructions,
     'hasSavedSettings' : hasSavedSettings,
-    'gentleWake' : wantsGentleWake
+    'gentleWake' : wantsGentleWake,
+    'defaultSettings' : defaultSettings
   };
 
 //To deserialze from JSON format.
@@ -79,5 +80,6 @@ class NapSettingsData{
       selectedAlarmSound = json['selectedAlarmSound'],
       dontDisplayInstructions = json['dontDisplayInstructions'],
       hasSavedSettings = json['hasSavedSettings'],
-      wantsGentleWake = json['gentleWake'];
+      wantsGentleWake = json['gentleWake'],
+      defaultSettings = json['defaultSettings'];
 }
