@@ -23,11 +23,11 @@ class _NapSettingsState extends State<NapSettings> {
   bool settingCard4 = false;
   bool settingCard5 = false;
 
-  int napLimit;
-  int napLength;
+  int napLimit = 10;
+  int napLength = 20;
 
-  bool gentleWake;
-  bool showInstructions;
+  bool gentleWake = false;
+  bool showInstructions = true;
   bool tapPlay = true;
 
   bool backgroundAudio;
@@ -35,7 +35,7 @@ class _NapSettingsState extends State<NapSettings> {
 
   List<String> listOfFiles = List<String>();
   Settings.NapSettingsData settingsObject;
-  //bool hasSavedSettings = false;
+  dynamic napSettings;
 
   FileOperations fileOps = FileOperations();
 
@@ -166,7 +166,7 @@ class _NapSettingsState extends State<NapSettings> {
                                       height: 75,
                                       child: Column(
                                         children: <Widget>[
-                                          Text('How Long Would you Like to Nap? '), 
+                                          Text('Desired Nap Length'), 
 
                                           DropdownButton <int>(
                                             value: napLength,
@@ -201,7 +201,7 @@ class _NapSettingsState extends State<NapSettings> {
                                       height: 75,
                                       child: Column(
                                         children: <Widget>[
-                                          Text('How Long do you have to try and nap?'),    
+                                          Text('Time Available for Nap'),    
 
                                           DropdownButton <int>(
                                             value: napLimit,
@@ -304,7 +304,7 @@ class _NapSettingsState extends State<NapSettings> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              Text('Toggle Instructions'),
+                                              Text('View Instruction\'s Page'),
 
                                               Switch(
                                                 value: !showInstructions,
@@ -404,7 +404,7 @@ class _NapSettingsState extends State<NapSettings> {
 
                                     Container(
                                       width: 200,
-                                      height: 96,
+                                      height: 150,
                                       child: Column(
                                         children: <Widget>[
                                           Row(
@@ -427,16 +427,13 @@ class _NapSettingsState extends State<NapSettings> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           Text('Gentle Wake'),
+                                          Text("*", style: TextStyle(color: Colors.red),),
 
                                           Switch(
                                             value: gentleWake,
                                             onChanged: (value)
                                             {
-                                              setState(() {
-                                                
-                                                //TODO add message to user
-                                                //that gentle wake only works on android 8+
-                                                
+                                              setState(() {                                              
                                                 gentleWake = value;
                                               });
                                             },
@@ -449,12 +446,18 @@ class _NapSettingsState extends State<NapSettings> {
                                           ),
                                         ],
                                       ),
+                                      
+                                      Spacer(),
+                                      //TODO update this message once testing on this has concluded.
+                                      Text("*Gentle Wake option only works on android version 9 and above.", style: TextStyle(color: Colors.red, fontSize: 10),)
                                     ],
                                   )
                                 ),
                                   ],
                                 ),
                               ),
+
+                              
                             ],
                           ),
                         ],
@@ -626,7 +629,7 @@ class _NapSettingsState extends State<NapSettings> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("You are about to delete your saved settings file.\n\nAre you sure you wish to continue?"),
+        title: Text("You are about to reset your saved settings.\n\nAre you sure you wish to continue?"),
         actions: <Widget>[
           FlatButton(
             child: Text("Ok"),

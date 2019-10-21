@@ -1,14 +1,18 @@
 import 'package:first_app/fileOperations.dart';
+import 'package:first_app/userNapData.dart';
 import 'package:first_app/views/homePage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart' as prefix0;
 import '../graphs/LineChart.dart' as lineChart;
-import '../graphs/SDonutChart.dart' as donutChart;
+import '../graphs/DonutChart.dart' as donutChart;
 import '../graphs/GuageChart.dart' as guageChart;
 
 class PastNaps extends StatefulWidget
 {
+  final List<UserNapData> napList;
+  PastNaps({this.napList});
+
   @override 
   _PastNapsState createState() => _PastNapsState();
 }
@@ -79,7 +83,7 @@ class _PastNapsState extends State<PastNaps> {
                     padding: EdgeInsets.all(15),
                     height: 250,
                     width: 320,
-                    child: donutChart.DonutChart(),
+                    child: donutChart.DonutAutoLabelChart.withSampleData(),
                   ),
                 ],
               ),          

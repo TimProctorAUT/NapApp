@@ -3,9 +3,6 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class FileOperations{
-  static dynamic decodedObject;
-  static dynamic decodedNapData;
-
 //Gets the file directory for the application.
   Future<String> get localPath async{
     final directory = await getApplicationDocumentsDirectory();
@@ -32,15 +29,20 @@ class FileOperations{
   }
 
 //Reads the contents of the napdata file and loads the contents into a local static variable.
-  readNapData(int napNumber) async{
+//Returns a Map<String, dynamic>.
+//Create local dynamic variable and assign it to "await readNapData(napNumber)"
+//ensure that await is used to prevent trying to display null data.
+  dynamic readNapData(int napNumber) async{
     try{
       final file = await getDataFile(napNumber);
       String contents = await file.readAsString();
 
       Map<String, dynamic> decodedUserNaps = jsonDecode(contents);
-      decodedNapData = decodedUserNaps;
+      //decodedNapData = decodedUserNaps;
 
       print("Read $decodedUserNaps from file!");
+
+      return decodedUserNaps;
     }
     catch(e){
       e.toString();
@@ -55,15 +57,18 @@ class FileOperations{
   }
 
 //Reads the contents of the settings file and loads the contents into a local static variable.
-  readSettings() async{
+  dynamic readSettings() async{
     try{
       final file = await localFile;
+
       String contents = await file.readAsString();
       
       Map<String, dynamic> decodedSettings = jsonDecode(contents);
-      decodedObject = decodedSettings;
+      //decodedObject = decodedSettings;
 
-      print("Read $decodedObject from file!");
+      print("Read $decodedSettings from file!");
+
+      return decodedSettings;
     }
     catch(e){
       return e.toString();
@@ -78,7 +83,7 @@ class FileOperations{
         file.delete(recursive: true);
       }
 
-      decodedNapData = null;
+      // decodedNapData = null;
     }
   }
 
@@ -86,11 +91,10 @@ class FileOperations{
   deleteFile() async{
     final file = await localFile;
     file.delete(recursive: true);
-    decodedObject = null;
+    //decodedObject = null;
   }
 
-
-//Get Number of Valid Nap Files Saved
+  //Get Number of Valid Nap Files Saved
   Future<int> getVaildNaps() async{
     var lastNapNumber = 0;
 
@@ -104,6 +108,7 @@ class FileOperations{
       else
       {
         print("Nah Doesn't Exist");
+        i = 500;
       }
     }
     return lastNapNumber;

@@ -22,6 +22,43 @@ class _SplashScreenState extends State<SplashScreen> {
     fileOps.writeSettings(jsonEncode(widget.settings));
   }
 
+  // loadSettings() async{
+  //   dynamic decodedObject = await fileOps.readSettings();
+
+  //   setState(() {
+  //     try{
+  //       settingsObject = NapSettingsData(
+  //         vibrationInterval: decodedObject['vibrateInterval'],
+  //         napLimit: decodedObject['napLimit'],
+  //         napLength: decodedObject['napLength'],
+  //         selectedVibrate: decodedObject['selectedVibrate'],
+  //         wantsAudio: decodedObject['wantsAudio'],
+  //         wantsAlarmAudio: decodedObject['wantsAlarmAudio'],
+  //         wantsAlarmVibrate: decodedObject['wantsAlarmVibrate'],
+  //         selectedAudioFile: decodedObject['selectedAudioFile'],
+  //         selectedAlarmSound: decodedObject['selectedAlarmSound'],
+  //         dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
+  //         hasSavedSettings: decodedObject['hasSavedSettings'],
+  //         wantsGentleWake: decodedObject['gentleWake']
+  //       );
+  //     }
+  //     catch(e){
+  //       print("file doesnt exists");
+  //       settingsObject = NapSettingsData(
+  //         napLength: 10,
+  //         napLimit: 20,
+  //         dontDisplayInstructions: false,
+  //         wantsAudio: false,
+  //         wantsAlarmAudio: true,
+  //         wantsGentleWake: false
+  //       );
+  //     }
+  //   });
+
+
+  //   Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
+  // }
+
   dialogBuilder(){
     return showDialog(
       context: context,
@@ -57,6 +94,8 @@ class _SplashScreenState extends State<SplashScreen> {
               setState(() {
                 widget.settings.dontDisplayInstructions = value;
                 saveToFile();
+
+
 
                 print(value);
 
