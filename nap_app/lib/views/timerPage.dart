@@ -9,6 +9,8 @@ import 'dart:math' as math;
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:volume/volume.dart';
 
+import 'homePage.dart';
+
 class NapTimer extends StatefulWidget {
 
   final int napLength;
@@ -28,6 +30,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
   int currentVol, maxVol;
   Timer gentleWakeTimer;
   bool hasRunCode = false;
+  Duration duration;
 
   @override
   void dispose(){
@@ -86,6 +89,49 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
     WidgetsBinding.instance.addObserver(this);
   }
 //TODO add wigetsbindingobserver to catch application suspension
+
+//didChangeAppLifeCycleState allows any code to be run when the app is paused (minimized) or resumed.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state){
+    super.didChangeAppLifecycleState(state);
+    switch(state){
+      case AppLifecycleState.paused:
+        print("paused");
+
+        if(gentleWakeTimer.isActive){
+          gentleWakeTimer.cancel();
+        }
+        FlutterRingtonePlayer.stop();
+        break;
+
+      case AppLifecycleState.resumed:
+        print("resumed");
+        print(duration.inSeconds);
+
+        if(duration.inSeconds <= 1){
+          timerString();
+        }
+        break;
+
+      case AppLifecycleState.inactive:
+        print("inactive");
+
+        if(gentleWakeTimer.isActive){
+          gentleWakeTimer.cancel();
+        }
+        FlutterRingtonePlayer.stop();
+        break;
+
+      case AppLifecycleState.suspending:
+        print("suspending");
+
+        if(gentleWakeTimer.isActive){
+          gentleWakeTimer.cancel();
+        }
+        FlutterRingtonePlayer.stop();
+        break;
+    }
+  }
   
   Future<void> initPlatformState() async{
     await Wakelock.enable();
@@ -125,7 +171,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
   }
 
   String timerString() {
-    Duration duration = controller.duration * controller.value;
+    duration = controller.duration * controller.value;
 
     if(duration.inSeconds == 1.0){
       if(!hasRunCode){
@@ -157,83 +203,108 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => SummaryPage(napData: widget.napData,)), ModalRoute.withName('/'));
   }
 
+//This is called if the android back button is pressed during the timer countdown.
+//If yes is tapped, it will navigate to the summary page.
+//Tapping no dismisses the dialog box.
+  Future<bool> willPop(){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Are you sure you want to terminate your sleep session?"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Yes"),
+            onPressed: navigateToSummary
+            ),
+          FlatButton(
+            child: Text("No"),
+            onPressed: () => Navigator.pop(context, false),
+          )
+        ],
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: Align(
-                alignment: FractionalOffset.center,
-                child: AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Stack(
-                    children: <Widget>[
-                      Positioned.fill(
-                        child: AnimatedBuilder(
-                          animation: controller,
-                          builder: (BuildContext context, Widget child) {
-                            return CustomPaint(
-                                painter: TimerPainter(
-                              animation: controller,
-                              backgroundColor: Colors.white,
-                              color: widget.settings.wantColourblindMode ? Colors.red : themeData.indicatorColor,
-                            ));
-                          },
-                        ),
-                      ),
-                      Align(
-                        alignment: FractionalOffset.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Nap Timer",
-                              style: themeData.textTheme.subhead,
-                            ),
-                            AnimatedBuilder(
+    return WillPopScope(
+      onWillPop: willPop,
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: Align(
+                  alignment: FractionalOffset.center,
+                  child: AspectRatio(
+                    aspectRatio: 1.0,
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(
+                          child: AnimatedBuilder(
+                            animation: controller,
+                            builder: (BuildContext context, Widget child) {
+                              return CustomPaint(
+                                  painter: TimerPainter(
                                 animation: controller,
-                                builder: (BuildContext context, Widget child) {
-                                  return Text(
-                                    timerString(),
-                                    style: themeData.textTheme.display4,
-                                  );
-                                }),
-                          ],
+                                backgroundColor: Colors.white,
+                                color: themeData.indicatorColor,
+                              ));
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                        Align(
+                          alignment: FractionalOffset.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Nap Timer",
+                                style: themeData.textTheme.subhead,
+                              ),
+                              AnimatedBuilder(
+                                  animation: controller,
+                                  builder: (BuildContext context, Widget child) {
+                                    return Text(
+                                      timerString(),
+                                      style: themeData.textTheme.display4,
+                                    );
+                                  }),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  FloatingActionButton(
-                    child: AnimatedBuilder(
-                      animation: controller,
-                      builder: (BuildContext context, Widget child) {
-                        return Icon(controller.isAnimating
-                            ? Icons.stop
-                            : Icons.stop);
-                      },
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    FloatingActionButton(
+                      child: AnimatedBuilder(
+                        animation: controller,
+                        builder: (BuildContext context, Widget child) {
+                          return Icon(controller.isAnimating
+                              ? Icons.stop
+                              : Icons.stop);
+                        },
+                      ),
+                      onPressed: () {
+                        navigateToSummary();
+                      }
                     ),
-                    onPressed: () {
-                      navigateToSummary();
-                    }
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

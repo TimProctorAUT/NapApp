@@ -42,7 +42,7 @@ class _PastNapsState extends State<PastNaps> {
                 border: Border.all(width: 1.0, color: Colors.white),
               ),     
               child: Column(
-                children: <Widget>[                
+                children: <Widget>[         
                   Text('Time Taken to fall Asleep'),
 
                   Container(height: 15,),

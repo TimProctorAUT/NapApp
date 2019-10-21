@@ -38,138 +38,37 @@ class _HomeScreenState  extends State<HomeScreen> {
     );
   }
 
-//TODO REVISE DEFAULT SETTINGS FOR QUICK NAPS
   loadSettingsForNap() async{
-    dynamic decodedObject = await fileOps.readSettings();
+    settingsObject = await fileOps.readObjectFromFile("NapSettings");
 
-    setState(() {
-      try{
-        settingsObject = NapSettingsData(
-          vibrationInterval: decodedObject['vibrateInterval'],
-          napLimit: decodedObject['napLimit'],
-          napLength: decodedObject['napLength'],
-          selectedVibrate: decodedObject['selectedVibrate'],
-          wantsAudio: decodedObject['wantsAudio'],
-          wantsAlarmAudio: decodedObject['wantsAlarmAudio'],
-          wantsAlarmVibrate: decodedObject['wantsAlarmVibrate'],
-          selectedAudioFile: decodedObject['selectedAudioFile'],
-          selectedAlarmSound: decodedObject['selectedAlarmSound'],
-          dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
-          hasSavedSettings: decodedObject['hasSavedSettings'],
-          wantsGentleWake: decodedObject['gentleWake'],
-          wantColourblindMode: decodedObject['colourblindMode']
-          
-        );
-
-        if(settingsObject.dontDisplayInstructions){
-          Navigator.push(context,MaterialPageRoute(builder: (context) => TapMethod(settings: settingsObject,)),); 
-        }
-        else{
-          Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
-        }
-
-      }
-      //Default nap settings
-      catch(e){
-        settingsObject = NapSettingsData(
-          vibrationInterval: 2,
-          napLength: 10,
-          napLimit: 20,
-          dontDisplayInstructions: false,
-          wantsAudio: false,
-          wantsGentleWake: true,
-          wantColourblindMode: false
-        );
-
-        Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
-
-        dialogBuilder();
-
-        print("file doesnt exist");
-      }  
-    });     
+    if(settingsObject.defaultSettings){
+      Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
+      dialogBuilder();
+    }
+    else if(settingsObject.dontDisplayInstructions){
+      Navigator.push(context,MaterialPageRoute(builder: (context) => TapMethod(settings: settingsObject,)),); 
+    }
+    else{
+      Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
+    }
   }
 
   loadSettings() async{
-    dynamic decodedObject = await fileOps.readSettings();
+    settingsObject = await fileOps.readObjectFromFile("NapSettings");
 
-    setState(() {
-      try{
-        settingsObject = NapSettingsData(
-          vibrationInterval: decodedObject['vibrateInterval'],
-          napLimit: decodedObject['napLimit'],
-          napLength: decodedObject['napLength'],
-          selectedVibrate: decodedObject['selectedVibrate'],
-          wantsAudio: decodedObject['wantsAudio'],
-          wantsAlarmAudio: decodedObject['wantsAlarmAudio'],
-          wantsAlarmVibrate: decodedObject['wantsAlarmVibrate'],
-          selectedAudioFile: decodedObject['selectedAudioFile'],
-          selectedAlarmSound: decodedObject['selectedAlarmSound'],
-          dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
-          hasSavedSettings: decodedObject['hasSavedSettings'],
-          wantsGentleWake: decodedObject['gentleWake'],
-          wantColourblindMode: decodedObject['colourblindMode']
-        );
-      }
-      //Default nap settings
-      catch(e){
-        print("file doesnt exists");
-        settingsObject = NapSettingsData(
-          napLength: 10,
-          napLimit: 20,
-          dontDisplayInstructions: false,
-          wantsAudio: false,
-          wantsAlarmAudio: true,
-          wantsGentleWake: false,
-          wantColourblindMode: false,
-        );
-      }
-    });
 
     Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
   }
 
   buildNapDataListForGraphs() async{
     int length = await fileOps.getVaildNaps();
-    
-    if(length == 0)
-    {
-      //Call Data Pop-up if no Data Available
-      return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("No Naps on Record!\n\n Press the 'Start Nap' button to take a nap"),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Ok"),
-            onPressed: (){
-              Navigator.pop(context);
-            }
-          )
-        ],
-      )
-    );
-    }
-    else
-    {
-      List<UserNapData> napList = List<UserNapData>();
+    List<UserNapData> napList = List<UserNapData>();
 
-      for(int i = 1; i <= length; i++){
-        dynamic decodedNapData = await fileOps.readNapData(i);
-
-        UserNapData napData = UserNapData(
-          napNumber: decodedNapData['napNumber'],
-          successfullSleep: decodedNapData['successfullSleep'],
-          timeOfNap: decodedNapData['timeOfNap'],
-          timeSleptInSeconds: decodedNapData['timeSleptInSeconds'],
-          timeToSleep: decodedNapData['timeToSleep']
-        );
-        napList.add(napData);
-      }
-      Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
+    for(int i = 1; i <= length; i++){
+      UserNapData napData = await fileOps.readObjectFromFile("usernapdata", napNumber: i);
+      napList.add(napData);
     }
-    
-    
+    Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
   }
 
   launchUrl(String url) async {

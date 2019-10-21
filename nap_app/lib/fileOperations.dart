@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:first_app/setting.dart';
+import 'package:first_app/userNapData.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileOperations{
@@ -38,7 +40,6 @@ class FileOperations{
       String contents = await file.readAsString();
 
       Map<String, dynamic> decodedUserNaps = jsonDecode(contents);
-      //decodedNapData = decodedUserNaps;
 
       print("Read $decodedUserNaps from file!");
 
@@ -64,10 +65,8 @@ class FileOperations{
       String contents = await file.readAsString();
       
       Map<String, dynamic> decodedSettings = jsonDecode(contents);
-      //decodedObject = decodedSettings;
-
+      
       print("Read $decodedSettings from file!");
-
       return decodedSettings;
     }
     catch(e){
@@ -82,8 +81,6 @@ class FileOperations{
       if(await file.exists()){
         file.delete(recursive: true);
       }
-
-      // decodedNapData = null;
     }
   }
 
@@ -91,7 +88,6 @@ class FileOperations{
   deleteFile() async{
     final file = await localFile;
     file.delete(recursive: true);
-    //decodedObject = null;
   }
 
   //Get Number of Valid Nap Files Saved
@@ -102,15 +98,81 @@ class FileOperations{
       File file = await getDataFile(i);
 
       if(await file.exists()){
-        print("YEET that Meat");
         lastNapNumber = i;
       }
       else
       {
-        print("Nah Doesn't Exist");
         i = 500;
       }
     }
     return lastNapNumber;
+  }
+
+//TODO revise default settings for nap
+  dynamic readObjectFromFile(String object, {int napNumber}) async{
+
+    print("$object $napNumber");
+    
+    if(object.toUpperCase() == "napsettings".toUpperCase()){
+      dynamic decodedObject = await readSettings();
+
+      try{
+        NapSettingsData settingsObject = NapSettingsData(
+          vibrationInterval: decodedObject['vibrateInterval'],
+          napLimit: decodedObject['napLimit'],
+          napLength: decodedObject['napLength'],
+          selectedVibrate: decodedObject['selectedVibrate'],
+          wantsAudio: decodedObject['wantsAudio'],
+          wantsAlarmAudio: decodedObject['wantsAlarmAudio'],
+          wantsAlarmVibrate: decodedObject['wantsAlarmVibrate'],
+          selectedAudioFile: decodedObject['selectedAudioFile'],
+          selectedAlarmSound: decodedObject['selectedAlarmSound'],
+          dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
+          hasSavedSettings: decodedObject['hasSavedSettings'],
+          wantsGentleWake: decodedObject['gentleWake'],
+          //TODO add colorblind from file
+        );
+
+        settingsObject.defaultSettings = false;
+
+        return settingsObject;
+      }
+      //Default nap settings
+      catch(e){
+        NapSettingsData settingsObject = NapSettingsData(
+          vibrationInterval: 2,
+          napLength: 1,
+          napLimit: 1,
+          dontDisplayInstructions: false,
+          wantsAudio: false,
+          wantsGentleWake: true,
+          defaultSettings: true
+          //TODO add colorblind default.
+        );
+
+        return settingsObject;
+      }
+    }
+    else if(object.toUpperCase() == "usernapdata".toUpperCase()){
+      try{
+        dynamic decodedNapData = await readNapData(napNumber);
+        
+        UserNapData napData = UserNapData(
+          napNumber: decodedNapData['napNumber'],
+          successfullSleep: decodedNapData['successfullSleep'],
+          timeOfNap: decodedNapData['timeOfNap'],
+          timeSleptInSeconds: decodedNapData['timeSleptInSeconds'],
+          timeToSleep: decodedNapData['timeToSleep']
+        );
+
+        return napData;
+      }
+      catch(e){
+        print("nap data file doesnt exist.");
+      }
+    }
+    else{
+      print("The string you entered into this function is incorrect. Please enter 'napsettings' or 'usernapdata' ");
+    }
   }
 }
