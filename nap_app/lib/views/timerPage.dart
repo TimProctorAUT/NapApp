@@ -20,7 +20,7 @@ class NapTimer extends StatefulWidget {
   _NapTimerState createState() => _NapTimerState();
 }
 
-class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
+class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, WidgetsBindingObserver {
   AnimationController controller;
   Stopwatch timeSlept = Stopwatch();
   double alarmVolume = 1; 
@@ -82,6 +82,8 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
     audioManager = AudioManager.STREAM_SYSTEM;
     initPlatformState();
     updateVolumes();
+
+    WidgetsBinding.instance.addObserver(this);
   }
 //TODO add wigetsbindingobserver to catch application suspension
   
@@ -179,7 +181,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin {
                                 painter: TimerPainter(
                               animation: controller,
                               backgroundColor: Colors.white,
-                              color: themeData.indicatorColor,
+                              color: widget.settings.wantColourblindMode ? Colors.red : themeData.indicatorColor,
                             ));
                           },
                         ),

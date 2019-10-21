@@ -32,7 +32,6 @@ class _AboutUsState extends State<AboutUs> {
   benefits are similar to those experienced 
   after consuming caffeine (or other stimulant 
   medications), but without the side effects.
-  
   ''';
 
   //Test for Why This App section
@@ -42,7 +41,7 @@ class _AboutUsState extends State<AboutUs> {
   performance, reaction times and subjective feelings
   of alertness.
   This app is built with all the research behind 
-  it, and we'veended up with the perfect solution 
+  it, and we've ended up with the perfect solution 
   to your future naps.
   ''';
 

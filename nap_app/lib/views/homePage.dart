@@ -1,5 +1,6 @@
 import 'package:first_app/fileOperations.dart';
 import 'package:first_app/setting.dart';
+import 'package:first_app/userNapData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,23 +40,25 @@ class _HomeScreenState  extends State<HomeScreen> {
 
 //TODO REVISE DEFAULT SETTINGS FOR QUICK NAPS
   loadSettingsForNap() async{
-    await fileOps.readSettings();
+    dynamic decodedObject = await fileOps.readSettings();
 
     setState(() {
       try{
         settingsObject = NapSettingsData(
-          vibrationInterval: FileOperations.decodedObject['vibrateInterval'],
-          napLimit: FileOperations.decodedObject['napLimit'],
-          napLength: FileOperations.decodedObject['napLength'],
-          selectedVibrate: FileOperations.decodedObject['selectedVibrate'],
-          wantsAudio: FileOperations.decodedObject['wantsAudio'],
-          wantsAlarmAudio: FileOperations.decodedObject['wantsAlarmAudio'],
-          wantsAlarmVibrate: FileOperations.decodedObject['wantsAlarmVibrate'],
-          selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
-          selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
-          dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
-          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings'],
-          wantsGentleWake: FileOperations.decodedObject['gentleWake']
+          vibrationInterval: decodedObject['vibrateInterval'],
+          napLimit: decodedObject['napLimit'],
+          napLength: decodedObject['napLength'],
+          selectedVibrate: decodedObject['selectedVibrate'],
+          wantsAudio: decodedObject['wantsAudio'],
+          wantsAlarmAudio: decodedObject['wantsAlarmAudio'],
+          wantsAlarmVibrate: decodedObject['wantsAlarmVibrate'],
+          selectedAudioFile: decodedObject['selectedAudioFile'],
+          selectedAlarmSound: decodedObject['selectedAlarmSound'],
+          dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
+          hasSavedSettings: decodedObject['hasSavedSettings'],
+          wantsGentleWake: decodedObject['gentleWake'],
+          wantColourblindMode: decodedObject['colourblindMode']
+          
         );
 
         if(settingsObject.dontDisplayInstructions){
@@ -66,14 +69,16 @@ class _HomeScreenState  extends State<HomeScreen> {
         }
 
       }
+      //Default nap settings
       catch(e){
         settingsObject = NapSettingsData(
           vibrationInterval: 2,
-          napLength: 1,
-          napLimit: 1,
+          napLength: 10,
+          napLimit: 20,
           dontDisplayInstructions: false,
           wantsAudio: false,
-          wantsGentleWake: true
+          wantsGentleWake: true,
+          wantColourblindMode: false
         );
 
         Navigator.push(context,MaterialPageRoute(builder: (context) => SplashScreen(settings: settingsObject,)),); 
@@ -86,25 +91,27 @@ class _HomeScreenState  extends State<HomeScreen> {
   }
 
   loadSettings() async{
-    await fileOps.readSettings();
+    dynamic decodedObject = await fileOps.readSettings();
 
     setState(() {
       try{
         settingsObject = NapSettingsData(
-          vibrationInterval: FileOperations.decodedObject['vibrateInterval'],
-          napLimit: FileOperations.decodedObject['napLimit'],
-          napLength: FileOperations.decodedObject['napLength'],
-          selectedVibrate: FileOperations.decodedObject['selectedVibrate'],
-          wantsAudio: FileOperations.decodedObject['wantsAudio'],
-          wantsAlarmAudio: FileOperations.decodedObject['wantsAlarmAudio'],
-          wantsAlarmVibrate: FileOperations.decodedObject['wantsAlarmVibrate'],
-          selectedAudioFile: FileOperations.decodedObject['selectedAudioFile'],
-          selectedAlarmSound: FileOperations.decodedObject['selectedAlarmSound'],
-          dontDisplayInstructions: FileOperations.decodedObject['dontDisplayInstructions'],
-          hasSavedSettings: FileOperations.decodedObject['hasSavedSettings'],
-          wantsGentleWake: FileOperations.decodedObject['gentleWake']
+          vibrationInterval: decodedObject['vibrateInterval'],
+          napLimit: decodedObject['napLimit'],
+          napLength: decodedObject['napLength'],
+          selectedVibrate: decodedObject['selectedVibrate'],
+          wantsAudio: decodedObject['wantsAudio'],
+          wantsAlarmAudio: decodedObject['wantsAlarmAudio'],
+          wantsAlarmVibrate: decodedObject['wantsAlarmVibrate'],
+          selectedAudioFile: decodedObject['selectedAudioFile'],
+          selectedAlarmSound: decodedObject['selectedAlarmSound'],
+          dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
+          hasSavedSettings: decodedObject['hasSavedSettings'],
+          wantsGentleWake: decodedObject['gentleWake'],
+          wantColourblindMode: decodedObject['colourblindMode']
         );
       }
+      //Default nap settings
       catch(e){
         print("file doesnt exists");
         settingsObject = NapSettingsData(
@@ -113,13 +120,56 @@ class _HomeScreenState  extends State<HomeScreen> {
           dontDisplayInstructions: false,
           wantsAudio: false,
           wantsAlarmAudio: true,
-          wantsGentleWake: false
+          wantsGentleWake: false,
+          wantColourblindMode: false,
         );
       }
     });
 
-
     Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
+  }
+
+  buildNapDataListForGraphs() async{
+    int length = await fileOps.getVaildNaps();
+    
+    if(length == 0)
+    {
+      //Call Data Pop-up if no Data Available
+      return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("No Naps on Record!\n\n Press the 'Start Nap' button to take a nap"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            onPressed: (){
+              Navigator.pop(context);
+            }
+          )
+        ],
+      )
+    );
+    }
+    else
+    {
+      List<UserNapData> napList = List<UserNapData>();
+
+      for(int i = 1; i <= length; i++){
+        dynamic decodedNapData = await fileOps.readNapData(i);
+
+        UserNapData napData = UserNapData(
+          napNumber: decodedNapData['napNumber'],
+          successfullSleep: decodedNapData['successfullSleep'],
+          timeOfNap: decodedNapData['timeOfNap'],
+          timeSleptInSeconds: decodedNapData['timeSleptInSeconds'],
+          timeToSleep: decodedNapData['timeToSleep']
+        );
+        napList.add(napData);
+      }
+      Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
+    }
+    
+    
   }
 
   launchUrl(String url) async {
@@ -129,7 +179,6 @@ class _HomeScreenState  extends State<HomeScreen> {
       throw 'Could not launch $url';
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +208,8 @@ class _HomeScreenState  extends State<HomeScreen> {
 
               Spacer(),
 
-              Text("Nap", style: TextStyle(fontSize: 55),),
-              Text("Optimizer", style: TextStyle(fontSize: 20),),
+              Text("NAP", style: TextStyle(fontSize: 65, fontFamily: 'Times New Roman', color: Color.fromRGBO(10, 86, 148, 1)),),
+              Text("OPTIMIZER", style: TextStyle(fontSize: 30, fontFamily: 'Times New Roman', color: Color.fromRGBO(144, 144, 144, 1)),),
               
               Spacer(),
 
@@ -258,9 +307,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                     width: 130,
                     height: 130,
                     child: MaterialButton(
-                      onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps()),);                        
-                      },
+                      onPressed: buildNapDataListForGraphs,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -339,7 +386,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                         children: <Widget>[
                           MaterialButton(
                             onPressed: () {
-                              launchUrl("https://www.lifespantrust.com");
+                              launchUrl("http://www.lifespantrust.com");
                             },
                             height: 50,
                             minWidth: 200,
@@ -363,7 +410,8 @@ class _HomeScreenState  extends State<HomeScreen> {
                   child: Text('Keep us Free'),
                   onPressed: (){
                     //TODO CHANGE URL TO BRIANS EMAIL
-                    launchUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=auminist3%40gmail.com&item_name=Keep+the+app+free%21&currency_code=NZD&amount=2&source=url");
+                    //launchUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=auminist3%40gmail.com&item_name=Keep+the+app+free%21&currency_code=NZD&amount=2&source=url");
+                    launchUrl("http://www.lifespantrust.com/donations-and-payments/");
                   } 
                 ),
       ),

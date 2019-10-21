@@ -35,17 +35,17 @@ class _SummaryPageState extends State<SummaryPage> {
   }
 
   getNapData() async{
-    await fileOps.readNapData(widget.napData.napNumber);
+    dynamic decodedNapData = await fileOps.readNapData(widget.napData.napNumber);
 
     print("file read");
 
     setState(() {
       tmpData = UserNapData(
-        napNumber: FileOperations.decodedNapData['napNumber'],
-        successfullSleep: FileOperations.decodedNapData['successfullSleep'],
-        timeOfNap: FileOperations.decodedNapData['timeOfNap'],
-        timeSleptInSeconds: FileOperations.decodedNapData['timeSleptInSeconds'],
-        timeToSleep: FileOperations.decodedNapData['timeToSleep']
+        napNumber: decodedNapData['napNumber'],
+        successfullSleep: decodedNapData['successfullSleep'],
+        timeOfNap: decodedNapData['timeOfNap'],
+        timeSleptInSeconds: decodedNapData['timeSleptInSeconds'],
+        timeToSleep: decodedNapData['timeToSleep']
       );
       random = 0 + Random().nextInt(NapSettingsData.encouragingMessages.length);
     });
@@ -110,9 +110,21 @@ class _SummaryPageState extends State<SummaryPage> {
       minutesSeconds = "minutes";
     }
 
-    //print("${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds");
+    bool leadingZeroRequired;
 
-    return "${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds";
+    if(duration.inSeconds < 10){
+      leadingZeroRequired = true;
+    }
+    else{
+      leadingZeroRequired = false;
+    }
+
+    if(leadingZeroRequired){
+      return "${duration.inMinutes}:0${duration.inSeconds.remainder(60)} $minutesSeconds";
+    }
+    else{
+      return "${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds";
+    }
   }
 
   @override
@@ -152,13 +164,11 @@ class _SummaryPageState extends State<SummaryPage> {
           : cardBuilder("Fell Asleep", "${tmpData.successfullSleep}"),
           Divider(),
 
-//TODO Implement saved seconds to display as a time
           //if
           tmpData.successfullSleep == null 
           //then
           ? cardBuilder("Oops", "${null}") 
           //else
-          //: cardBuilder("Time Till Asleep", "${(tmpData.timeToSleep / 60).toStringAsFixed(2)} minutes"),
           : cardBuilder("Time Till Asleep", "${convertToTimeDisplay(tmpData.timeToSleep)}"),
          
           Divider(),
