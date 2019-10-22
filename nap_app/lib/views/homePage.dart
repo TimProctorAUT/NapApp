@@ -64,12 +64,35 @@ class _HomeScreenState  extends State<HomeScreen> {
     int length = await fileOps.getVaildNaps();
     List<UserNapData> napList = List<UserNapData>();
 
-    for(int i = 1; i <= length; i++){
-      UserNapData napData = await fileOps.readObjectFromFile("usernapdata", napNumber: i);
-      napList.add(napData);
+    
+
+    if(length == 0)
+    {
+     return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("No Naps currently present! \n\n Press 'Start Nap' to start your napping experience"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            onPressed: (){
+              Navigator.pop(context);
+            }
+          )
+        ],
+      )
+    ); 
     }
-    Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
-  }
+    else
+    {
+      for(int i = 1; i <= length; i++){
+        UserNapData napData = await fileOps.readObjectFromFile("usernapdata", napNumber: i);
+        napList.add(napData);
+
+        Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
+      }
+    }
+}
 
   launchUrl(String url) async {
     if (await canLaunch(url)) {
@@ -216,7 +239,7 @@ class _HomeScreenState  extends State<HomeScreen> {
 
                           Container(height: 10,),
 
-                          Text('Last Nap', style: TextStyle(fontSize: 11),),
+                          Text('Previous Naps', style: TextStyle(fontSize: 11),),
                         ],
                       ),
                     ),

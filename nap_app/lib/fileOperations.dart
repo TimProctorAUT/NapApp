@@ -130,7 +130,7 @@ class FileOperations{
           dontDisplayInstructions: decodedObject['dontDisplayInstructions'],
           hasSavedSettings: decodedObject['hasSavedSettings'],
           wantsGentleWake: decodedObject['gentleWake'],
-          //TODO add colorblind from file
+          wantColourblindMode: decodedObject['colourblindMode'],
         );
 
         settingsObject.defaultSettings = false;
@@ -141,13 +141,13 @@ class FileOperations{
       catch(e){
         NapSettingsData settingsObject = NapSettingsData(
           vibrationInterval: 2,
-          napLength: 1,
-          napLimit: 1,
+          napLength: 10,
+          napLimit: 20,
           dontDisplayInstructions: false,
           wantsAudio: false,
           wantsGentleWake: true,
-          defaultSettings: true
-          //TODO add colorblind default.
+          defaultSettings: true,
+          wantColourblindMode: false,
         );
 
         return settingsObject;
