@@ -57,12 +57,12 @@ class SleepStateAlgorithm{
   checkStateChangeRequired(){
     print("Checking current sleep state");
     print("Current State: ${this._sleepState}");
-    if(this.missedDetectionEvents > 2 && _sleepState == SleepState.awake){
+    if(this.missedDetectionEvents > 1 && _sleepState == SleepState.awake){
       _sleepState = SleepState.dozing;
       print("State changed to 'Dozing'");
     }
 
-    if(this.missedDetectionEvents > 3 && _sleepState == SleepState.dozing){
+    if(this.missedDetectionEvents >= 2 && _sleepState == SleepState.dozing){
       _sleepState = SleepState.sleeping;
       print("State changed to 'Sleeping'");
     }

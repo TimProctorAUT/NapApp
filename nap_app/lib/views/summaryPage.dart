@@ -103,6 +103,8 @@ class _SummaryPageState extends State<SummaryPage> {
   String convertToTimeDisplay(int savedValue){
     duration = Duration(seconds: savedValue);
     String minutesSeconds;
+    int minutes = duration.inSeconds ~/ 60;
+    int seconds = duration.inSeconds % 60;
 
     if(duration.inMinutes == 0){
       minutesSeconds = "second(s)";
@@ -111,24 +113,11 @@ class _SummaryPageState extends State<SummaryPage> {
       minutesSeconds = "minute(s)";
     }
 
-    bool leadingZeroRequired;
-
-    if(duration.inSeconds < 10){
-      leadingZeroRequired = true;
+    if(seconds < 10){
+      return "$minutes:0$seconds $minutesSeconds";
     }
     else{
-      leadingZeroRequired = false;
-    }
-
-    if(duration.inSeconds == 60){
-      return "${duration.inMinutes}:${duration.inSeconds.remainder(60)}0 $minutesSeconds";
-    }
-
-    if(leadingZeroRequired){
-      return "${duration.inMinutes}:0${duration.inSeconds.remainder(60)} $minutesSeconds";
-    }
-    else{
-      return "${duration.inMinutes}:${duration.inSeconds.remainder(60)} $minutesSeconds";
+      return "$minutes:$seconds $minutesSeconds";
     }
   }
 

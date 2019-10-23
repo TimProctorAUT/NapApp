@@ -30,8 +30,9 @@ class _NapSettingsState extends State<NapSettings> {
   bool showInstructions = true;
   bool tapPlay = true;
   bool colorblindMode = false;
+  bool musicFade = false;
 
-  bool backgroundAudio;
+  bool backgroundAudio = false;
   String selectedAudioFile = "Meditation";
 
   List<String> listOfFiles = List<String>();
@@ -53,6 +54,7 @@ class _NapSettingsState extends State<NapSettings> {
     showInstructions = widget.napSettings.dontDisplayInstructions;
     backgroundAudio = widget.napSettings.wantsAudio;
     colorblindMode = widget.napSettings.wantColourblindMode;
+    musicFade = widget.napSettings.musicFade;
     
     print(widget.napSettings.wantsAlarmAudio);
     print(widget.napSettings.wantsGentleWake);
@@ -477,7 +479,7 @@ class _NapSettingsState extends State<NapSettings> {
                                       
                                       Spacer(),
                                       //TODO update this message once testing on this has concluded.
-                                      Text("*Gentle Wake option only works on android version 9 and above.", style: TextStyle(color: Colors.red, fontSize: 10),)
+                                      //Text("*Gentle Wake only works on android version 9 and above.", style: TextStyle(color: Colors.red, fontSize: 10),)
                                     ],
                                   )
                                 ),
@@ -697,6 +699,7 @@ class _NapSettingsState extends State<NapSettings> {
       vibrationInterval: 30,
       hasSavedSettings: true,
       wantColourblindMode: colorblindMode,
+      musicFade: musicFade
     );
 
     fileOps.writeSettings(jsonEncode(settingsObject));
@@ -723,6 +726,7 @@ class _NapSettingsState extends State<NapSettings> {
     );
   }
 
+//TODO add gentle wake to this
   testAlarmSound(){
     setState(() {
       if(tapPlay){

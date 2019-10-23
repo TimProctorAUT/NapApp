@@ -56,7 +56,6 @@ class _HomeScreenState  extends State<HomeScreen> {
   loadSettings() async{
     settingsObject = await fileOps.readObjectFromFile("NapSettings");
 
-
     Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
   }
 
@@ -71,7 +70,7 @@ class _HomeScreenState  extends State<HomeScreen> {
      return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("No Naps currently present! \n\n Press 'Start Nap' to start your napping experience"),
+        title: Text("No Naps currently present! \n\nPress 'Start Nap' to start your napping experience"),
         actions: <Widget>[
           FlatButton(
             child: Text("Ok"),
@@ -86,11 +85,11 @@ class _HomeScreenState  extends State<HomeScreen> {
     else
     {
       for(int i = 1; i <= length; i++){
-        UserNapData napData = await fileOps.readObjectFromFile("usernapdata", napNumber: i);
+        UserNapData napData = await fileOps.readObjectFromFile("UserNapData", napNumber: i);
         napList.add(napData);
-
-        Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
       }
+
+      Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
     }
 }
 

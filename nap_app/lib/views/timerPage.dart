@@ -34,29 +34,29 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
   void dispose(){
     Wakelock.disable();
     controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  createAlertDialog(BuildContext context){
+    @override
+  void initState() {
+    super.initState();
+    //Wakelock.enable();
 
-    return showDialog(context: context, builder: (context){
-      return AlertDialog(
-        title: Text("Your Nap Has Finished!"),
-          content: Text("Please press the button below to return home."),
-            actions: <Widget>[
-           MaterialButton(
-             elevation: 5.0,
-             child: Text("Return Home"),
-             onPressed: (){
-               FlutterRingtonePlayer.stop();
-               timeSlept.stop();
-               widget.napData.timeSleptInSeconds = timeSlept.elapsed.inSeconds;
-               Navigator.popUntil(context, ModalRoute.withName('/'));
-             },
-           )
-         ],
-      );
-    });
+    timeSlept.start();
+
+    WidgetsBinding.instance
+      .addPostFrameCallback((_) => startTimer(context));
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: this.widget.napLength),
+    );
+
+    audioManager = AudioManager.STREAM_NOTIFICATION;
+    initPlatformState();
+    updateVolumes();
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void startTimer(BuildContext context){
@@ -66,26 +66,7 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
              : controller.value);
   }
 
-  @override
-  void initState() {
-    super.initState();
 
-    timeSlept.start();
-
-     WidgetsBinding.instance
-      .addPostFrameCallback((_) => startTimer(context));
-    controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: this.widget.napLength),
-    );
-
-
-    audioManager = AudioManager.STREAM_SYSTEM;
-    initPlatformState();
-    updateVolumes();
-
-    WidgetsBinding.instance.addObserver(this);
-  }
 //TODO add wigetsbindingobserver to catch application suspension
 
 //didChangeAppLifeCycleState allows any code to be run when the app is paused (minimized) or resumed.
@@ -132,11 +113,10 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
   }
   
   Future<void> initPlatformState() async{
-    await Wakelock.enable();
-    bool isEnabled = await Wakelock.isEnabled;
-    print(isEnabled);
-    await Volume.controlVolume(AudioManager.STREAM_SYSTEM);
+    await Volume.controlVolume(AudioManager.STREAM_NOTIFICATION);
   }
+
+  
 
 //Must be called after setVol is used to change volume.
   updateVolumes() async {
@@ -249,7 +229,9 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
                                   painter: TimerPainter(
                                 animation: controller,
                                 backgroundColor: Colors.white,
-                                color: themeData.indicatorColor,
+                                color: widget.settings.wantColourblindMode
+                                ? Colors.red
+                                : Color.fromRGBO(10, 86, 148, 1)
                               ));
                             },
                           ),
@@ -286,6 +268,9 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     FloatingActionButton(
+                      backgroundColor: widget.settings.wantColourblindMode
+                      ? Colors.red
+                      : Color.fromRGBO(10, 86, 148, 1),
                       child: AnimatedBuilder(
                         animation: controller,
                         builder: (BuildContext context, Widget child) {

@@ -71,7 +71,6 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 //dispose allows any code to be run before the instance of this page is disposed.
   @override
   void dispose(){
-    Wakelock.disable();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -104,10 +103,10 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
 //Sets default napNumber to 1 if this is first nap, else it checks what files have been created and sets napnumber to that.
   loadNapNumber() async{
     //Checking to see what files exist to get the current napNumber.
-    for(int i = 1; i <= 10; i++){
+    for(int i = 1; i <= 500; i++){
       File file = await FileOperations().getDataFile(i);
 
-      if(i == 10 && await file.exists()){
+      if(i == 500 && await file.exists()){
         buildErrorPopup();
       }
 
@@ -117,7 +116,7 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
       else{
         print("The file for nap number $i dont exist yet");
         napData.napNumber = i;
-        i = 10;
+        i = 500;
       }
     }
   }
@@ -126,11 +125,11 @@ class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("You already have the maximum number of saved nap's.\n\nTo continue, please reset your nap data from the 'Past Naps' page."),
+        title: Text("You already have the maximum number of saved nap's.\n\nTo continue, please reset your nap data from the 'Previous Naps' page. Scroll to the bottom (below the graphs) and tap 'Reset Nap Data'."),
         actions: <Widget>[
           FlatButton(
             child: Text("Ok"),
-            onPressed: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => PastNaps()), ModalRoute.withName('/'))
+            onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/'))
             ),
         ],
       )
@@ -214,10 +213,9 @@ _navigateToAlarmSuccess(){
 
   _stopAudio(int push){
 //Timer to fade music out over 30 seconds when entering the alarm page.
-
     if(push == 1){
-      _musicTimer = Timer.periodic(Duration(seconds: 3), (timer) {
-        _musicVolume -= 0.1;
+      _musicTimer = Timer.periodic(Duration(seconds: 2), (timer) {
+        _musicVolume -= 0.2;
         _audioPlayer.setVolume(_musicVolume);
 
         if(_musicVolume <= 0){

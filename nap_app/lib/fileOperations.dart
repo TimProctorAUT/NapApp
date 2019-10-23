@@ -140,7 +140,7 @@ class FileOperations{
       //Default nap settings
       catch(e){
         NapSettingsData settingsObject = NapSettingsData(
-          vibrationInterval: 2,
+          vibrationInterval: 30,
           napLength: 10,
           napLimit: 20,
           dontDisplayInstructions: false,
