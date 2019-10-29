@@ -48,7 +48,7 @@ class DonutAutoLabelChart extends StatelessWidget {
     var twentyfiveMins = 0;
     var thirtyMins = 0;
 
-
+    //If Else statements which add a count to the values if the time is within that range - Going to the nearest 5 minutes
     for(int i = 0; i < napList.length; i++)
     {
       if(napList[i].successfullSleep)
@@ -83,6 +83,7 @@ class DonutAutoLabelChart extends StatelessWidget {
 
     final List<NapData> data = List<NapData>();
 
+      //Check if the Value is not Zero then Adding to the graph if thats true
       if(fiveMins != 0)
       {
         data.add(new NapData(5, fiveMins, Colors.red)); 
@@ -122,7 +123,7 @@ class DonutAutoLabelChart extends StatelessWidget {
   }
 }
 
-/// Sample linear data type.
+/// NapData data type.
 class NapData {
   final int year;
   final int sales;
