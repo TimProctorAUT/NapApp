@@ -9,12 +9,9 @@ class SimpleTimeSeriesChart extends StatelessWidget {
   final bool animate;
 
   SimpleTimeSeriesChart(this.seriesList, {this.animate});
-
-  /// Creates a [TimeSeriesChart] with sample data and no transition.
   factory SimpleTimeSeriesChart.withSampleData(List<UserNapData> napList) {
     return new SimpleTimeSeriesChart(
       _createSampleData(napList),
-      // Disable animations for image tests.
       animate: true,
     );
   }
@@ -25,9 +22,6 @@ class SimpleTimeSeriesChart extends StatelessWidget {
     return new charts.TimeSeriesChart(
       seriesList,
       animate: animate,
-      // Optionally pass in a [DateTimeFactory] used by the chart. The factory
-      // should create the same type of [DateTime] as the data provided. If none
-      // specified, the default creates local date time.
       dateTimeFactory: const charts.LocalDateTimeFactory(),
       defaultRenderer: new charts.LineRendererConfig(
         includePoints: true,
@@ -82,16 +76,19 @@ class SimpleTimeSeriesChart extends StatelessWidget {
     {
       if(napList[i].successfullSleep)
       {
-        //Get Date
+        //Get Date and Time
         var str = napList[i].timeOfNap;
+
+        var hour = str[13]+str[14];
+        var minute = str[16]+str[17];
 
         var year = str[8]+str[9]+str[10]+str[11];
         var day = str[4]+str[5];
-
         
         var month = str[0]+str[1]+str[2];
         var monthNum = 1;
 
+        //Converts STRING months into Numbers
         switch(month)
         {
           case 'Jan':
@@ -170,18 +167,9 @@ class SimpleTimeSeriesChart extends StatelessWidget {
         //Get TimeToSleep & Convert Seconds to Minutes
         var tempSleepTime = napList[i].timeToSleep;
 
-        data.add(new NapDataset(new DateTime(int.parse(year), monthNum, int.parse(day)), tempSleepTime));
+        data.add(new NapDataset(new DateTime(int.parse(year), monthNum, int.parse(day), int.parse(hour), int.parse(minute)), tempSleepTime));
       }
     }
-
-
-    // final data = [
-    //   new NapDataset(new DateTime(2019, 9, 19), 5),
-    //   new NapDataset(new DateTime(2019, 9, 26), 20),
-    //   new NapDataset(new DateTime(2019, 10, 3), 15),
-    //   new NapDataset(new DateTime(2019, 10, 10), 10),
-    //   new NapDataset(new DateTime(2019, 10, 12), 12),
-    // ];
 
     return [
       new charts.Series<NapDataset, DateTime>(

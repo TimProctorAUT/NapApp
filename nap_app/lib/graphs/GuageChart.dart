@@ -55,10 +55,8 @@ class GaugeChart extends StatelessWidget {
     {
       data.add(new GaugeSegment('Successful', success, Colors.green)); 
     }
-    if(unsccessful != 0)
-    {
-      data.add(new GaugeSegment('Unsuccessful', unsccessful, Colors.red)); 
-    }   
+    
+    data.add(new GaugeSegment('Unsuccessful', unsccessful, Colors.red)); 
 
     return [
       new charts.Series<GaugeSegment, String>(

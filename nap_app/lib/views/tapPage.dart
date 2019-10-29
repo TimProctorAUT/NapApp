@@ -3,7 +3,6 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:first_app/fileOperations.dart';
 import 'package:first_app/setting.dart';
 import 'package:first_app/userNapData.dart';
-import 'package:first_app/views/graphPage.dart';
 import 'package:first_app/views/homePage.dart';
 import 'package:first_app/views/timerPage.dart';
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
