@@ -38,8 +38,8 @@ class DonutAutoLabelChart extends StatelessWidget {
       );
   }
 
-
-  static List<charts.Series<LinearSales, int>> _createSampleData(List<UserNapData> napList) {
+  //Method that retrieves and Populates the Graph
+  static List<charts.Series<NapData, int>> _createSampleData(List<UserNapData> napList) {
 
     var fiveMins = 0;
     var tenMins = 0;
@@ -81,54 +81,54 @@ class DonutAutoLabelChart extends StatelessWidget {
       }      
     }
 
-    final List<LinearSales> data = List<LinearSales>();
+    final List<NapData> data = List<NapData>();
 
       if(fiveMins != 0)
       {
-        data.add(new LinearSales(5, fiveMins, Colors.red)); 
+        data.add(new NapData(5, fiveMins, Colors.red)); 
       }
       if(tenMins != 0)
       {
-        data.add(new LinearSales(10, tenMins, Colors.green)); 
+        data.add(new NapData(10, tenMins, Colors.green)); 
       }
       if(fifteenMins != 0)
       {
-        data.add(new LinearSales(15, fifteenMins, Colors.blue)); 
+        data.add(new NapData(15, fifteenMins, Colors.blue)); 
       }
       if(twentyMins != 0)
       {
-        data.add(new LinearSales(20, twentyMins, Colors.orange));
+        data.add(new NapData(20, twentyMins, Colors.orange));
       }
       if(twentyfiveMins != 0)
       {
-        data.add(new LinearSales(25, twentyfiveMins, Colors.purple)); 
+        data.add(new NapData(25, twentyfiveMins, Colors.purple)); 
       }
       if(thirtyMins != 0)
       {
-        data.add(new LinearSales(30, thirtyMins, Colors.pink)); 
+        data.add(new NapData(30, thirtyMins, Colors.pink)); 
       }       
     
     return [
-      new charts.Series<LinearSales, int>(
+      new charts.Series<NapData, int>(
         id: 'Sales',
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
-        colorFn: (LinearSales sales, _) => sales.color,
+        domainFn: (NapData sales, _) => sales.year,
+        measureFn: (NapData sales, _) => sales.sales,
+        colorFn: (NapData sales, _) => sales.color,
         data: data,
         // Set a label accessor to control the text of the arc label.
-        labelAccessorFn: (LinearSales row, _) => '${row.year} mins : ${row.sales}',
+        labelAccessorFn: (NapData row, _) => '${row.year} mins : ${row.sales}',
       )
     ];
   }
 }
 
 /// Sample linear data type.
-class LinearSales {
+class NapData {
   final int year;
   final int sales;
   final charts.Color color;
 
-  LinearSales(this.year, this.sales, Color color)
+  NapData(this.year, this.sales, Color color)
       : this.color = new charts.Color(
             r: color.red, g: color.green, b: color.blue, a: color.alpha);
 }
