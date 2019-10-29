@@ -1,3 +1,7 @@
+///
+/// This class holds all user nap data for a single session and is created every time a user starts a nap session.
+///
+
 class UserNapData{
   bool successfullSleep;
   int timeSleptInSeconds;

@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'tapPage.dart';
 
 class SplashScreen extends StatefulWidget {
-
   final NapSettingsData settings;
-
   const SplashScreen({this.settings});
 
   _SplashScreenState createState() => _SplashScreenState();
@@ -18,6 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   FileOperations fileOps = FileOperations();
 
+//Saves the 'Do Not Display Again' setting changes to file
   saveToFile() async{
     fileOps.writeSettings(jsonEncode(widget.settings));
   }
@@ -51,17 +50,14 @@ class _SplashScreenState extends State<SplashScreen> {
             ],
           ),
           
+          //Allows the user to toggle between the do not display again setting.
           Switch(
             value: widget.settings.dontDisplayInstructions,
             onChanged: (value){
               setState(() {
                 widget.settings.dontDisplayInstructions = value;
                 saveToFile();
-
-
-
                 print(value);
-
                 if(value){
                   dialogBuilder();
                 }

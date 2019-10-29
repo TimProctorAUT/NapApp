@@ -93,24 +93,19 @@ class _NapSettingsState extends State<NapSettings> {
         appBar: AppBar(
           title: Text('Nap Settings'),
         ),
-
         body: Card(
           color: Color.fromRGBO(18, 18, 18, 1),
-
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Column(
                 children: <Widget>[
-
                   //=========Spacer Division==========//
                   Container(height: 3,),
-
                   //=======Setting Card Number One=======//
                   Card(
                     child: Container(
                       color: Color.fromRGBO(30, 30, 30, 0.45),
-
                       width: 300,
                       height: (settingCard1? 250 : 50),
                       child: Row(
@@ -147,22 +142,18 @@ class _NapSettingsState extends State<NapSettings> {
                                 )
                               ),       
                               //=================================================//
-
                               Visibility(
                                 visible: settingCard1,
                                 child: Column(
                                   children: <Widget>[
-
                                     //Line Division
                                     Container(
                                       color: Colors.white,
                                       height: 1,
                                       width: 250,
                                     ),
-
                                     //Spacer
                                     Container(height: 25),
-
                                     //===================================Nap Length=================================//
                                     Container(
                                       width: 250,
@@ -170,7 +161,6 @@ class _NapSettingsState extends State<NapSettings> {
                                       child: Column(
                                         children: <Widget>[
                                           Text('Desired Nap Length'), 
-
                                           DropdownButton <int>(
                                             value: napLength,
                                             onChanged: (int newValue) {
@@ -178,9 +168,7 @@ class _NapSettingsState extends State<NapSettings> {
                                                 napLength = newValue;
                                                 napLimit = newValue + 10;
                                               });
-      
                                             },
-                                            
                                               items: <int>[5, 10, 15, 20]
                                                 .map<DropdownMenuItem<int>>((int value) {
                                                   return DropdownMenuItem<int>(
@@ -226,7 +214,6 @@ class _NapSettingsState extends State<NapSettings> {
                                       ),
                                     ),
                                     //==============================================================================//
-                                
                                   ],
                                 ),
                               ),
@@ -303,12 +290,10 @@ class _NapSettingsState extends State<NapSettings> {
                                       height: 180,
                                       child: Column(
                                         children: <Widget>[                     
-
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
                                               Text('View Instruction\'s Page'),
-
                                               Switch(
                                                 value: !showInstructions,
                                                 onChanged: (value)
@@ -316,9 +301,7 @@ class _NapSettingsState extends State<NapSettings> {
                                                   setState(() {
                                                     showInstructions = !value;
                                                   });
-                                                  
                                                 },
-
                                                 activeColor: Colors.green,
                                                 activeTrackColor: Colors.lightGreen,
 
@@ -327,10 +310,8 @@ class _NapSettingsState extends State<NapSettings> {
                                               ),
                                             ],
                                           ), 
-
                                           //Spacer
                                           Container(height: 15),
-
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
@@ -661,8 +642,8 @@ class _NapSettingsState extends State<NapSettings> {
       builder: (context) => AlertDialog(
         title: Text("You are about to reset your saved settings.\n\nAre you sure you wish to continue?"),
         actions: <Widget>[
-          FlatButton(
-            child: Text("Ok"),
+          RaisedButton(
+            child: Text("Ok", style: TextStyle(color: Colors.white),),
             onPressed: (){
               deleteSettings();
             }
@@ -679,7 +660,7 @@ class _NapSettingsState extends State<NapSettings> {
   }
 
   deleteSettings(){
-    fileOps.deleteFile();
+    fileOps.deleteSettingsFile();
 
     Navigator.pushAndRemoveUntil(context,
       MaterialPageRoute(

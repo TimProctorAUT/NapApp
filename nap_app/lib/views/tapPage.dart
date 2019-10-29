@@ -1,19 +1,30 @@
-import 'dart:io';
-import 'package:audioplayers/audio_cache.dart';
+
+///Class imports to gain access to objects/methods/variables.
+///************************************************
 import 'package:first_app/fileOperations.dart';
 import 'package:first_app/setting.dart';
 import 'package:first_app/userNapData.dart';
 import 'package:first_app/views/homePage.dart';
 import 'package:first_app/views/timerPage.dart';
+import '../sleepDetection.dart';
+///************************************************
+
+
+///Package/plugin imports
+///************************************************
+import 'package:audioplayers/audio_cache.dart'; //Required for playing audio.
+import 'dart:io'; //Required to get the current nap number.
 import 'package:flutter/material.dart'; //Required for Flutter Widgets
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; //Required to get the date/time that the nap session took place.
 import 'dart:async'; //Required for Timer
 import 'package:vibrate/vibrate.dart'; //Required for vibrate
-import 'package:audioplayers/audioplayers.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:audioplayers/audioplayers.dart'; //Required for playing audio
+import 'package:wakelock/wakelock.dart'; //Required to prevent phone from going to sleep. APPLICATION WILL NOT WORK IF THE PHONE GOES TO SLEEP.
+///************************************************
 
-import '../sleepDetection.dart';
-
+//Detection state enum to run certain methods/code on specific states.
+//Not fully used to its potential.
+//Switch statement currently setup to utilize however does not contain any code to run in the switches.
 enum DetectionState{
   waiting,
   started,
@@ -21,15 +32,14 @@ enum DetectionState{
   stopped
 }
 
+//Enum to determine wether the user should beable to tap the screen or not.
 enum TapState{
   canTap,
   waitForTimer
 }
 
 class TapMethod extends StatefulWidget {
-
   final NapSettingsData settings;
-
   TapMethod({this.settings});
 
   @override
@@ -39,7 +49,6 @@ class TapMethod extends StatefulWidget {
 class _TapMethodState extends State<TapMethod> with WidgetsBindingObserver{
   
   SleepStateAlgorithm _ssa = SleepStateAlgorithm(); 
-  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
   static AudioPlayer _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   static AudioCache _audioCache = AudioCache(fixedPlayer: _audioPlayer);
@@ -196,6 +205,8 @@ _navigateToAlarmSuccess(){
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NapTimer(napLength: 1, napData: napData, settings: widget.settings,)), ModalRoute.withName('/'));
   }
 
+//Called from the navigation methods above to update information to the most updated variables
+//to set the napData variables to be written to file.
   updateNapData(bool didSleep){
     napData.successfullSleep = didSleep;
     napData.timeToSleep = _ssa.timeToSleep.elapsed.inSeconds;
@@ -210,8 +221,10 @@ _navigateToAlarmSuccess(){
     }
   }
 
+//Timer to fade music out over 10 seconds when entering the alarm page.
+//TODO Client has indicated that he would prefer to have a setting to allow music fade or not.
+//The variable already exists in the settings object, it is just not implemented into the code here.
   _stopAudio(int push){
-//Timer to fade music out over 30 seconds when entering the alarm page.
     if(push == 1){
       _musicTimer = Timer.periodic(Duration(seconds: 2), (timer) {
         _musicVolume -= 0.2;
@@ -325,12 +338,12 @@ _navigateToAlarmSuccess(){
       builder: (context) => AlertDialog(
         title: Text("Are you sure you want to terminate your sleep session?"),
         actions: <Widget>[
-          FlatButton(
-            child: Text("Yes"),
+          RaisedButton(
+            child: Text("Ok", style: TextStyle(color: Colors.white),),
             onPressed: () => Navigator.pop(context, terminateNapSession()),
             ),
           FlatButton(
-            child: Text("No"),
+            child: Text("Cancel"),
             onPressed: () => Navigator.pop(context, false),
           )
         ],
@@ -338,7 +351,6 @@ _navigateToAlarmSuccess(){
     );
   }
 
-//Column returned to the main dart file to build a UI for the tap-testing.
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

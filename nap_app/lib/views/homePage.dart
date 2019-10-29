@@ -10,8 +10,7 @@ import 'graphPage.dart' as GraphPage;
 import 'aboutPage.dart' as AboutPage;
 import 'tapPage.dart';
 
-class HomeScreen extends StatefulWidget
-{
+class HomeScreen extends StatefulWidget{
   @override
   _HomeScreenState createState() => _HomeScreenState ();
 }
@@ -38,6 +37,8 @@ class _HomeScreenState  extends State<HomeScreen> {
     );
   }
 
+//Load the napSettings object from file before navigating to the sleep detection.
+//For more information on how the settings are loaded, check the fileOperations.dart file.
   loadSettingsForNap() async{
     settingsObject = await fileOps.readObjectFromFile("NapSettings");
 
@@ -53,46 +54,45 @@ class _HomeScreenState  extends State<HomeScreen> {
     }
   }
 
-  loadSettings() async{
+//Load the napSettings object from file before navigating to the Nap Setup page.
+//For more information on how the settings are loaded, check the fileOperations.dart file.
+  loadSettingsForSettingsPage() async{
     settingsObject = await fileOps.readObjectFromFile("NapSettings");
 
     Navigator.push(context,MaterialPageRoute(builder: (context) => NapSettings.NapSettings(napSettings: settingsObject,)),);
   }
 
-  buildNapDataListForGraphs() async{
+//Builds a list of UserNapData from all the currently saved napData files on the phone.
+  buildNapDataListForGraphs() async {
     int length = await fileOps.getVaildNaps();
     List<UserNapData> napList = List<UserNapData>();
 
-    
-
-    if(length == 0)
-    {
-     return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("No Naps currently present! \n\nPress 'Start Nap' to start your napping experience"),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Ok"),
-            onPressed: (){
-              Navigator.pop(context);
-            }
-          )
-        ],
-      )
-    ); 
+    if(length == 0){
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("No Naps currently present! \n\nPress 'Start Nap' to start your napping experience"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: (){
+                Navigator.pop(context);
+              }
+            )
+          ],
+        )
+      ); 
     }
-    else
-    {
+    else {
       for(int i = 1; i <= length; i++){
         UserNapData napData = await fileOps.readObjectFromFile("UserNapData", napNumber: i);
         napList.add(napData);
       }
-
       Navigator.push(context,MaterialPageRoute(builder: (context) => GraphPage.PastNaps(napList: napList,)),);
     }
 }
 
+//Launches the URL in the phones default browser
   launchUrl(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -187,7 +187,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                     width: 130,
                     height: 130,
                     child: MaterialButton(
-                      onPressed: loadSettings,
+                      onPressed: loadSettingsForSettingsPage,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -330,8 +330,7 @@ class _HomeScreenState  extends State<HomeScreen> {
                   padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                   child: Text('Keep us Free'),
                   onPressed: (){
-                    //TODO CHANGE URL TO BRIANS EMAIL
-                    //launchUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=auminist3%40gmail.com&item_name=Keep+the+app+free%21&currency_code=NZD&amount=2&source=url");
+                    //TODO Further discussions with client need to take place to determine how donations should be handled.
                     launchUrl("http://www.lifespantrust.com/donations-and-payments/");
                   } 
                 ),

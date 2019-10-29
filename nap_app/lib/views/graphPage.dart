@@ -21,6 +21,34 @@ class _PastNapsState extends State<PastNaps> {
 
   FileOperations fileOps = FileOperations();
 
+  dialogBuilder(){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Do you wish to delete ALL currently saved Nap Data files?\n\nA maximum of 500 files can be stored."),
+        actions: <Widget>[
+          RaisedButton(
+            child: Text("Ok", style: TextStyle(color: Colors.white),),
+            onPressed: (){
+              deleteNapData();
+            },
+          ),
+          FlatButton(
+            child: Text("Cancel"),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      )
+    );
+  }
+
+  deleteNapData(){
+    fileOps.deleteAllNapData();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => HomeScreen()), ModalRoute.withName('/'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,8 +150,7 @@ class _PastNapsState extends State<PastNaps> {
 
             RaisedButton(
             onPressed: (){
-              fileOps.deleteAllNapData();
-              Navigator.push(context,MaterialPageRoute(builder: (context) => HomeScreen()),);
+              dialogBuilder();
             },
             child: Text("Delete All Nap Data"),
           ),

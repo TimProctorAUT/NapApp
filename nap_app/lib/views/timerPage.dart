@@ -41,8 +41,6 @@ class _NapTimerState extends State<NapTimer> with TickerProviderStateMixin, Widg
     @override
   void initState() {
     super.initState();
-    //Wakelock.enable();
-
     timeSlept.start();
 
     WidgetsBinding.instance

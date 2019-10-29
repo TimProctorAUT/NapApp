@@ -1,3 +1,7 @@
+///
+/// This class holds all the file read/write operations for saving the napSettings and the userNapData.
+///
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:first_app/setting.dart';
@@ -74,6 +78,7 @@ class FileOperations{
     }
   }
 
+//Deletes all the nap data files stored on the phone.
   deleteAllNapData() async{
     for(int i = 1; i < 500; i++){
       File file = await getDataFile(i);
@@ -84,13 +89,20 @@ class FileOperations{
     }
   }
 
+  ///TODO
+  ///
+  ///For future developers, adding the ability to delete specific nap data files could be implemented.
+  ///
+
 //Deletes the settings file.
-  deleteFile() async{
+  deleteSettingsFile() async{
     final file = await localFile;
     file.delete(recursive: true);
   }
 
   //Get Number of Valid Nap Files Saved
+  //Current save limit on files set to 500
+  //to attempt to futureproof.
   Future<int> getVaildNaps() async{
     var lastNapNumber = 0;
 
@@ -108,7 +120,7 @@ class FileOperations{
     return lastNapNumber;
   }
 
-//TODO revise default settings for nap
+//Method that returns a deserialized napSettings object or UserNapData object.
   dynamic readObjectFromFile(String object, {int napNumber}) async{
 
     print("$object $napNumber");
@@ -140,12 +152,12 @@ class FileOperations{
       //Default nap settings
       catch(e){
         NapSettingsData settingsObject = NapSettingsData(
-          vibrationInterval: 30,
+          vibrationInterval: 3,
           napLength: 10,
           napLimit: 20,
           dontDisplayInstructions: false,
           wantsAudio: false,
-          wantsGentleWake: true,
+          wantsGentleWake: false,
           defaultSettings: true,
           wantColourblindMode: false,
         );

@@ -1,3 +1,17 @@
+///
+///This class holds the current session nap settings for the application.
+///Not all the settings here are being utilized.
+///
+///Unused Settings:
+///   wantsAlarmAudio
+///   selectedVibrate
+///   musicFade
+///   selectedAlarmSound
+///
+///The settings are set up to be used however the development ran out of time and utlimately fell outside the scope of the project.
+///To implement these settings they need to be added to the toJson and fromJson methods below in this class, aswell as inside the fileOperations.dart file.
+///
+
 import 'package:vibrate/vibrate.dart';
 
 class NapSettingsData{
@@ -51,7 +65,6 @@ class NapSettingsData{
 
 //If you add anymore field variables to this model class, you need to update
 //the toJson and fromJson to represent the new variables added.
-
 //To seralize the object to JSON format.
   Map<String, dynamic> toJson() =>
   {

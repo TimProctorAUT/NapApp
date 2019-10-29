@@ -5,10 +5,8 @@ import 'package:first_app/setting.dart';
 import 'package:first_app/userNapData.dart';
 import 'package:flutter/material.dart';
 
-class SummaryPage extends StatefulWidget
-{
+class SummaryPage extends StatefulWidget{
   final UserNapData napData;
-
   SummaryPage({this.napData});
 
   @override
@@ -22,6 +20,7 @@ class _SummaryPageState extends State<SummaryPage> {
   int random;
   Duration duration;
 
+//initstate allows any code to be run on load of this page.
   @override
   void initState() {
     super.initState();
@@ -29,11 +28,14 @@ class _SummaryPageState extends State<SummaryPage> {
     convertToTimeDisplay(20);
   }
 
+//Writes the current session napData to file.
+//This is only done on the summary page as at this point the user has 'completed' a nap session.
   writeNapData() async{
     await fileOps.writeNapData(jsonEncode(widget.napData), widget.napData.napNumber);
     getNapData();
   }
 
+//Reads the napData from file to be used to display on the summary page.
   getNapData() async{
     UserNapData decodedNapData = await fileOps.readObjectFromFile("UserNapData", napNumber: widget.napData.napNumber);
 
@@ -45,6 +47,7 @@ class _SummaryPageState extends State<SummaryPage> {
     });
   }
 
+//returns a Card widget to the build method
   cardBuilder(String title, String subtitle){
 
     if(subtitle == "true"){
@@ -79,6 +82,7 @@ class _SummaryPageState extends State<SummaryPage> {
     );
   }
 
+//returns a column widget to the build method.
   centerBuilder(String mainText, String subText){
     if(widget.napData.successfullSleep){
       return Column(
@@ -100,6 +104,8 @@ class _SummaryPageState extends State<SummaryPage> {
     }
   }
 
+//Converts the stored value of time(seconds) into a more readable time display
+// of M:SS
   String convertToTimeDisplay(int savedValue){
     duration = Duration(seconds: savedValue);
     String minutesSeconds;
