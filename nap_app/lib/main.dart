@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'views/homePage.dart' as HomePage;
 
+//Locking the application to portait mode as the interface does not support landscape.
 void main(List<String> args){
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
     .then((_) {

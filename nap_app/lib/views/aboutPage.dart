@@ -6,8 +6,45 @@ class AboutUs extends StatefulWidget
   _AboutUsState createState() => _AboutUsState();
 }
 
+//Converts hex code to dart color object
+Color hexToColor(String code) {
+      return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+    }
 
 class _AboutUsState extends State<AboutUs> {
+
+  //Text for Who Are We section
+  final aboutUsString = '''
+  Lifespan Trust is a non-profit organisation 
+  aimed at educating and coaching healthy 
+  relationships with sleep, stress, weight 
+  and mental wellbeing.
+  ''';
+
+  //Test for Why Should You Nap section
+  final whyNapString = '''
+  Naps have been shown to benefit the learning 
+  process, helping us take in and retain 
+  information better. Taking a nap also helps 
+  to clear information out of your brain’s 
+  temporary storage areas, getting it ready 
+  for new information to be absorbed. These 
+  benefits are similar to those experienced 
+  after consuming caffeine (or other stimulant 
+  medications), but without the side effects.
+  ''';
+
+  //Test for Why This App section
+  final thisAppString = '''
+  10 to 15 minutes of sleep seems to be the optimum 
+  period in terms of improving mental operations,
+  performance, reaction times and subjective feelings
+  of alertness.
+  This app is built with all the research behind 
+  it, and we've ended up with the perfect solution 
+  to your future naps.
+  ''';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,79 +54,57 @@ class _AboutUsState extends State<AboutUs> {
     body: Row(    
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Column( 
-
+        Column(
           children: <Widget> [
             Container(
               height: 50,
               width: 100,
             ),
 
-            Container(
-              color: Colors.grey.withOpacity(0.2),
-              height: 150,
-              width: 250,
-            ),
+            Text('Who Are We',
+            style: new TextStyle(color: hexToColor("#3DA8F7"), fontSize: 25.0),),
 
-            Container(
-              height: 50,
+            Text(       
+              aboutUsString,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.0),
+              maxLines: 10,),
+             
+             Container(
+              height: 20,
               width: 100,
             ),
 
-            Text(
-              'Who Are We?',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-
-            ),
-            Container(height: 20,),
-
+            Text('Why Should You Nap',
+            style: new TextStyle(color: hexToColor("#3DA8F7"), fontSize: 25.0),),
+            
             Text(       
-              '[INSERT CONTENT]',
-              overflow: TextOverflow.clip,
-              style: TextStyle(color: Colors.white),      
-            ),
-
-            Container(
-              height: 50,
+              whyNapString,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.0),
+              maxLines: 10,),
+              
+              Container(
+              height: 20,
               width: 100,
             ),
 
-            Text(
-              'Why Should you Nap?',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-
-            ),
-            Container(height: 20,),
-
+            Text('Why Use This App',
+            style: new TextStyle(color: hexToColor("#3DA8F7"), fontSize: 25.0),),
 
             Text(       
-              '[INSERT CONTENT]',
-              overflow: TextOverflow.clip,
-              style: TextStyle(color: Colors.white),      
-            ),
+              thisAppString,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.0),
+              maxLines: 10,),
 
-            Container(
-              height: 50,
-              width: 100,
-            ),
-
-            Text(
-              'How Can this App Help?',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-
-            ),
-            Container(height: 20,),
-
-            Text(       
-              '[INSERT CONTENT]',
-              overflow: TextOverflow.clip,
-              style: TextStyle(color: Colors.white),      
-            ),
-
-          ],
+         ],
         ),
       ],           
-    ),
-    );
+     ),
+   );
   }
 }

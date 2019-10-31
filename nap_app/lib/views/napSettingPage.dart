@@ -1,567 +1,597 @@
+import 'dart:convert';
+import 'package:first_app/fileOperations.dart';
+import 'package:first_app/views/homePage.dart';
+
 import 'package:flutter/material.dart';
-import '../sleep_detection/tapInstruction.dart' as SleepDetection;
-import '../views/SettingOutputTest.dart' as TestOutput;
-
-enum AUDIO_SETTINGS{no_sound, white_noise, breathing_exercise}
-
-enum DETECTION_METHODS{tap_method, drop_method, shake_method}
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import '../setting.dart' as Settings;
 
 class NapSettings extends StatefulWidget
 {
+  final Settings.NapSettingsData napSettings;
+  NapSettings({this.napSettings});
+
   @override 
   _NapSettingsState createState() => _NapSettingsState();
 }
 
 class _NapSettingsState extends State<NapSettings> {
-  bool _isDroppedDown1 = true;
-  bool _isDroppedDown2 = false;
-  bool _isDroppedDown3 = false;
-  bool _isDroppedDown4 = false;
 
-  int napLengthValue = 10;
-  int napLimitValue = 20;
+  bool settingCard1 = true;
+  bool settingCard2 = false;
+  bool settingCard3 = false;
+  bool settingCard4 = false;
+  bool settingCard5 = false;
 
-  int alarmSound = 1;
-  int vibratePower = 1;
+  int napLimit = 10;
+  int napLength = 20;
 
-  DETECTION_METHODS detectionMethod = DETECTION_METHODS.tap_method;
-  AUDIO_SETTINGS audioAssistOption = AUDIO_SETTINGS.no_sound;
-  
-  bool soundSwitch = true;
-  bool vibrateSwitch = true;
+  bool gentleWake = false;
+  bool showInstructions = true;
+  bool tapPlay = true;
+  bool colorblindMode = false;
+  bool musicFade = false;
+
+  bool backgroundAudio = false;
+  String selectedAudioFile = "Meditation";
+
+  List<String> listOfFiles = List<String>();
+  Settings.NapSettingsData settingsObject;
+  dynamic napSettings;
+
+  FileOperations fileOps = FileOperations();
+
+  @override
+  void initState() {
+    super.initState();
+    mapAssetsToList();
+    loadSettings();
+  }
+
+  loadSettings(){
+    napLimit = widget.napSettings.napLimit;
+    napLength = widget.napSettings.napLength;
+    showInstructions = widget.napSettings.dontDisplayInstructions;
+    backgroundAudio = widget.napSettings.wantsAudio;
+    colorblindMode = widget.napSettings.wantColourblindMode;
+    musicFade = widget.napSettings.musicFade;
+    
+    print(widget.napSettings.wantsAlarmAudio);
+    print(widget.napSettings.wantsGentleWake);
+
+    if(widget.napSettings.wantsAlarmAudio == null){
+      gentleWake = true;
+    }
+    else{
+      gentleWake = widget.napSettings.wantsGentleWake;
+    }
+  }
+
+
+//Testing to see if this improves usabilitiy
+  Future<bool> closeSettingsTabs() async{
+    if(!settingCard1 && !settingCard2 && !settingCard3 && !settingCard4 && !settingCard5){
+      return true;
+    }
+    else{
+      setState(() {
+        settingCard1 = false;
+        settingCard2 = false;
+        settingCard3 = false;
+        settingCard4 = false;
+        settingCard5 = false;
+      });
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Nap Settings'),
-      ),
-
-      body: Card(
-        color: Color.fromRGBO(18, 18, 18, 1),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column( 
-              children: <Widget>[            
-                Container(
-                  height: 30,
-                ),
-
-                Text('Nap Settings', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,)),
-                      
-                //Space      
-                Container(
-                  height: 10,
-                ),
-
-                //Line Divider
-                Container(
-                  color: Colors.white,
-                  height: 2,
-                  width: 300,
-                ),
-
-                //Spacer
-                Container(
-                  height: 15,
-                ),
-
-                //===========================================================Time Settings===================================================================//
-
-                Container(
-                  color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown1? 255 : 50),
-                  width: 300,
-
-                  child: Column(
-                    children: <Widget>[
-
-                      Row(          
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,              
+    return WillPopScope(
+      onWillPop: closeSettingsTabs,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Nap Settings'),
+        ),
+        body: Card(
+          color: Color.fromRGBO(18, 18, 18, 1),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  //=========Spacer Division==========//
+                  Container(height: 3,),
+                  //=======Setting Card Number One=======//
+                  Card(
+                    child: Container(
+                      color: Color.fromRGBO(30, 30, 30, 0.45),
+                      width: 300,
+                      height: (settingCard1? 250 : 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(                            
-                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: MaterialButton(
-                              onPressed: (){
-                                    setState(() {
-                                    if(_isDroppedDown1)
-                                    {
-                                      _isDroppedDown1 = false;
-                                    } 
-                                    else
-                                    {
-                                      _isDroppedDown1 = true;
-                                      _isDroppedDown2 = false;
-                                      _isDroppedDown3 = false;
-                                      _isDroppedDown4 = false;
-                                    }
-                                  });
-                              },
-
-                              child: Row(
-                                children: <Widget>[
-
-                                  Text('Time Settings', style: TextStyle(color: Colors.white)),
-                          
-                                  (_isDroppedDown1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                              ],
-                            )
-                            ),
-                            
-                          ),                   
-                        ],
-                      ),     
-
-                      Visibility(
-                        visible: _isDroppedDown1,
-                        child: Container(
-                          child: Column(
+                          Column(
                             children: <Widget>[
-                              //Line Divider
+                              //==============Dropdown Button=================//
                               Container(
-                                color: Colors.white,
-                                height: 2,
-                                width: 250,
-                              ),
-
-                              //Spacer
-                              Container(
-                                height: 15,
-                              ),                                     
-
-                              Container(
-                                width: 250,
-                                height: 75,
-                                child: Column(
-                                  children: <Widget>[
-                                    Text('How Long Would you Like to Nap? '), 
-
-                                    DropdownButton <int>(
-                                      value: napLengthValue,
-                                      onChanged: (int newValue) {
-                                        setState(() {
-                                          napLengthValue = newValue;
-                                          napLimitValue = newValue + 10;
-                                        });
- 
-                                      },
-                                      
-                                        items: <int>[5, 10, 15, 20]
-                                          .map<DropdownMenuItem<int>>((int value) {
-                                            return DropdownMenuItem<int>(
-                                              value: value,
-                                              child: Text('$value minutes'),
-                                            );
-                                          })
-                                          .toList(),
-                                    )                                
-                                  ],
-                                ),
-                              ),
-
-                              //Spacer
-                              Container(
-                                height: 15,
-                              ),
-
-                              Container(
-                                width: 250,
-                                height: 75,
-                                child: Column(
-                                  children: <Widget>[
-                                    Text('How Long do you have to try and nap?'),    
-
-                                    DropdownButton <int>(
-                                      value: napLimitValue,
-                                      onChanged: (int newValue) {
-                                        setState(() {
-                                          napLimitValue = newValue;
-                                        });
- 
-                                      },
-                                      
-                                        items: <int>[(napLengthValue + 5), (napLengthValue + 10), (napLengthValue + 15), (napLengthValue + 20)]
-                                          .map<DropdownMenuItem<int>>((int value) {
-                                            return DropdownMenuItem<int>(
-                                              value: value,
-                                              child: Text('$value minutes'),
-                                            );
-                                          })
-                                          .toList(),
-                                    )                                
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),                     
-                      ),
-                      
-                    ],  
-                  ),
-                ),
-
-                //===========================================================================================================================================//
-
-                Container(
-                  child: Column(
-                    children: <Widget>[
-                      //Spacer
-                      Container(
-                        height: 10,
-                      ),
-
-                      //Line Divider
-                      Container(
-                        color: Colors.white,
-                        height: 2,
-                        width: 280,
-                      ),
-                      
-                      //Spacer
-                      Container(
-                        height: 15,
-                      ),
-                    ],
-                  )
-                ),
-                //===========================================================Alarm Settings===================================================================//
-
-                Container(
-                  color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown2? 260 : 50),
-                  width: 300,
-
-                  child: Column(
-                    children: <Widget>[
-
-                      Row(          
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,              
-                        children: <Widget>[
-                          Container(                            
-                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: MaterialButton(
-                              onPressed: (){
+                                child: MaterialButton(
+                                  minWidth: 250,
+                                  height: 40,
+                                  onPressed: (){
                                     setState(() {
-                                    if(_isDroppedDown2)
-                                    {
-                                      _isDroppedDown2 = false;
-                                    } 
-                                    else
-                                    {
-                                      _isDroppedDown1 = false;
-                                      _isDroppedDown2 = true;
-                                      _isDroppedDown3 = false;
-                                      _isDroppedDown4 = false;
-                                    }
-                                  });
-                              },
-
-                              child: Row(
-                                children: <Widget>[
-
-                                  Text('Alarm Settings', style: TextStyle(color: Colors.white)),
-                          
-                                  (_isDroppedDown2? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                              ],
-                            )
-                            ),
-                            
-                          ),                   
-                        ],
-                      ),     
-
-                      Visibility(
-                        visible: _isDroppedDown2,
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
-                              //Line Divider
-                              Container(
-                                color: Colors.white,
-                                height: 2,
-                                width: 250,
-                              ),
-                              Container(
-                                //color: Colors.green,
-                                width: 200,
-                                height: 96,
-                                child: Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Text('Sound'),
-
-                                        Switch(
-                                          value: soundSwitch,
-                                          onChanged: (value)
-                                          {
-                                            setState(() {
-                                              soundSwitch = value;
-                                            });
-                                            
-                                          },
-
-                                          activeColor: Colors.green,
-                                          activeTrackColor: Colors.lightGreen,
-
-                                          inactiveThumbColor: Colors.blueGrey,
-                                          inactiveTrackColor: Colors.blueGrey,
-                                        ),
-                                      ],
-                                    ),                                  
-
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Alarm Sound Choices',
-                                          style: TextStyle(color: soundSwitch? Colors.white : Colors.grey),
-                                        ),
-
-                                        Container(width: 15),
-
-                                        DropdownButton <int>(
-                                          value: alarmSound,
-                                          onChanged: (soundSwitch? (int newValue) {setState(() {alarmSound = newValue;}); } : null ),
-                                                                                  
-                                          items: <int>[(1), (2), (3), (4)]
-                                            
-                                          .map<DropdownMenuItem<int>>((int value) {
-                                            return DropdownMenuItem<int>(
-                                              value: value,
-                                              child: Text('$value'),
-                                            );
-                                          }) .toList(),
-                                        )                              
-                                      ],
-                                    ),
-                                                                        
-                                  ],
+                                      if(settingCard1)
+                                      {
+                                        settingCard1 = false;
+                                      }
+                                      else
+                                      {
+                                        settingCard1 = true;
+                                        settingCard2 = false;
+                                        settingCard3 = false;
+                                        settingCard4 = false;
+                                        settingCard5 = false;
+                                      }
+                                    });
+                                  },
+                                  child: Row(
+                                    children: <Widget>[                                    
+                                      Text('Nap Times'),
+                                      (settingCard1? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),                                    ],
+                                  ),
                                 )
-                              ),
-
-                              //Spacer
-                              Container(
-                                height: 15,
-                              ),
-
-                              Container(
-                                //color: Colors.yellow,
-                                width: 200,
-                                height: 96 ,
+                              ),       
+                              //=================================================//
+                              Visibility(
+                                visible: settingCard1,
                                 child: Column(
-                                  children: <Widget>[     
-                                    Row(
-                                      children: <Widget>[
-                                        Text('Vibrate'),
-
-                                        Switch(
-                                          value: vibrateSwitch,
-                                          onChanged: (value)
-                                          {
-                                            setState(() {
-                                              vibrateSwitch = value;
-                                            });
-                                            
-                                          },
-
-                                          activeColor: Colors.green,
-                                          activeTrackColor: Colors.lightGreen,
-
-                                          inactiveThumbColor: Colors.blueGrey,
-                                          inactiveTrackColor: Colors.blueGrey,
-                                        ),
-                                      ],
-                                    ),                                               
-
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Vibrate Power',
-                                          style: TextStyle(color: vibrateSwitch? Colors.white : Colors.grey),
-                                        ),
-
-                                        Container(width: 15),
-
-                                        DropdownButton <int>(
-                                          value: vibratePower,
-                                          onChanged: (vibrateSwitch? (int newValue) {setState(() {vibratePower = newValue;}); } : null ),
-                                          
-
-                                        
-                                          items: <int>[(1), (2), (3), (4)]
-                                            
-                                          .map<DropdownMenuItem<int>>((int value) {
-                                            return DropdownMenuItem<int>(
-                                              value: value,
-                                              child: Text('$value'),
-                                            );
-                                          }) .toList(),
-                                        )                              
-                                      ],
-                                    ),                                   
-                                  ],
-                                )
-                              ),
-                            ],
-                          ),
-                        ),                     
-                      ),
-
-                    ],  
-                  ),
-                ),
-
-                //===========================================================================================================================================//
-                
-                 //Spacer
-                Container(
-                  height: 10,
-                ),
-
-                //Line Divider
-                Container(
-                  color: Colors.white,
-                  height: 2,
-                  width: 280,
-                ),
-                
-                //Spacer
-                Container(
-                  height: 15,
-                ),
-
-                //==========================================================Sleep Detection==================================================================//
-
-                Container(
-                  color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown3? 255 : 50),
-                  width: 300,
-
-                  child: Column(
-                    children: <Widget>[
-
-                      Row(          
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,              
-                        children: <Widget>[
-                          Container(                            
-                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: MaterialButton(
-                              onPressed: (){
-                                    setState(() {
-                                    if(_isDroppedDown3)
-                                    {
-                                      _isDroppedDown3 = false;
-                                    } 
-                                    else
-                                    {
-                                      _isDroppedDown1 = false;
-                                      _isDroppedDown2 = false;
-                                      _isDroppedDown3 = true;
-                                      _isDroppedDown4 = false;
-                                    }
-                                  });
-                              },
-
-                              child: Row(
-                                children: <Widget>[
-
-                                  Text('Nap Detection', style: TextStyle(color: Colors.white)),
-                          
-                                  (_isDroppedDown3? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                              ],
-                            )
-                            ),                            
-                          ),                   
-                        ],
-                      ),     
-
-                      Visibility(
-                        visible: _isDroppedDown3,
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
-                              //Line Divider
-                              Container(
-                                color: Colors.white,
-                                height: 2,
-                                width: 250,
-                              ),
-
-                              //Spacer
-                              Container(
-                                height: 20,
-                              ),                        
-
-                              Container(
-                                width: 250,
-                                height: 112,
-                                child: Column(
-                                  children: <Widget>[                                    
-                                    Text('Select a Sleep Detection Method:'),
-
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          onChanged: (DETECTION_METHODS e) => setDetectionMethod(e),
-                                          activeColor: Colors.green,
-                                          value: DETECTION_METHODS.tap_method,
-                                          groupValue: detectionMethod,                                          
-                                        ),
-
-                                        Text('Tap Screen'),
-                                      ],
-                                    ),
-
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          onChanged: (DETECTION_METHODS e) => setDetectionMethod(e),
-                                          activeColor: Colors.red,
-                                          value: null,
-                                          groupValue: detectionMethod,                                          
-                                        ),
-
-                                        Text('Drop Phone', style: TextStyle(decoration: TextDecoration.lineThrough),),
-                                      ],
-                                    ),
-
-                                  ],
-                                ),
-
-                              ),
-
-                              //Spacer
-                              Container(
-                                height: 25,
-                              ),
-
-                              Container(
-                                width: 250,
-                                height: 25,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    //Button One
+                                    //Line Division
                                     Container(
                                       color: Colors.white,
-                                      height: 30,
-                                      width: 150,
-                                      child: MaterialButton(
-                                        child: Text('Test Detection', style: TextStyle(color: Colors.black),),
-                                        onPressed: (){
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => SleepDetection.SplashScreen()                                
-                                                
+                                      height: 1,
+                                      width: 250,
+                                    ),
+                                    //Spacer
+                                    Container(height: 25),
+                                    //===================================Nap Length=================================//
+                                    Container(
+                                      width: 250,
+                                      height: 75,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text('Desired Nap Length'), 
+                                          DropdownButton <int>(
+                                            value: napLength,
+                                            onChanged: (int newValue) {
+                                              setState(() {
+                                                napLength = newValue;
+                                                napLimit = newValue + 10;
+                                              });
+                                            },
+                                              items: <int>[5, 10, 15, 20]
+                                                .map<DropdownMenuItem<int>>((int value) {
+                                                  return DropdownMenuItem<int>(
+                                                    value: value,
+                                                    child: Text('$value minutes'),
+                                                  );
+                                                })
+                                                .toList(),
+                                          )                                
+                                        ],
+                                      ),
+                                    ),
+                                    //==============================================================================//
+
+                                    //Spacers
+                                    Container(height: 15,),
+
+                                    //===================================Nap Length=================================//
+                                    Container(
+                                      width: 250,
+                                      height: 75,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text('Time Available for Nap'),    
+
+                                          DropdownButton <int>(
+                                            value: napLimit,
+                                            onChanged: (int newValue) {
+                                              setState(() {
+                                                napLimit = newValue;
+                                              }); 
+                                            },                                      
+                                              items: <int>[(napLength + 5), (napLength + 10), (napLength + 15), (napLength + 20)]
+                                                .map<DropdownMenuItem<int>>((int value) {
+                                                  return DropdownMenuItem<int>(
+                                                    value: value,
+                                                    child: Text('$value minutes'),
+                                                  );
+                                                })
+                                                .toList(),
+                                          )                                
+                                        ],
+                                      ),
+                                    ),
+                                    //==============================================================================//
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+  
+                  //=========Spacer Division==========//
+                  Container(height: 2,),
+
+                  //=======Setting Card Number Two=======//
+                  Card(
+                    child: Container(
+                      color: Color.fromRGBO(30, 30, 30, 0.45),
+
+                      width: 300,
+                      height: (settingCard2? 250 : 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              //==============Dropdown Button=================//
+                              Container(
+                                child: MaterialButton(
+                                  minWidth: 250,
+                                  height: 40,
+                                  onPressed: (){
+                                    setState(() {
+                                      if(settingCard2)
+                                      {
+                                        settingCard2 = false;
+                                      }
+                                      else
+                                      {
+                                        settingCard1 = false;
+                                        settingCard2 = true;
+                                        settingCard3 = false;
+                                        settingCard4 = false;
+                                        settingCard5 = false;
+                                      }
+                                    });
+                                  },
+                                  child: Row(
+                                    children: <Widget>[                                    
+                                      Text('Accessibility Options'),
+                                      (settingCard2? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
+                                    ],
+                                  ),
+                                )
+                              ),       
+                              //=================================================//
+
+                              Visibility(
+                                visible: settingCard2,
+                                child: Column(
+                                  children: <Widget>[
+
+                                    //Line Division
+                                    Container(
+                                      color: Colors.white,
+                                      height: 1,
+                                      width: 250,
+                                    ),
+
+                                    //Spacer
+                                    Container(height: 20),
+                                    
+                                    Container(
+                                      width: 250,
+                                      height: 180,
+                                      child: Column(
+                                        children: <Widget>[                     
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text('View Instruction\'s Page'),
+                                              Switch(
+                                                value: !showInstructions,
+                                                onChanged: (value)
+                                                {
+                                                  setState(() {
+                                                    showInstructions = !value;
+                                                  });
+                                                },
+                                                activeColor: Colors.green,
+                                                activeTrackColor: Colors.lightGreen,
+
+                                                inactiveThumbColor: Colors.blueGrey,
+                                                inactiveTrackColor: Colors.blueGrey,
+                                              ),
+                                            ],
+                                          ), 
+                                          //Spacer
+                                          Container(height: 15),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text('Colourblind Mode'),
+
+                                              Switch(
+                                                value: colorblindMode,
+                                                onChanged: (value)
+                                                {
+                                                  setState(() {
+                                                    colorblindMode = value;
+                                                  });
+                                                  
+                                                },
+
+                                                activeColor: Colors.green,
+                                                activeTrackColor: Colors.lightGreen,
+
+                                                inactiveThumbColor: Colors.blueGrey,
+                                                inactiveTrackColor: Colors.blueGrey,
+                                              ),
+                                            ],
+                                          ),
+
+                                          //Spacer
+                                          Container(height: 15),
+                                        ],
+                                      ),
+                                    ),                                  
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+  
+
+                  //=========Spacer Division==========//
+                  Container(height: 2,),
+
+                  //=======Setting Card Number Three=======//
+                  Card(
+                    child: Container(
+                      color: Color.fromRGBO(30, 30, 30, 0.45),
+
+                      width: 300,
+                      height: (settingCard3? 250 : 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              //==============Dropdown Button=================//
+                              Container(
+                                child: MaterialButton(
+                                  minWidth: 250,
+                                  height: 40,
+                                  onPressed: (){
+                                    setState(() {
+                                      if(settingCard3)
+                                      {
+                                        settingCard3 = false;
+                                      }
+                                      else
+                                      {
+                                        settingCard1 = false;
+                                        settingCard2 = false;
+                                        settingCard3 = true;
+                                        settingCard4 = false;
+                                        settingCard5 = false;
+                                      }
+                                    });
+                                  },
+                                  child: Row(
+                                    children: <Widget>[                                    
+                                      Text('Alarm Settings'),
+                                      (settingCard3? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
+                                    ],
+                                  ),
+                                )
+                              ),       
+                              //=================================================//
+
+                              Visibility(
+                                visible: settingCard3,
+                                child: Column(
+                                  children: <Widget>[
+
+                                    //Line Division
+                                    Container(
+                                      color: Colors.white,
+                                      height: 1,
+                                      width: 250,
+                                    ),
+
+                                    //Spacer
+                                    Container(height: 15),
+
+                                    Container(
+                                      width: 200,
+                                      height: 150,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Container(
+                                                width: 96,
+                                                child: RaisedButton(
+                                                  color: Colors.white,
+                                                  child: tapPlay ? Text("Test Alarm", style: TextStyle(color: Colors.black, fontSize: 11),) : Text("Stop", style: TextStyle(color: Colors.black, fontSize: 11)),
+                                                  onPressed: testAlarmSound
                                                 ),
-                                            );
-                                        }                 
+                                              ),
+                                            ],
+                                          ),
+
+                                      //Container(height: 5,),
+
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text('Gentle Wake'),
+                                          Text("*", style: TextStyle(color: Colors.red),),
+
+                                          Switch(
+                                            value: gentleWake,
+                                            onChanged: (value)
+                                            {
+                                              setState(() {                                              
+                                                gentleWake = value;
+                                              });
+                                            },
+
+                                            activeColor: Colors.green,
+                                            activeTrackColor: Colors.lightGreen,
+
+                                            inactiveThumbColor: Colors.blueGrey,
+                                            inactiveTrackColor: Colors.blueGrey,
+                                          ),
+                                        ],
+                                      ),
+                                      
+                                      Spacer(),
+                                      //TODO update this message once testing on this has concluded.
+                                      //Text("*Gentle Wake only works on android version 9 and above.", style: TextStyle(color: Colors.red, fontSize: 10),)
+                                    ],
+                                  )
+                                ),
+                                  ],
+                                ),
+                              ),
+
+                              
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  
+                  //=========Spacer Division==========//
+                  Container(height: 2,),
+
+                  //=======Setting Card Number Four=======//
+                  Card(
+                    child: Container(
+                      color: Color.fromRGBO(30, 30, 30, 0.45),
+
+                      width: 300,
+                      height: (settingCard4? 250 : 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              //==============Dropdown Button=================//
+                              Container(
+                                child: MaterialButton(
+                                  minWidth: 250,
+                                  height: 40,
+                                  onPressed: (){
+                                    setState(() {
+                                      if(settingCard4)
+                                      {
+                                        settingCard4 = false;
+                                      }
+                                      else
+                                      {
+                                        settingCard1 = false;
+                                        settingCard2 = false;
+                                        settingCard3 = false;
+                                        settingCard4 = true;
+                                        settingCard5 = false;
+                                      }
+                                    });
+                                  },
+                                  child: Row(
+                                    children: <Widget>[                                    
+                                      Text('Background Audio'),
+                                      (settingCard4? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
+                                    ],
+                                  ),
+                                )
+                              ),       
+                              //=================================================//
+
+                              Visibility(
+                                visible: settingCard4,
+                                child: Column(
+                                  children: <Widget>[
+
+                                    //Line Division
+                                    Container(
+                                      color: Colors.white,
+                                      height: 1,
+                                      width: 250,
+                                    ),
+
+                                    //Spacer
+                                    Container(height: 15),
+
+                                    Container(
+                                      width: 250,
+                                      height: 180,
+                                      child: Column(
+                                        children: <Widget>[                                    
+                                          
+                                          //TOGGLE SWITCH FOR WANTING TO LISTEN TO AUDIO DURING NAP
+                                          Row(
+                                            children: <Widget>[
+                                              Text("Background Audio"),
+                                              Switch(
+                                                value: backgroundAudio,
+                                                onChanged: (value)
+                                                {
+                                                  setState(() {
+                                                    backgroundAudio = value;
+                                                  });
+                                                  
+                                                },
+
+                                                activeColor: Colors.green,
+                                                activeTrackColor: Colors.lightGreen,
+
+                                                inactiveThumbColor: Colors.blueGrey,
+                                                inactiveTrackColor: Colors.blueGrey,
+                                              ),
+                                            ],
+                                          ),
+
+                                          //DROP DOWN MENU FOR AUDIO SELECTION
+                                          Row(
+                                            children: <Widget>[
+                                              backgroundAudio ? Text("Audio File") : Container(),
+                                              
+                                              Container(width: 15,),
+
+                                              backgroundAudio ? DropdownButton <String>(
+                                                disabledHint: Text("Audio Disabled"),
+                                                value: selectedAudioFile,
+                                                onChanged: (String newValue){
+                                                  setState(() {
+                                                    selectedAudioFile = newValue;
+                                                  });
+                                                },
+                                                items: backgroundAudio ? listOfFiles.map<DropdownMenuItem<String>>((String value) {
+                                                  return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                })
+                                                .toList() : null,
+                                              ) : Container()
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -569,215 +599,144 @@ class _NapSettingsState extends State<NapSettings> {
                               ),
                             ],
                           ),
-                        ),                     
-                      ),
-                    ],  
-                  ),
-
-                ),
-
-                //===========================================================================================================================================//
-
-                //Spacer
-                Container(
-                  height: 10,
-                ),
-
-                //Line Divider
-                Container(
-                  color: Colors.white,
-                  height: 2,
-                  width: 280,
-                ),
-                
-                //Spacer
-                Container(
-                  height: 15,
-                ),
-
-                //==============================================================Audio Setting===========================================================================//
-
-                Container(
-                  color: Color.fromRGBO(30, 30, 30, 0.8),
-                  height: (_isDroppedDown4? 255 : 50),
-                  width: 300,
-
-                  child: Column(
-                    children: <Widget>[
-
-                      Row(          
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,              
-                        children: <Widget>[
-                          Container(                            
-                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: MaterialButton(
-                              onPressed: (){
-                                    setState(() {
-                                    if(_isDroppedDown4)
-                                    {
-                                      _isDroppedDown4 = false;
-                                    } 
-                                    else
-                                    {
-                                      _isDroppedDown1 = false;
-                                      _isDroppedDown2 = false;
-                                      _isDroppedDown3 = false;
-                                      _isDroppedDown4 = true;
-                                    }
-                                  });
-                              },
-
-                              child: Row(
-                                children: <Widget>[
-
-                                  Text('Audio Settings', style: TextStyle(color: Colors.white)),
-                          
-                                  (_isDroppedDown4? Icon(Icons.arrow_drop_down, color: Colors.white) : Icon(Icons.arrow_left, color: Colors.white)),
-                              ],
-                            )
-                            ),                            
-                          ),                   
                         ],
-                      ),     
-
-                      Visibility(
-                        visible: _isDroppedDown4,
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
-                              //Line Divider
-                              Container(
-                                color: Colors.white,
-                                height: 2,
-                                width: 250,
-                              ),
-
-                              //Spacer
-                              Container(
-                                height: 20,
-                              ),                        
-
-                              Container(
-                                width: 250,
-                                height: 180,
-                                child: Column(
-                                  children: <Widget>[                                    
-                                    Text('Audio Assistance:'),
-
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          onChanged: (AUDIO_SETTINGS e) => setAudioSetting(e),
-                                          activeColor: Colors.green,
-                                          value: AUDIO_SETTINGS.breathing_exercise,
-                                          groupValue: audioAssistOption,                                          
-                                        ),
-
-                                        Text('Breathing Exercise'),
-                                      ],
-                                    ),
-
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          onChanged: (AUDIO_SETTINGS e) => setAudioSetting(e),
-                                          activeColor: Colors.green,
-                                          value: AUDIO_SETTINGS.white_noise,
-                                          groupValue: audioAssistOption,                                          
-                                        ),
-
-                                        Text('White Noise'),
-                                      ],
-                                    ),
-
-                                    Row(
-                                      children: <Widget>[
-                                        Radio(
-                                          onChanged: (AUDIO_SETTINGS e) => setAudioSetting(e),
-                                          activeColor: Colors.green,
-                                          value: AUDIO_SETTINGS.no_sound,
-                                          groupValue: audioAssistOption,                                          
-                                        ),
-
-                                        Text('No Sound'),
-                                      ],
-                                    ),
-
-                                  ],
-                                ),
-
-                              ),
-                            ],
-                          ),
-                        ),                     
                       ),
-                    ],  
+                    ),
+                  ),
+                  
+                  Spacer(),
+                  Spacer(),
+                  Spacer(),
+
+                  RaisedButton(
+                    color: Colors.green,
+                    textColor: Colors.black,
+                    padding: EdgeInsets.fromLTRB(90.0, 15.0, 90.0, 15.0),
+                    child: Text('Save Settings'),
+                    onPressed: () => saveToFile()
                   ),
 
-                ),
+                  Spacer(),
 
-                //=======================================================================================================================================================
-
-                //Spacer
-                Container(
-                  height: 10,
-                ),
-
-                //Line Divider
-                Container(
-                  color: Colors.white,
-                  height: 2,
-                  width: 280,
-                ),
-                
-                //Spacer
-                Container(
-                  height: 15,
-                ),
-                Container(
-                  color: Colors.white,
-                  width: 200,
-
-                  child: MaterialButton(
-                    child: Text('Start Nap', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,)),
-                    onPressed: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                //builder: (context) => SleepDetection.SplashScreen()                              
-                                builder: (context) => TestOutput.NapTracker(napLength: napLengthValue, napLimit: napLimitValue, detectionMethod: detectionMethod, audioAssistOption: audioAssistOption, soundSwitch: soundSwitch, vibrateSwitch: vibrateSwitch,)
-                                ),
-                            );
-                    }                 
-
+                  FlatButton(
+                    color: Color.fromRGBO(30, 30, 30, 0.45),
+                    textColor: Colors.white,
+                    padding: EdgeInsets.fromLTRB(50.0, 15.0, 50.0, 15.0),
+                    child: Text('Default Settings'),
+                    onPressed: () => deleteDialog()
                   ),
-                ),
-              ],
-            )
-          ],
+
+                  Spacer(),
+                ],
+              ),
+            ],
+          ),        
         ),
       ),
     );
   }
 
-  //METHODS 
+  deleteDialog(){
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("You are about to reset your saved settings.\n\nAre you sure you wish to continue?"),
+        actions: <Widget>[
+          RaisedButton(
+            child: Text("Ok", style: TextStyle(color: Colors.white),),
+            onPressed: (){
+              deleteSettings();
+            }
+          ),
+          FlatButton(
+            child: Text("Cancel"),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      )
+    );
+  }
 
-  void setDetectionMethod(DETECTION_METHODS e)
-  {
-    setState((){
-      if (e == DETECTION_METHODS.tap_method){detectionMethod = DETECTION_METHODS.tap_method;}
-      else if (e == DETECTION_METHODS.drop_method){detectionMethod = DETECTION_METHODS.drop_method;}
-      else if (e == DETECTION_METHODS.shake_method){detectionMethod = DETECTION_METHODS.shake_method;}
+  deleteSettings(){
+    fileOps.deleteSettingsFile();
+
+    Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(
+          builder: (context) => HomeScreen()                              
+      ), ModalRoute.withName('/')
+    );
+  }
+
+  saveToFile() async{
+    settingsObject = Settings.NapSettingsData(
+      napLimit: napLimit, 
+      napLength: napLength, 
+      wantsAudio: backgroundAudio, 
+      selectedAudioFile: selectedAudioFile, 
+      wantsGentleWake: gentleWake, 
+      dontDisplayInstructions: showInstructions,
+      vibrationInterval: 30,
+      hasSavedSettings: true,
+      wantColourblindMode: colorblindMode,
+      musicFade: musicFade
+    );
+
+    fileOps.writeSettings(jsonEncode(settingsObject));
+
+    Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(
+          builder: (context) => HomeScreen()                              
+      ), ModalRoute.withName('/')
+    );
+    
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Your settings have been saved!\n\nThese settings will be used anytime you start a quick nap. \n\nTo change these settings please tap on the 'Nap Setup' button and reconfigure your nap!."),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            onPressed: (){
+              Navigator.pop(context);
+            }
+          )
+        ],
+      )
+    );
+  }
+
+//TODO add gentle wake to this
+  testAlarmSound(){
+    setState(() {
+      if(tapPlay){
+        FlutterRingtonePlayer.playAlarm();
+        tapPlay = false;
+      }
+      else{
+        tapPlay = true;
+        FlutterRingtonePlayer.stop();
+      }
     });
   }
 
-  void setAudioSetting(AUDIO_SETTINGS e)
-  {
-    setState((){
-      if (e == AUDIO_SETTINGS.no_sound){audioAssistOption = AUDIO_SETTINGS.no_sound;}
-      else if (e == AUDIO_SETTINGS.white_noise){audioAssistOption = AUDIO_SETTINGS.white_noise;}
-      else if (e == AUDIO_SETTINGS.breathing_exercise){audioAssistOption = AUDIO_SETTINGS.breathing_exercise;}
-    });
+//Maps audio file assets in the /assets/ folder to a list.
+  mapAssetsToList() async{
+    final manifestContent = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+
+    final soundPaths = manifestMap.keys
+      .where((String key) => key.contains('assets/'))
+      .where((String key) => key.contains('.mp3'))
+      .toList();
+
+    for(String fileName in soundPaths){
+      List<String> tmpList = fileName.split(RegExp("([./])"));
+      listOfFiles.add(tmpList[1]);
+    }
+
+    print(listOfFiles);
   }
 }
