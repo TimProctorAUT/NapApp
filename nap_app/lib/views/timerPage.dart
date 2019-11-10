@@ -13,6 +13,7 @@ class NapTimer extends StatefulWidget {
 
   final int napLength;
   final UserNapData napData;
+
   final NapSettingsData settings;
   NapTimer({this.napLength, this.napData, this.settings});
 
